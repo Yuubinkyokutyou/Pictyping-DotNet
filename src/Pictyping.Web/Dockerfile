@@ -3,13 +3,13 @@ FROM node:18-alpine AS development
 WORKDIR /app
 
 # Copy package files
-COPY src/Pictyping.Web/package*.json ./
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
 # Copy application files
-COPY src/Pictyping.Web/ .
+COPY . .
 
 # Expose port
 EXPOSE 3000
@@ -22,13 +22,13 @@ FROM node:18-alpine AS build
 WORKDIR /app
 
 # Copy package files
-COPY src/Pictyping.Web/package*.json ./
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
 # Copy application files
-COPY src/Pictyping.Web/ .
+COPY . .
 
 # Build the application
 RUN npm run build
@@ -38,7 +38,7 @@ FROM nginx:alpine AS production
 # Copy built files
 COPY --from=build /app/dist /usr/share/nginx/html
 # Copy nginx configuration
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ../../nginx/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
