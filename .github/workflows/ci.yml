@@ -224,7 +224,7 @@ jobs:
     - name: Build API Docker image
       uses: docker/build-push-action@v5
       with:
-        context: ./src/Pictyping.API
+        context: .
         file: ./src/Pictyping.API/Dockerfile
         push: false
         tags: pictyping-api:test
