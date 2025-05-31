@@ -1,0 +1,59 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1F3D8F6C-7A8E-4C5D-B8F8-5A8F4D6C8B2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pictyping.API", "src\Pictyping.API\Pictyping.API.csproj", "{9A2C6E3F-5D4B-4E7A-8C9F-1B3D5E7A9F2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pictyping.Core", "src\Pictyping.Core\Pictyping.Core.csproj", "{4E7F8A2D-9B3C-4D6E-A1F2-3C5D7E9B8A4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pictyping.Infrastructure", "src\Pictyping.Infrastructure\Pictyping.Infrastructure.csproj", "{7B3E5F2A-4C8D-4E9A-B2F1-5D8E9A7C3B6F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8C4D7E1B-3F5A-4B6C-9D2E-7A8F5C9B1E3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pictyping.API.Tests", "tests\Pictyping.API.Tests\Pictyping.API.Tests.csproj", "{2D6E8F3A-7B4C-4E9D-A5F1-9C3D7E5B8A2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pictyping.Core.Tests", "tests\Pictyping.Core.Tests\Pictyping.Core.Tests.csproj", "{5F8C9D2E-1A3B-4C7E-B9F2-3D5E7A8C9B4A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9A2C6E3F-5D4B-4E7A-8C9F-1B3D5E7A9F2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A2C6E3F-5D4B-4E7A-8C9F-1B3D5E7A9F2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A2C6E3F-5D4B-4E7A-8C9F-1B3D5E7A9F2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A2C6E3F-5D4B-4E7A-8C9F-1B3D5E7A9F2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E7F8A2D-9B3C-4D6E-A1F2-3C5D7E9B8A4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E7F8A2D-9B3C-4D6E-A1F2-3C5D7E9B8A4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E7F8A2D-9B3C-4D6E-A1F2-3C5D7E9B8A4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E7F8A2D-9B3C-4D6E-A1F2-3C5D7E9B8A4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B3E5F2A-4C8D-4E9A-B2F1-5D8E9A7C3B6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B3E5F2A-4C8D-4E9A-B2F1-5D8E9A7C3B6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B3E5F2A-4C8D-4E9A-B2F1-5D8E9A7C3B6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B3E5F2A-4C8D-4E9A-B2F1-5D8E9A7C3B6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D6E8F3A-7B4C-4E9D-A5F1-9C3D7E5B8A2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D6E8F3A-7B4C-4E9D-A5F1-9C3D7E5B8A2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D6E8F3A-7B4C-4E9D-A5F1-9C3D7E5B8A2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D6E8F3A-7B4C-4E9D-A5F1-9C3D7E5B8A2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F8C9D2E-1A3B-4C7E-B9F2-3D5E7A8C9B4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F8C9D2E-1A3B-4C7E-B9F2-3D5E7A8C9B4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F8C9D2E-1A3B-4C7E-B9F2-3D5E7A8C9B4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F8C9D2E-1A3B-4C7E-B9F2-3D5E7A8C9B4A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9A2C6E3F-5D4B-4E7A-8C9F-1B3D5E7A9F2C} = {1F3D8F6C-7A8E-4C5D-B8F8-5A8F4D6C8B2A}
+		{4E7F8A2D-9B3C-4D6E-A1F2-3C5D7E9B8A4E} = {1F3D8F6C-7A8E-4C5D-B8F8-5A8F4D6C8B2A}
+		{7B3E5F2A-4C8D-4E9A-B2F1-5D8E9A7C3B6F} = {1F3D8F6C-7A8E-4C5D-B8F8-5A8F4D6C8B2A}
+		{2D6E8F3A-7B4C-4E9D-A5F1-9C3D7E5B8A2F} = {8C4D7E1B-3F5A-4B6C-9D2E-7A8F5C9B1E3D}
+		{5F8C9D2E-1A3B-4C7E-B9F2-3D5E7A8C9B4A} = {8C4D7E1B-3F5A-4B6C-9D2E-7A8F5C9B1E3D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3F5B8D2C-9A4E-4C7D-B8F9-6A9E5D7C8B3F}
+	EndGlobalSection
+EndGlobal
