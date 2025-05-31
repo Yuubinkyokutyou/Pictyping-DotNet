@@ -21,8 +21,8 @@ services:
     depends_on:
       - db
       - redis
-    volumes:
-      - ./src/Pictyping.API:/app
+    # volumes:
+    #   - ./src/Pictyping.API:/app
     networks:
       - pictyping-network
 
