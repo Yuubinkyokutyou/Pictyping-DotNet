@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+  security-events: write
+
 jobs:
   test:
     name: Build and Test
@@ -106,11 +112,12 @@ jobs:
     
     - name: Comment PR with test results
       uses: dorny/test-reporter@v1
-      if: success() || failure()
+      if: (success() || failure()) && github.event_name == 'pull_request'
       with:
         name: Test Results
         path: './test-results/**/*.trx'
         reporter: dotnet-trx
+        token: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Code Coverage Summary
       run: |
@@ -133,16 +140,37 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup Node.js
+    - name: Check for package-lock.json
+      id: check-lockfile
+      run: |
+        if [ -f src/Pictyping.Web/package-lock.json ]; then
+          echo "lockfile_exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "lockfile_exists=false" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Setup Node.js (with cache)
+      if: steps.check-lockfile.outputs.lockfile_exists == 'true'
       uses: actions/setup-node@v4
       with:
         node-version: '22'
         cache: 'npm'
         cache-dependency-path: src/Pictyping.Web/package-lock.json
     
+    - name: Setup Node.js (without cache)
+      if: steps.check-lockfile.outputs.lockfile_exists == 'false'
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    
     - name: Install dependencies
       working-directory: src/Pictyping.Web
-      run: npm ci
+      run: |
+        if [ -f package-lock.json ]; then
+          npm ci
+        else
+          npm install
+        fi
     
     - name: Run linter
       working-directory: src/Pictyping.Web

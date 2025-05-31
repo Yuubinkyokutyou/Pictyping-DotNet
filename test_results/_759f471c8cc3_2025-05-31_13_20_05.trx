@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="5d03ace0-3b88-4eab-8b57-ee1e54e7d382" name="@759f471c8cc3 2025-05-31 13:20:05" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2025-05-31T13:20:05.4097784+00:00" queuing="2025-05-31T13:20:05.4097784+00:00" start="2025-05-31T13:20:04.8008969+00:00" finish="2025-05-31T13:20:06.1375009+00:00" />
+  <TestSettings name="default" id="5207b0b6-b722-4fc9-b0b4-d44c10b540fe">
+    <Deployment runDeploymentRoot="_759f471c8cc3_2025-05-31_13_20_05" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="ded29934-e50e-422d-8237-9d95b24a01e1" testId="0bbb3b4e-c262-0fdf-fe23-fcaa59062b09" testName="Pictyping.API.Tests.Controllers.RankingControllerTests.GetUserRank_ServiceThrowsException_ReturnsInternalServerError" computerName="759f471c8cc3" duration="00:00:00.0951715" startTime="2025-05-31T13:20:05.3620681+00:00" endTime="2025-05-31T13:20:05.3620682+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ded29934-e50e-422d-8237-9d95b24a01e1" />
+    <UnitTestResult executionId="498df54c-6230-4900-b792-17e595af6b46" testId="b441c368-3e10-55e0-f8fc-e5dcaacd5591" testName="Pictyping.API.Tests.IntegrationTests.RankingIntegrationTests.GetTopRankings_WithCount_ReturnsLimitedResults" computerName="759f471c8cc3" duration="00:00:00.0028551" startTime="2025-05-31T13:20:06.0869765+00:00" endTime="2025-05-31T13:20:06.0869767+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="498df54c-6230-4900-b792-17e595af6b46" />
+    <UnitTestResult executionId="e75e7421-f312-47eb-9099-dc4ded483503" testId="37d630fb-efbb-6c4c-de87-094db95b829a" testName="Pictyping.API.Tests.Controllers.RankingControllerTests.UpdateUserRating_ServiceThrowsException_ReturnsInternalServerError" computerName="759f471c8cc3" duration="00:00:00.0027174" startTime="2025-05-31T13:20:05.3908801+00:00" endTime="2025-05-31T13:20:05.3908801+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e75e7421-f312-47eb-9099-dc4ded483503" />
+    <UnitTestResult executionId="ee5364c2-68ba-4d2a-b596-793d2f6bcc43" testId="d4a1f22b-8adf-b806-fd75-f1efa4d551a2" testName="Pictyping.API.Tests.Controllers.AuthControllerTests.Login_ValidCredentials_ReturnsOkWithToken" computerName="759f471c8cc3" duration="00:00:00.0363056" startTime="2025-05-31T13:20:05.4039680+00:00" endTime="2025-05-31T13:20:05.4039682+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ee5364c2-68ba-4d2a-b596-793d2f6bcc43" />
+    <UnitTestResult executionId="ca30ba39-297e-4ad2-ae7c-89b318096668" testId="4a922875-700f-783c-c408-a599e08aeb57" testName="Pictyping.API.Tests.Controllers.RankingControllerTests.GetUserRank_ValidUserId_ReturnsOkWithRank" computerName="759f471c8cc3" duration="00:00:00.0018990" startTime="2025-05-31T13:20:05.3906876+00:00" endTime="2025-05-31T13:20:05.3906878+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ca30ba39-297e-4ad2-ae7c-89b318096668" />
+    <UnitTestResult executionId="9c9aae39-48ec-48b0-9536-45c5a7c31a42" testId="1ed7aaa1-03b4-3ce6-5601-5892dd03302b" testName="Pictyping.API.Tests.Controllers.AuthControllerTests.RedirectToLegacy_NoUserIdInClaims_ReturnsUnauthorized" computerName="759f471c8cc3" duration="00:00:00.0910531" startTime="2025-05-31T13:20:05.3564569+00:00" endTime="2025-05-31T13:20:05.3564678+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9c9aae39-48ec-48b0-9536-45c5a7c31a42" />
+    <UnitTestResult executionId="833f236d-47d8-472d-8be9-48df22f0c519" testId="a7c94f9d-73b8-c410-2a6d-1bf259d36d17" testName="Pictyping.API.Tests.IntegrationTests.RankingIntegrationTests.GetTopRankings_ReturnsSuccessAndCorrectContentType" computerName="759f471c8cc3" duration="00:00:00.0164815" startTime="2025-05-31T13:20:06.0766081+00:00" endTime="2025-05-31T13:20:06.0766083+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="833f236d-47d8-472d-8be9-48df22f0c519" />
+    <UnitTestResult executionId="3b9d37f3-b31e-4fa4-ac1b-e57ee85c6a0a" testId="2ec8fc45-4967-993a-3100-ac7feee74c50" testName="Pictyping.API.Tests.Controllers.RankingControllerTests.GetTopRankings_DefaultCount_ReturnsOkWithRankings" computerName="759f471c8cc3" duration="00:00:00.0041134" startTime="2025-05-31T13:20:05.3637755+00:00" endTime="2025-05-31T13:20:05.3637756+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3b9d37f3-b31e-4fa4-ac1b-e57ee85c6a0a" />
+    <UnitTestResult executionId="cbaa1398-4b4c-40b2-923c-fe6e92149bf7" testId="554d74ce-2fb0-1559-e578-17be73f64446" testName="Pictyping.API.Tests.IntegrationTests.AuthIntegrationTests.RedirectToLegacy_WithoutAuthentication_ReturnsUnauthorized" computerName="759f471c8cc3" duration="00:00:00.6740385" startTime="2025-05-31T13:20:05.9383923+00:00" endTime="2025-05-31T13:20:05.9383925+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cbaa1398-4b4c-40b2-923c-fe6e92149bf7" />
+    <UnitTestResult executionId="25ee7e8f-9906-48e2-87a4-8a095f48f921" testId="e6d0dd09-8104-ba0b-4de4-8b765da55dbd" testName="Pictyping.API.Tests.Controllers.AuthControllerTests.RedirectToLegacy_ValidUser_ReturnsRedirect" computerName="759f471c8cc3" duration="00:00:00.0037290" startTime="2025-05-31T13:20:05.3625883+00:00" endTime="2025-05-31T13:20:05.3625884+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="25ee7e8f-9906-48e2-87a4-8a095f48f921" />
+    <UnitTestResult executionId="b24169ac-8394-41ba-8f91-c771c6058382" testId="edcd22e7-9bec-6016-4d8f-f69ffcb53784" testName="Pictyping.API.Tests.IntegrationTests.AuthIntegrationTests.GetCurrentUser_WithoutAuthentication_ReturnsUnauthorized" computerName="759f471c8cc3" duration="00:00:00.0051628" startTime="2025-05-31T13:20:05.9449412+00:00" endTime="2025-05-31T13:20:05.9449414+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b24169ac-8394-41ba-8f91-c771c6058382" />
+    <UnitTestResult executionId="90e5f123-b72e-4fc8-a45d-214301c8069d" testId="4db1f20e-fb7d-de9c-d2ba-183e844d01c6" testName="Pictyping.API.Tests.IntegrationTests.AuthIntegrationTests.Login_InvalidCredentials_ReturnsUnauthorized" computerName="759f471c8cc3" duration="00:00:00.0431947" startTime="2025-05-31T13:20:06.0118514+00:00" endTime="2025-05-31T13:20:06.0118516+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="90e5f123-b72e-4fc8-a45d-214301c8069d" />
+    <UnitTestResult executionId="ad922e31-6df6-4efc-b54c-04789b71782a" testId="85f26bc2-4e24-8c6e-c305-61f87b14fbcc" testName="Pictyping.API.Tests.IntegrationTests.AuthIntegrationTests.CrossDomainLogin_InvalidToken_ReturnsUnauthorized" computerName="759f471c8cc3" duration="00:00:00.0233439" startTime="2025-05-31T13:20:05.9684713+00:00" endTime="2025-05-31T13:20:05.9684715+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ad922e31-6df6-4efc-b54c-04789b71782a" />
+    <UnitTestResult executionId="ec0b2ca6-934a-4d3f-baab-9a7cc5764856" testId="97690c46-0286-e172-1bcc-8da125dd1f1a" testName="Pictyping.API.Tests.Controllers.AuthControllerTests.GetCurrentUser_ValidUser_ReturnsUserData" computerName="759f471c8cc3" duration="00:00:00.0011061" startTime="2025-05-31T13:20:05.3908127+00:00" endTime="2025-05-31T13:20:05.3908127+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ec0b2ca6-934a-4d3f-baab-9a7cc5764856" />
+    <UnitTestResult executionId="ed3097ef-2d93-4f56-aee3-13a69f247a22" testId="9e3dd66d-e87e-c3cc-eefe-f2507deb061a" testName="Pictyping.API.Tests.Controllers.RankingControllerTests.GetTopRankings_ServiceThrowsException_ReturnsInternalServerError" computerName="759f471c8cc3" duration="00:00:00.0040738" startTime="2025-05-31T13:20:05.3908628+00:00" endTime="2025-05-31T13:20:05.3908628+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ed3097ef-2d93-4f56-aee3-13a69f247a22" />
+    <UnitTestResult executionId="72dc3f7c-dc1c-4681-8144-4485af3bb94f" testId="b39b20ee-1f74-6164-1ce6-e166b5ffe34b" testName="Pictyping.API.Tests.Controllers.AuthControllerTests.Login_InvalidCredentials_ReturnsUnauthorized" computerName="759f471c8cc3" duration="00:00:00.0025508" startTime="2025-05-31T13:20:05.3652056+00:00" endTime="2025-05-31T13:20:05.3652057+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="72dc3f7c-dc1c-4681-8144-4485af3bb94f" />
+    <UnitTestResult executionId="fb2170f9-b21c-4b7c-9586-fe2e62c8afa9" testId="cc06bcb1-ea80-60a4-46a8-a1daa175402c" testName="Pictyping.API.Tests.Controllers.RankingControllerTests.UpdateUserRating_ValidRequest_ReturnsOkWithSuccessMessage" computerName="759f471c8cc3" duration="00:00:00.0019297" startTime="2025-05-31T13:20:05.3908943+00:00" endTime="2025-05-31T13:20:05.3908944+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fb2170f9-b21c-4b7c-9586-fe2e62c8afa9" />
+    <UnitTestResult executionId="000808f9-90ba-45a4-930b-f2344ae8114f" testId="7101827b-2764-4887-642e-fa16bec049ec" testName="Pictyping.API.Tests.IntegrationTests.RankingIntegrationTests.UpdateUserRating_ValidRequest_ReturnsSuccessMessage" computerName="759f471c8cc3" duration="00:00:00.7969625" startTime="2025-05-31T13:20:06.0598535+00:00" endTime="2025-05-31T13:20:06.0598536+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="000808f9-90ba-45a4-930b-f2344ae8114f" />
+    <UnitTestResult executionId="bf962a39-190e-417a-ad51-936f87d6b752" testId="e6732392-98df-e4aa-f114-9ce71bd9b4e0" testName="Pictyping.API.Tests.Controllers.RankingControllerTests.GetTopRankings_CustomCount_ReturnsOkWithSpecifiedCount" computerName="759f471c8cc3" duration="00:00:00.0040181" startTime="2025-05-31T13:20:05.3908410+00:00" endTime="2025-05-31T13:20:05.3908410+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bf962a39-190e-417a-ad51-936f87d6b752" />
+    <UnitTestResult executionId="b15ca8f3-8101-4c1d-a625-8bf2f8f5acc6" testId="8309941f-3872-97aa-bcf7-c3e582fd56f2" testName="Pictyping.API.Tests.IntegrationTests.RankingIntegrationTests.GetUserRank_ExistingUser_ReturnsUserRank" computerName="759f471c8cc3" duration="00:00:00.0072317" startTime="2025-05-31T13:20:06.0839955+00:00" endTime="2025-05-31T13:20:06.0839956+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b15ca8f3-8101-4c1d-a625-8bf2f8f5acc6" />
+    <UnitTestResult executionId="15510442-1046-4ccf-aa23-d3cc858b6f47" testId="6dd04010-f205-d5ac-45b8-afbaa8f86067" testName="Pictyping.API.Tests.Controllers.AuthControllerTests.GetCurrentUser_UserNotFound_ReturnsNotFound" computerName="759f471c8cc3" duration="00:00:00.0011663" startTime="2025-05-31T13:20:05.3908286+00:00" endTime="2025-05-31T13:20:05.3908286+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="15510442-1046-4ccf-aa23-d3cc858b6f47" />
+    <UnitTestResult executionId="162897e6-6f3e-4852-a18a-2da25abb1378" testId="3cf774ea-42dd-aea8-7808-d31e8eb64c55" testName="Pictyping.API.Tests.Controllers.AuthControllerTests.GetCurrentUser_NoUserIdInClaims_ReturnsUnauthorized" computerName="759f471c8cc3" duration="00:00:00.0027181" startTime="2025-05-31T13:20:05.3616344+00:00" endTime="2025-05-31T13:20:05.3616346+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="162897e6-6f3e-4852-a18a-2da25abb1378" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Pictyping.API.Tests.Controllers.RankingControllerTests.GetTopRankings_DefaultCount_ReturnsOkWithRankings" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="2ec8fc45-4967-993a-3100-ac7feee74c50">
+      <Execution id="3b9d37f3-b31e-4fa4-ac1b-e57ee85c6a0a" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.Controllers.RankingControllerTests" name="GetTopRankings_DefaultCount_ReturnsOkWithRankings" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.IntegrationTests.AuthIntegrationTests.RedirectToLegacy_WithoutAuthentication_ReturnsUnauthorized" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="554d74ce-2fb0-1559-e578-17be73f64446">
+      <Execution id="cbaa1398-4b4c-40b2-923c-fe6e92149bf7" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.IntegrationTests.AuthIntegrationTests" name="RedirectToLegacy_WithoutAuthentication_ReturnsUnauthorized" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.IntegrationTests.RankingIntegrationTests.GetTopRankings_WithCount_ReturnsLimitedResults" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="b441c368-3e10-55e0-f8fc-e5dcaacd5591">
+      <Execution id="498df54c-6230-4900-b792-17e595af6b46" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.IntegrationTests.RankingIntegrationTests" name="GetTopRankings_WithCount_ReturnsLimitedResults" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.Controllers.AuthControllerTests.GetCurrentUser_NoUserIdInClaims_ReturnsUnauthorized" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="3cf774ea-42dd-aea8-7808-d31e8eb64c55">
+      <Execution id="162897e6-6f3e-4852-a18a-2da25abb1378" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.Controllers.AuthControllerTests" name="GetCurrentUser_NoUserIdInClaims_ReturnsUnauthorized" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.Controllers.RankingControllerTests.GetTopRankings_CustomCount_ReturnsOkWithSpecifiedCount" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="e6732392-98df-e4aa-f114-9ce71bd9b4e0">
+      <Execution id="bf962a39-190e-417a-ad51-936f87d6b752" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.Controllers.RankingControllerTests" name="GetTopRankings_CustomCount_ReturnsOkWithSpecifiedCount" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.Controllers.AuthControllerTests.RedirectToLegacy_ValidUser_ReturnsRedirect" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="e6d0dd09-8104-ba0b-4de4-8b765da55dbd">
+      <Execution id="25ee7e8f-9906-48e2-87a4-8a095f48f921" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.Controllers.AuthControllerTests" name="RedirectToLegacy_ValidUser_ReturnsRedirect" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.Controllers.RankingControllerTests.GetUserRank_ServiceThrowsException_ReturnsInternalServerError" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="0bbb3b4e-c262-0fdf-fe23-fcaa59062b09">
+      <Execution id="ded29934-e50e-422d-8237-9d95b24a01e1" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.Controllers.RankingControllerTests" name="GetUserRank_ServiceThrowsException_ReturnsInternalServerError" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.Controllers.AuthControllerTests.Login_ValidCredentials_ReturnsOkWithToken" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="d4a1f22b-8adf-b806-fd75-f1efa4d551a2">
+      <Execution id="ee5364c2-68ba-4d2a-b596-793d2f6bcc43" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.Controllers.AuthControllerTests" name="Login_ValidCredentials_ReturnsOkWithToken" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.Controllers.AuthControllerTests.Login_InvalidCredentials_ReturnsUnauthorized" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="b39b20ee-1f74-6164-1ce6-e166b5ffe34b">
+      <Execution id="72dc3f7c-dc1c-4681-8144-4485af3bb94f" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.Controllers.AuthControllerTests" name="Login_InvalidCredentials_ReturnsUnauthorized" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.Controllers.RankingControllerTests.UpdateUserRating_ValidRequest_ReturnsOkWithSuccessMessage" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="cc06bcb1-ea80-60a4-46a8-a1daa175402c">
+      <Execution id="fb2170f9-b21c-4b7c-9586-fe2e62c8afa9" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.Controllers.RankingControllerTests" name="UpdateUserRating_ValidRequest_ReturnsOkWithSuccessMessage" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.Controllers.RankingControllerTests.UpdateUserRating_ServiceThrowsException_ReturnsInternalServerError" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="37d630fb-efbb-6c4c-de87-094db95b829a">
+      <Execution id="e75e7421-f312-47eb-9099-dc4ded483503" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.Controllers.RankingControllerTests" name="UpdateUserRating_ServiceThrowsException_ReturnsInternalServerError" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.Controllers.AuthControllerTests.GetCurrentUser_ValidUser_ReturnsUserData" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="97690c46-0286-e172-1bcc-8da125dd1f1a">
+      <Execution id="ec0b2ca6-934a-4d3f-baab-9a7cc5764856" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.Controllers.AuthControllerTests" name="GetCurrentUser_ValidUser_ReturnsUserData" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.IntegrationTests.AuthIntegrationTests.Login_InvalidCredentials_ReturnsUnauthorized" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="4db1f20e-fb7d-de9c-d2ba-183e844d01c6">
+      <Execution id="90e5f123-b72e-4fc8-a45d-214301c8069d" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.IntegrationTests.AuthIntegrationTests" name="Login_InvalidCredentials_ReturnsUnauthorized" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.IntegrationTests.AuthIntegrationTests.CrossDomainLogin_InvalidToken_ReturnsUnauthorized" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="85f26bc2-4e24-8c6e-c305-61f87b14fbcc">
+      <Execution id="ad922e31-6df6-4efc-b54c-04789b71782a" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.IntegrationTests.AuthIntegrationTests" name="CrossDomainLogin_InvalidToken_ReturnsUnauthorized" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.Controllers.AuthControllerTests.RedirectToLegacy_NoUserIdInClaims_ReturnsUnauthorized" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="1ed7aaa1-03b4-3ce6-5601-5892dd03302b">
+      <Execution id="9c9aae39-48ec-48b0-9536-45c5a7c31a42" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.Controllers.AuthControllerTests" name="RedirectToLegacy_NoUserIdInClaims_ReturnsUnauthorized" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.IntegrationTests.RankingIntegrationTests.UpdateUserRating_ValidRequest_ReturnsSuccessMessage" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="7101827b-2764-4887-642e-fa16bec049ec">
+      <Execution id="000808f9-90ba-45a4-930b-f2344ae8114f" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.IntegrationTests.RankingIntegrationTests" name="UpdateUserRating_ValidRequest_ReturnsSuccessMessage" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.Controllers.AuthControllerTests.GetCurrentUser_UserNotFound_ReturnsNotFound" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="6dd04010-f205-d5ac-45b8-afbaa8f86067">
+      <Execution id="15510442-1046-4ccf-aa23-d3cc858b6f47" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.Controllers.AuthControllerTests" name="GetCurrentUser_UserNotFound_ReturnsNotFound" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.IntegrationTests.RankingIntegrationTests.GetTopRankings_ReturnsSuccessAndCorrectContentType" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="a7c94f9d-73b8-c410-2a6d-1bf259d36d17">
+      <Execution id="833f236d-47d8-472d-8be9-48df22f0c519" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.IntegrationTests.RankingIntegrationTests" name="GetTopRankings_ReturnsSuccessAndCorrectContentType" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.Controllers.RankingControllerTests.GetTopRankings_ServiceThrowsException_ReturnsInternalServerError" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="9e3dd66d-e87e-c3cc-eefe-f2507deb061a">
+      <Execution id="ed3097ef-2d93-4f56-aee3-13a69f247a22" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.Controllers.RankingControllerTests" name="GetTopRankings_ServiceThrowsException_ReturnsInternalServerError" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.IntegrationTests.RankingIntegrationTests.GetUserRank_ExistingUser_ReturnsUserRank" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="8309941f-3872-97aa-bcf7-c3e582fd56f2">
+      <Execution id="b15ca8f3-8101-4c1d-a625-8bf2f8f5acc6" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.IntegrationTests.RankingIntegrationTests" name="GetUserRank_ExistingUser_ReturnsUserRank" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.Controllers.RankingControllerTests.GetUserRank_ValidUserId_ReturnsOkWithRank" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="4a922875-700f-783c-c408-a599e08aeb57">
+      <Execution id="ca30ba39-297e-4ad2-ae7c-89b318096668" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.Controllers.RankingControllerTests" name="GetUserRank_ValidUserId_ReturnsOkWithRank" />
+    </UnitTest>
+    <UnitTest name="Pictyping.API.Tests.IntegrationTests.AuthIntegrationTests.GetCurrentUser_WithoutAuthentication_ReturnsUnauthorized" storage="/app/tests/pictyping.api.tests/bin/debug/net8.0/pictyping.api.tests.dll" id="edcd22e7-9bec-6016-4d8f-f69ffcb53784">
+      <Execution id="b24169ac-8394-41ba-8f91-c771c6058382" />
+      <TestMethod codeBase="/app/tests/Pictyping.API.Tests/bin/Debug/net8.0/Pictyping.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.API.Tests.IntegrationTests.AuthIntegrationTests" name="GetCurrentUser_WithoutAuthentication_ReturnsUnauthorized" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="0bbb3b4e-c262-0fdf-fe23-fcaa59062b09" executionId="ded29934-e50e-422d-8237-9d95b24a01e1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b441c368-3e10-55e0-f8fc-e5dcaacd5591" executionId="498df54c-6230-4900-b792-17e595af6b46" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="37d630fb-efbb-6c4c-de87-094db95b829a" executionId="e75e7421-f312-47eb-9099-dc4ded483503" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d4a1f22b-8adf-b806-fd75-f1efa4d551a2" executionId="ee5364c2-68ba-4d2a-b596-793d2f6bcc43" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4a922875-700f-783c-c408-a599e08aeb57" executionId="ca30ba39-297e-4ad2-ae7c-89b318096668" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1ed7aaa1-03b4-3ce6-5601-5892dd03302b" executionId="9c9aae39-48ec-48b0-9536-45c5a7c31a42" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a7c94f9d-73b8-c410-2a6d-1bf259d36d17" executionId="833f236d-47d8-472d-8be9-48df22f0c519" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ec8fc45-4967-993a-3100-ac7feee74c50" executionId="3b9d37f3-b31e-4fa4-ac1b-e57ee85c6a0a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="554d74ce-2fb0-1559-e578-17be73f64446" executionId="cbaa1398-4b4c-40b2-923c-fe6e92149bf7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e6d0dd09-8104-ba0b-4de4-8b765da55dbd" executionId="25ee7e8f-9906-48e2-87a4-8a095f48f921" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="edcd22e7-9bec-6016-4d8f-f69ffcb53784" executionId="b24169ac-8394-41ba-8f91-c771c6058382" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4db1f20e-fb7d-de9c-d2ba-183e844d01c6" executionId="90e5f123-b72e-4fc8-a45d-214301c8069d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="85f26bc2-4e24-8c6e-c305-61f87b14fbcc" executionId="ad922e31-6df6-4efc-b54c-04789b71782a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="97690c46-0286-e172-1bcc-8da125dd1f1a" executionId="ec0b2ca6-934a-4d3f-baab-9a7cc5764856" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9e3dd66d-e87e-c3cc-eefe-f2507deb061a" executionId="ed3097ef-2d93-4f56-aee3-13a69f247a22" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b39b20ee-1f74-6164-1ce6-e166b5ffe34b" executionId="72dc3f7c-dc1c-4681-8144-4485af3bb94f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cc06bcb1-ea80-60a4-46a8-a1daa175402c" executionId="fb2170f9-b21c-4b7c-9586-fe2e62c8afa9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7101827b-2764-4887-642e-fa16bec049ec" executionId="000808f9-90ba-45a4-930b-f2344ae8114f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e6732392-98df-e4aa-f114-9ce71bd9b4e0" executionId="bf962a39-190e-417a-ad51-936f87d6b752" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8309941f-3872-97aa-bcf7-c3e582fd56f2" executionId="b15ca8f3-8101-4c1d-a625-8bf2f8f5acc6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6dd04010-f205-d5ac-45b8-afbaa8f86067" executionId="15510442-1046-4ccf-aa23-d3cc858b6f47" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3cf774ea-42dd-aea8-7808-d31e8eb64c55" executionId="162897e6-6f3e-4852-a18a-2da25abb1378" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="22" executed="22" passed="22" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.16)
+[xUnit.net 00:00:00.09]   Discovering: Pictyping.API.Tests
+[xUnit.net 00:00:00.11]   Discovered:  Pictyping.API.Tests
+[xUnit.net 00:00:00.11]   Starting:    Pictyping.API.Tests
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/root/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/root/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+warn: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[35]
+      No XML encryptor configured. Key {80c08d90-4186-4ab1-b264-ae6148a4c5a9} may be persisted to storage in unencrypted form.
+warn: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[35]
+      No XML encryptor configured. Key {6a2d4884-c2c9-4da9-8d5d-873de0c7b6a5} may be persisted to storage in unencrypted form.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://*:8080
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://*:8080
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 4 entities to in-memory store.
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 4 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 4 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 4 entities to in-memory store.
+[xUnit.net 00:00:00.98]   Finished:    Pictyping.API.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

@@ -12,6 +12,11 @@ on:
       - '**/package.json'
       - '**/package-lock.json'
 
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
 jobs:
   nuget-audit:
     name: NuGet Vulnerability Audit
@@ -60,12 +65,15 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '22'
-        cache: 'npm'
-        cache-dependency-path: src/Pictyping.Web/package-lock.json
     
     - name: Install dependencies
       working-directory: src/Pictyping.Web
-      run: npm ci
+      run: |
+        if [ -f package-lock.json ]; then
+          npm ci
+        else
+          npm install
+        fi
     
     - name: Run npm audit
       working-directory: src/Pictyping.Web
@@ -110,8 +118,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '22'
-        cache: 'npm'
-        cache-dependency-path: src/Pictyping.Web/package-lock.json
     
     - name: Check outdated NuGet packages
       run: |
