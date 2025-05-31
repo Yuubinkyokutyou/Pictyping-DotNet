@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <Format>cobertura,opencover</Format>
+          <Include>[Pictyping.*]*</Include>
+          <Exclude>
+            [*.Tests]*,
+            [*]*.Program,
+            [*]*Migrations*,
+            [*]*Startup*,
+            [*]*Extensions*,
+            [*]*Models*
+          </Exclude>
+          <ExcludeByAttribute>
+            Obsolete,
+            GeneratedCodeAttribute,
+            CompilerGeneratedAttribute,
+            ExcludeFromCodeCoverageAttribute
+          </ExcludeByAttribute>
+          <ExcludeByFile>
+            **/Migrations/**/*.cs,
+            **/Program.cs,
+            **/Startup.cs,
+            **/*Designer.cs,
+            **/*.g.cs,
+            **/*.g.i.cs
+          </ExcludeByFile>
+          <UseSourceLink>true</UseSourceLink>
+          <SingleHit>false</SingleHit>
+          <IncludeTestAssembly>false</IncludeTestAssembly>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

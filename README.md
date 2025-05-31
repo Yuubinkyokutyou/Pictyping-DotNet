@@ -1,5 +1,9 @@
 # Pictyping DotNet
 
+[![CI/CD Pipeline](https://github.com/Yuubinkyokutyou/Pictyping-DotNet/actions/workflows/ci.yml/badge.svg)](https://github.com/Yuubinkyokutyou/Pictyping-DotNet/actions/workflows/ci.yml)
+[![Code Coverage](https://github.com/Yuubinkyokutyou/Pictyping-DotNet/actions/workflows/coverage.yml/badge.svg)](https://github.com/Yuubinkyokutyou/Pictyping-DotNet/actions/workflows/coverage.yml)
+[![Dependency Check](https://github.com/Yuubinkyokutyou/Pictyping-DotNet/actions/workflows/dependency-check.yml/badge.svg)](https://github.com/Yuubinkyokutyou/Pictyping-DotNet/actions/workflows/dependency-check.yml)
+
 Pictyping RailsアプリケーションのASP.NET Core + React版
 
 ## プロジェクト構成
@@ -46,6 +50,31 @@ docker-compose up --build
 chmod +x scripts/migration/migrate-database.sh
 ./scripts/migration/migrate-database.sh
 ```
+
+## テスト
+
+### テスト実行
+
+```bash
+# 全テスト実行
+dotnet test Pictyping.sln
+
+# カバレッジ付きテスト実行
+dotnet test --collect:"XPlat Code Coverage" --settings coverlet.runsettings
+
+# 単体テストのみ実行
+dotnet test tests/Pictyping.Core.Tests/
+
+# 統合テストのみ実行
+dotnet test tests/Pictyping.API.Tests/
+```
+
+### テスト構成
+
+- **単体テスト**: 27テスト (Core層のエンティティ・サービス)
+- **統合テスト**: 22テスト (API エンドポイント)
+- **カバレッジ**: 自動生成される詳細レポート
+- **CI/CD**: GitHub Actions で自動実行
 
 ## 開発
 

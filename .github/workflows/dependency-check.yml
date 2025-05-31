@@ -1,0 +1,162 @@
+name: Dependency Check
+
+on:
+  schedule:
+    # Run every Monday at 9:00 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - '**/*.csproj'
+      - '**/package.json'
+      - '**/package-lock.json'
+
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
+jobs:
+  nuget-audit:
+    name: NuGet Vulnerability Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore Pictyping.sln
+    
+    - name: Run NuGet audit
+      run: |
+        dotnet list package --vulnerable --include-transitive > nuget-audit.txt
+        cat nuget-audit.txt
+        
+        # Check if vulnerabilities were found
+        if grep -q "has the following vulnerable packages" nuget-audit.txt; then
+          echo "❌ Vulnerable NuGet packages found!"
+          echo "::error::Vulnerable NuGet packages detected. Please review the audit results."
+          exit 1
+        else
+          echo "✅ No vulnerable NuGet packages found."
+        fi
+    
+    - name: Upload audit results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-audit-results
+        path: nuget-audit.txt
+
+  npm-audit:
+    name: NPM Vulnerability Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    
+    - name: Install dependencies
+      working-directory: src/Pictyping.Web
+      run: |
+        if [ -f package-lock.json ]; then
+          npm ci
+        else
+          npm install
+        fi
+    
+    - name: Run npm audit
+      working-directory: src/Pictyping.Web
+      run: |
+        npm audit --audit-level moderate --json > npm-audit.json || true
+        
+        # Show audit results
+        npm audit --audit-level moderate || true
+        
+        # Check for high/critical vulnerabilities
+        high_vulns=$(cat npm-audit.json | jq '.metadata.vulnerabilities.high // 0')
+        critical_vulns=$(cat npm-audit.json | jq '.metadata.vulnerabilities.critical // 0')
+        
+        if [ "$high_vulns" -gt 0 ] || [ "$critical_vulns" -gt 0 ]; then
+          echo "❌ High or critical vulnerabilities found!"
+          echo "High: $high_vulns, Critical: $critical_vulns"
+          echo "::warning::High or critical npm vulnerabilities detected. Consider updating dependencies."
+        else
+          echo "✅ No high or critical npm vulnerabilities found."
+        fi
+    
+    - name: Upload audit results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: npm-audit-results
+        path: src/Pictyping.Web/npm-audit.json
+
+  outdated-packages:
+    name: Check Outdated Packages
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    
+    - name: Check outdated NuGet packages
+      run: |
+        echo "## Outdated NuGet Packages" >> outdated-report.md
+        echo "$(dotnet list package --outdated)" >> outdated-report.md
+        echo "" >> outdated-report.md
+    
+    - name: Check outdated npm packages
+      working-directory: src/Pictyping.Web
+      run: |
+        echo "## Outdated NPM Packages" >> ../outdated-report.md
+        npm outdated --json > outdated.json || true
+        
+        if [ -s outdated.json ]; then
+          echo "Found outdated npm packages:" >> ../outdated-report.md
+          echo '```json' >> ../outdated-report.md
+          cat outdated.json >> ../outdated-report.md
+          echo '```' >> ../outdated-report.md
+        else
+          echo "No outdated npm packages found." >> ../outdated-report.md
+        fi
+    
+    - name: Comment PR with outdated packages
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const report = fs.readFileSync('outdated-report.md', 'utf8');
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `## 📦 Package Update Report\n\n${report}`
+          });
+    
+    - name: Upload outdated packages report
+      uses: actions/upload-artifact@v4
+      with:
+        name: outdated-packages-report
+        path: outdated-report.md

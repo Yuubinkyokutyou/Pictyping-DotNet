@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="3fd08114-abe7-45c2-9b3b-435fbc47509d" name="@759f471c8cc3 2025-05-31 13:20:02" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2025-05-31T13:20:02.6399747+00:00" queuing="2025-05-31T13:20:02.6399747+00:00" start="2025-05-31T13:20:02.1013796+00:00" finish="2025-05-31T13:20:03.1310844+00:00" />
+  <TestSettings name="default" id="bc2f6185-ccd6-4090-aadc-76ac4c28cb01">
+    <Deployment runDeploymentRoot="_759f471c8cc3_2025-05-31_13_20_02" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="41b0f89c-5160-421f-b86c-481577714f5f" testId="28029822-5ced-f6a8-ff84-ca677162cb76" testName="Pictyping.Core.Tests.Entities.BaseEntityTests.BaseEntity_CanSetCreatedAt" computerName="759f471c8cc3" duration="00:00:00.0000783" startTime="2025-05-31T13:20:02.6220712+00:00" endTime="2025-05-31T13:20:02.6220712+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="41b0f89c-5160-421f-b86c-481577714f5f" />
+    <UnitTestResult executionId="829d9dc2-7053-444c-8f9a-068d0997caab" testId="59838a7f-1025-8561-1626-ff115c2c3a45" testName="Pictyping.Core.Tests.Entities.BaseEntityTests.BaseEntity_HasUpdatedAtProperty" computerName="759f471c8cc3" duration="00:00:00.0000505" startTime="2025-05-31T13:20:02.6028137+00:00" endTime="2025-05-31T13:20:02.6028137+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="829d9dc2-7053-444c-8f9a-068d0997caab" />
+    <UnitTestResult executionId="e5f2185d-475c-420b-aae8-79f5e6c22abe" testId="db1b6747-2d0c-2e59-3473-605190cdc9c6" testName="Pictyping.Core.Tests.Entities.UserTests.User_DefaultConstructor_SetsDefaultValues" computerName="759f471c8cc3" duration="00:00:00.0003041" startTime="2025-05-31T13:20:02.6221471+00:00" endTime="2025-05-31T13:20:02.6221471+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e5f2185d-475c-420b-aae8-79f5e6c22abe" />
+    <UnitTestResult executionId="35eb5766-9306-4041-8158-49117e64e95c" testId="83704ebb-8b69-8a86-1edb-51e9dc0e6700" testName="Pictyping.Core.Tests.Entities.UserTests.User_InheritsFromBaseEntity" computerName="759f471c8cc3" duration="00:00:00.0001594" startTime="2025-05-31T13:20:02.6220933+00:00" endTime="2025-05-31T13:20:02.6220933+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="35eb5766-9306-4041-8158-49117e64e95c" />
+    <UnitTestResult executionId="5c42b6ff-134e-42b1-8f77-ccc87fbe8cf5" testId="703c6614-ac31-d134-c6a2-5562a81eda69" testName="Pictyping.Core.Tests.Services.UserServiceTests.GetByIdAsync_NonExistingUser_ReturnsNull" computerName="759f471c8cc3" duration="00:00:00.0013314" startTime="2025-05-31T13:20:03.0833529+00:00" endTime="2025-05-31T13:20:03.0833530+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5c42b6ff-134e-42b1-8f77-ccc87fbe8cf5" />
+    <UnitTestResult executionId="484b1940-df53-48a2-a6c6-e51ee6ac306f" testId="3929b5d6-2048-fb43-cdea-6e8e8661e538" testName="Pictyping.Core.Tests.Entities.UserTests.User_SetDisplayName_UpdatesDisplayName" computerName="759f471c8cc3" duration="00:00:00.0015751" startTime="2025-05-31T13:20:02.6220775+00:00" endTime="2025-05-31T13:20:02.6220775+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="484b1940-df53-48a2-a6c6-e51ee6ac306f" />
+    <UnitTestResult executionId="f3effcab-066e-49d5-a352-a4dd1e095a8f" testId="1ec79eb0-d536-bbd8-028f-4c6f9ae92ff5" testName="Pictyping.Core.Tests.Entities.UserTests.User_SetGuest_UpdatesGuestStatus(guestStatus: False)" computerName="759f471c8cc3" duration="00:00:00.0090352" startTime="2025-05-31T13:20:02.6016122+00:00" endTime="2025-05-31T13:20:02.6016123+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f3effcab-066e-49d5-a352-a4dd1e095a8f" />
+    <UnitTestResult executionId="2ffdebc0-0dcb-4be4-8154-39ab86d9452d" testId="3b329a29-bd6f-73c5-1052-5ebec51c975b" testName="Pictyping.Core.Tests.Entities.UserTests.User_SetRating_UpdatesRating" computerName="759f471c8cc3" duration="00:00:00.0003014" startTime="2025-05-31T13:20:02.6221102+00:00" endTime="2025-05-31T13:20:02.6221103+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2ffdebc0-0dcb-4be4-8154-39ab86d9452d" />
+    <UnitTestResult executionId="22662e15-6bf2-4cd1-8f02-41483499b028" testId="6c98eb1f-c49e-0466-c5a1-40ce309be169" testName="Pictyping.Core.Tests.Entities.UserTests.User_SetAdmin_UpdatesAdminStatus(adminStatus: True)" computerName="759f471c8cc3" duration="00:00:00.0000987" startTime="2025-05-31T13:20:02.6027669+00:00" endTime="2025-05-31T13:20:02.6027670+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="22662e15-6bf2-4cd1-8f02-41483499b028" />
+    <UnitTestResult executionId="36668d4f-3ec1-45ca-aac5-c73c28f3da3e" testId="3e4e6a18-d399-a520-5489-1668327a22ee" testName="Pictyping.Core.Tests.Services.UserServiceTests.DeleteAsync_NonExistingUser_ReturnsFalse" computerName="759f471c8cc3" duration="00:00:00.0005905" startTime="2025-05-31T13:20:03.0848780+00:00" endTime="2025-05-31T13:20:03.0848780+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="36668d4f-3ec1-45ca-aac5-c73c28f3da3e" />
+    <UnitTestResult executionId="099efa3d-c439-471a-a773-d0074340670e" testId="6d3c3a36-3a00-a618-7b64-94afe470bf58" testName="Pictyping.Core.Tests.Entities.UserTests.User_SetResetPasswordToken_UpdatesToken" computerName="759f471c8cc3" duration="00:00:00.0001425" startTime="2025-05-31T13:20:02.6230063+00:00" endTime="2025-05-31T13:20:02.6230064+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="099efa3d-c439-471a-a773-d0074340670e" />
+    <UnitTestResult executionId="36ad1896-0f58-406f-a4d9-d4d1bc06f98e" testId="8813acf1-0cef-a91e-ae30-4769c55be626" testName="Pictyping.Core.Tests.Entities.UserTests.User_SetGuest_UpdatesGuestStatus(guestStatus: True)" computerName="759f471c8cc3" duration="00:00:00.0002760" startTime="2025-05-31T13:20:02.6027471+00:00" endTime="2025-05-31T13:20:02.6027471+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="36ad1896-0f58-406f-a4d9-d4d1bc06f98e" />
+    <UnitTestResult executionId="a57e6e13-9bb9-4535-abb6-42e7262a3e35" testId="cba0f115-3925-6cc3-29e5-c08c6f9910a4" testName="Pictyping.Core.Tests.Services.UserServiceTests.GetByIdAsync_ExistingUser_ReturnsUser" computerName="759f471c8cc3" duration="00:00:00.0007220" startTime="2025-05-31T13:20:03.0841476+00:00" endTime="2025-05-31T13:20:03.0841476+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a57e6e13-9bb9-4535-abb6-42e7262a3e35" />
+    <UnitTestResult executionId="0efe7996-b436-49c2-8361-a46b3772e063" testId="d803c73f-7fb9-3ae9-a0bf-7c080430f60f" testName="Pictyping.Core.Tests.Services.UserServiceTests.GetAllAsync_ReturnsAllUsers" computerName="759f471c8cc3" duration="00:00:00.0038798" startTime="2025-05-31T13:20:03.0648763+00:00" endTime="2025-05-31T13:20:03.0648765+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0efe7996-b436-49c2-8361-a46b3772e063" />
+    <UnitTestResult executionId="ac2ba241-3a0f-48d3-84a1-5b1d42663db8" testId="69286d13-334b-2fb5-52ce-75cfdc3af5cf" testName="Pictyping.Core.Tests.Entities.UserTests.User_SetEmail_UpdatesEmail" computerName="759f471c8cc3" duration="00:00:00.0000465" startTime="2025-05-31T13:20:02.6221610+00:00" endTime="2025-05-31T13:20:02.6221610+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ac2ba241-3a0f-48d3-84a1-5b1d42663db8" />
+    <UnitTestResult executionId="36d880ef-669b-4612-8590-75636ddbff55" testId="809436b3-e55a-cf2e-d7ba-c086e0ec2f64" testName="Pictyping.Core.Tests.Services.UserServiceTests.CreateAsync_ValidUser_CreatesAndReturnsUser" computerName="759f471c8cc3" duration="00:00:00.0633090" startTime="2025-05-31T13:20:03.0393567+00:00" endTime="2025-05-31T13:20:03.0393569+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="36d880ef-669b-4612-8590-75636ddbff55" />
+    <UnitTestResult executionId="57ee8e0f-a8e5-4fbb-94ff-a528aa357ed5" testId="63e6558f-fd1b-1f0f-f92c-b86069dd70b2" testName="Pictyping.Core.Tests.Entities.BaseEntityTests.BaseEntity_CanSetUpdatedAt" computerName="759f471c8cc3" duration="00:00:00.0076962" startTime="2025-05-31T13:20:02.5997328+00:00" endTime="2025-05-31T13:20:02.5997410+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="57ee8e0f-a8e5-4fbb-94ff-a528aa357ed5" />
+    <UnitTestResult executionId="d3f504ee-c6ed-4666-b048-0ba1dff6d6e3" testId="0eb6c1b2-6be7-95fa-b2a0-94b98556e816" testName="Pictyping.Core.Tests.Entities.UserTests.User_SetPlayFabId_UpdatesPlayFabId" computerName="759f471c8cc3" duration="00:00:00.0000355" startTime="2025-05-31T13:20:02.6221740+00:00" endTime="2025-05-31T13:20:02.6221740+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d3f504ee-c6ed-4666-b048-0ba1dff6d6e3" />
+    <UnitTestResult executionId="1662824b-2e07-46f4-b2a7-5081462e9ffe" testId="b24d2444-4938-a69d-8377-ff6a00f6fd2c" testName="Pictyping.Core.Tests.Entities.BaseEntityTests.BaseEntity_HasIdProperty" computerName="759f471c8cc3" duration="00:00:00.0001508" startTime="2025-05-31T13:20:02.6220564+00:00" endTime="2025-05-31T13:20:02.6220564+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1662824b-2e07-46f4-b2a7-5081462e9ffe" />
+    <UnitTestResult executionId="eb560513-6d22-4329-9413-3ec72ee80cd0" testId="3ed01a22-f9ef-0303-c603-7f590f1dc398" testName="Pictyping.Core.Tests.Services.UserServiceTests.GetByEmailAsync_NonExistingUser_ReturnsNull" computerName="759f471c8cc3" duration="00:00:00.3890512" startTime="2025-05-31T13:20:02.9758312+00:00" endTime="2025-05-31T13:20:02.9758314+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eb560513-6d22-4329-9413-3ec72ee80cd0" />
+    <UnitTestResult executionId="59a142fa-2214-4326-a782-f9223ea9153b" testId="9a83f079-782f-23af-202a-c4aa5c95a258" testName="Pictyping.Core.Tests.Services.UserServiceTests.DeleteAsync_ExistingUser_DeletesAndReturnsTrue" computerName="759f471c8cc3" duration="00:00:00.0116466" startTime="2025-05-31T13:20:03.0784280+00:00" endTime="2025-05-31T13:20:03.0784281+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="59a142fa-2214-4326-a782-f9223ea9153b" />
+    <UnitTestResult executionId="2e484cc8-10b3-44f0-a0d2-8fc39aea3007" testId="8414e698-ab34-f2a3-23f2-2df4cba301b6" testName="Pictyping.Core.Tests.Services.UserServiceTests.GetByEmailAsync_ExistingUser_ReturnsUser" computerName="759f471c8cc3" duration="00:00:00.0017012" startTime="2025-05-31T13:20:03.0666842+00:00" endTime="2025-05-31T13:20:03.0666843+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2e484cc8-10b3-44f0-a0d2-8fc39aea3007" />
+    <UnitTestResult executionId="cead1cff-fa1b-41cb-b43d-155eb4faea2c" testId="56f81190-f9c5-2d67-3386-194e0a2828f9" testName="Pictyping.Core.Tests.Entities.UserTests.User_SetAdmin_UpdatesAdminStatus(adminStatus: False)" computerName="759f471c8cc3" duration="00:00:00.0001747" startTime="2025-05-31T13:20:02.6027762+00:00" endTime="2025-05-31T13:20:02.6027762+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cead1cff-fa1b-41cb-b43d-155eb4faea2c" />
+    <UnitTestResult executionId="241a9784-325d-4e29-86df-24c8952efdb1" testId="292aee90-e4a4-3a90-fa27-15ac762f4a15" testName="Pictyping.Core.Tests.Services.UserServiceTests.GetAllAsync_EmptyDatabase_ReturnsEmptyCollection" computerName="759f471c8cc3" duration="00:00:00.0214512" startTime="2025-05-31T13:20:03.0608706+00:00" endTime="2025-05-31T13:20:03.0608707+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="241a9784-325d-4e29-86df-24c8952efdb1" />
+    <UnitTestResult executionId="fabac27b-4579-4794-a34a-c2c16f9af72d" testId="f9a5a275-7c12-0e7f-566b-0466feb029f4" testName="Pictyping.Core.Tests.Entities.BaseEntityTests.BaseEntity_CanSetId" computerName="759f471c8cc3" duration="00:00:00.0011642" startTime="2025-05-31T13:20:02.6028021+00:00" endTime="2025-05-31T13:20:02.6028021+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fabac27b-4579-4794-a34a-c2c16f9af72d" />
+    <UnitTestResult executionId="7705b3ed-761c-4ed3-a691-7bfae54d6442" testId="4339810b-7292-72d8-b98a-295c7c571d23" testName="Pictyping.Core.Tests.Services.UserServiceTests.UpdateAsync_ExistingUser_UpdatesUser" computerName="759f471c8cc3" duration="00:00:00.0033880" startTime="2025-05-31T13:20:03.0819211+00:00" endTime="2025-05-31T13:20:03.0819212+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7705b3ed-761c-4ed3-a691-7bfae54d6442" />
+    <UnitTestResult executionId="63ac56cc-21c3-41c8-bbc6-72c9d2001000" testId="754a6fe7-13bb-783c-5f7c-979d8f1fb06f" testName="Pictyping.Core.Tests.Entities.BaseEntityTests.BaseEntity_HasCreatedAtProperty" computerName="759f471c8cc3" duration="00:00:00.0000335" startTime="2025-05-31T13:20:02.6219320+00:00" endTime="2025-05-31T13:20:02.6219322+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="63ac56cc-21c3-41c8-bbc6-72c9d2001000" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Pictyping.Core.Tests.Services.UserServiceTests.GetAllAsync_ReturnsAllUsers" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="d803c73f-7fb9-3ae9-a0bf-7c080430f60f">
+      <Execution id="0efe7996-b436-49c2-8361-a46b3772e063" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Services.UserServiceTests" name="GetAllAsync_ReturnsAllUsers" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Services.UserServiceTests.DeleteAsync_NonExistingUser_ReturnsFalse" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="3e4e6a18-d399-a520-5489-1668327a22ee">
+      <Execution id="36668d4f-3ec1-45ca-aac5-c73c28f3da3e" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Services.UserServiceTests" name="DeleteAsync_NonExistingUser_ReturnsFalse" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Services.UserServiceTests.CreateAsync_ValidUser_CreatesAndReturnsUser" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="809436b3-e55a-cf2e-d7ba-c086e0ec2f64">
+      <Execution id="36d880ef-669b-4612-8590-75636ddbff55" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Services.UserServiceTests" name="CreateAsync_ValidUser_CreatesAndReturnsUser" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.BaseEntityTests.BaseEntity_HasCreatedAtProperty" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="754a6fe7-13bb-783c-5f7c-979d8f1fb06f">
+      <Execution id="63ac56cc-21c3-41c8-bbc6-72c9d2001000" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.BaseEntityTests" name="BaseEntity_HasCreatedAtProperty" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Services.UserServiceTests.DeleteAsync_ExistingUser_DeletesAndReturnsTrue" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="9a83f079-782f-23af-202a-c4aa5c95a258">
+      <Execution id="59a142fa-2214-4326-a782-f9223ea9153b" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Services.UserServiceTests" name="DeleteAsync_ExistingUser_DeletesAndReturnsTrue" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.UserTests.User_SetGuest_UpdatesGuestStatus(guestStatus: True)" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="8813acf1-0cef-a91e-ae30-4769c55be626">
+      <Execution id="36ad1896-0f58-406f-a4d9-d4d1bc06f98e" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.UserTests" name="User_SetGuest_UpdatesGuestStatus" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.UserTests.User_SetGuest_UpdatesGuestStatus(guestStatus: False)" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="1ec79eb0-d536-bbd8-028f-4c6f9ae92ff5">
+      <Execution id="f3effcab-066e-49d5-a352-a4dd1e095a8f" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.UserTests" name="User_SetGuest_UpdatesGuestStatus" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Services.UserServiceTests.GetByEmailAsync_ExistingUser_ReturnsUser" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="8414e698-ab34-f2a3-23f2-2df4cba301b6">
+      <Execution id="2e484cc8-10b3-44f0-a0d2-8fc39aea3007" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Services.UserServiceTests" name="GetByEmailAsync_ExistingUser_ReturnsUser" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.BaseEntityTests.BaseEntity_HasIdProperty" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="b24d2444-4938-a69d-8377-ff6a00f6fd2c">
+      <Execution id="1662824b-2e07-46f4-b2a7-5081462e9ffe" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.BaseEntityTests" name="BaseEntity_HasIdProperty" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.BaseEntityTests.BaseEntity_CanSetCreatedAt" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="28029822-5ced-f6a8-ff84-ca677162cb76">
+      <Execution id="41b0f89c-5160-421f-b86c-481577714f5f" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.BaseEntityTests" name="BaseEntity_CanSetCreatedAt" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Services.UserServiceTests.GetByEmailAsync_NonExistingUser_ReturnsNull" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="3ed01a22-f9ef-0303-c603-7f590f1dc398">
+      <Execution id="eb560513-6d22-4329-9413-3ec72ee80cd0" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Services.UserServiceTests" name="GetByEmailAsync_NonExistingUser_ReturnsNull" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.BaseEntityTests.BaseEntity_CanSetUpdatedAt" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="63e6558f-fd1b-1f0f-f92c-b86069dd70b2">
+      <Execution id="57ee8e0f-a8e5-4fbb-94ff-a528aa357ed5" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.BaseEntityTests" name="BaseEntity_CanSetUpdatedAt" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Services.UserServiceTests.UpdateAsync_ExistingUser_UpdatesUser" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="4339810b-7292-72d8-b98a-295c7c571d23">
+      <Execution id="7705b3ed-761c-4ed3-a691-7bfae54d6442" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Services.UserServiceTests" name="UpdateAsync_ExistingUser_UpdatesUser" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Services.UserServiceTests.GetAllAsync_EmptyDatabase_ReturnsEmptyCollection" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="292aee90-e4a4-3a90-fa27-15ac762f4a15">
+      <Execution id="241a9784-325d-4e29-86df-24c8952efdb1" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Services.UserServiceTests" name="GetAllAsync_EmptyDatabase_ReturnsEmptyCollection" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.UserTests.User_SetDisplayName_UpdatesDisplayName" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="3929b5d6-2048-fb43-cdea-6e8e8661e538">
+      <Execution id="484b1940-df53-48a2-a6c6-e51ee6ac306f" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.UserTests" name="User_SetDisplayName_UpdatesDisplayName" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Services.UserServiceTests.GetByIdAsync_ExistingUser_ReturnsUser" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="cba0f115-3925-6cc3-29e5-c08c6f9910a4">
+      <Execution id="a57e6e13-9bb9-4535-abb6-42e7262a3e35" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Services.UserServiceTests" name="GetByIdAsync_ExistingUser_ReturnsUser" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.UserTests.User_SetEmail_UpdatesEmail" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="69286d13-334b-2fb5-52ce-75cfdc3af5cf">
+      <Execution id="ac2ba241-3a0f-48d3-84a1-5b1d42663db8" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.UserTests" name="User_SetEmail_UpdatesEmail" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Services.UserServiceTests.GetByIdAsync_NonExistingUser_ReturnsNull" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="703c6614-ac31-d134-c6a2-5562a81eda69">
+      <Execution id="5c42b6ff-134e-42b1-8f77-ccc87fbe8cf5" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Services.UserServiceTests" name="GetByIdAsync_NonExistingUser_ReturnsNull" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.BaseEntityTests.BaseEntity_HasUpdatedAtProperty" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="59838a7f-1025-8561-1626-ff115c2c3a45">
+      <Execution id="829d9dc2-7053-444c-8f9a-068d0997caab" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.BaseEntityTests" name="BaseEntity_HasUpdatedAtProperty" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.UserTests.User_SetAdmin_UpdatesAdminStatus(adminStatus: False)" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="56f81190-f9c5-2d67-3386-194e0a2828f9">
+      <Execution id="cead1cff-fa1b-41cb-b43d-155eb4faea2c" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.UserTests" name="User_SetAdmin_UpdatesAdminStatus" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.UserTests.User_SetAdmin_UpdatesAdminStatus(adminStatus: True)" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="6c98eb1f-c49e-0466-c5a1-40ce309be169">
+      <Execution id="22662e15-6bf2-4cd1-8f02-41483499b028" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.UserTests" name="User_SetAdmin_UpdatesAdminStatus" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.UserTests.User_SetResetPasswordToken_UpdatesToken" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="6d3c3a36-3a00-a618-7b64-94afe470bf58">
+      <Execution id="099efa3d-c439-471a-a773-d0074340670e" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.UserTests" name="User_SetResetPasswordToken_UpdatesToken" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.BaseEntityTests.BaseEntity_CanSetId" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="f9a5a275-7c12-0e7f-566b-0466feb029f4">
+      <Execution id="fabac27b-4579-4794-a34a-c2c16f9af72d" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.BaseEntityTests" name="BaseEntity_CanSetId" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.UserTests.User_InheritsFromBaseEntity" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="83704ebb-8b69-8a86-1edb-51e9dc0e6700">
+      <Execution id="35eb5766-9306-4041-8158-49117e64e95c" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.UserTests" name="User_InheritsFromBaseEntity" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.UserTests.User_SetPlayFabId_UpdatesPlayFabId" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="0eb6c1b2-6be7-95fa-b2a0-94b98556e816">
+      <Execution id="d3f504ee-c6ed-4666-b048-0ba1dff6d6e3" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.UserTests" name="User_SetPlayFabId_UpdatesPlayFabId" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.UserTests.User_SetRating_UpdatesRating" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="3b329a29-bd6f-73c5-1052-5ebec51c975b">
+      <Execution id="2ffdebc0-0dcb-4be4-8154-39ab86d9452d" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.UserTests" name="User_SetRating_UpdatesRating" />
+    </UnitTest>
+    <UnitTest name="Pictyping.Core.Tests.Entities.UserTests.User_DefaultConstructor_SetsDefaultValues" storage="/app/tests/pictyping.core.tests/bin/debug/net8.0/pictyping.core.tests.dll" id="db1b6747-2d0c-2e59-3473-605190cdc9c6">
+      <Execution id="e5f2185d-475c-420b-aae8-79f5e6c22abe" />
+      <TestMethod codeBase="/app/tests/Pictyping.Core.Tests/bin/Debug/net8.0/Pictyping.Core.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Pictyping.Core.Tests.Entities.UserTests" name="User_DefaultConstructor_SetsDefaultValues" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="28029822-5ced-f6a8-ff84-ca677162cb76" executionId="41b0f89c-5160-421f-b86c-481577714f5f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="59838a7f-1025-8561-1626-ff115c2c3a45" executionId="829d9dc2-7053-444c-8f9a-068d0997caab" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="db1b6747-2d0c-2e59-3473-605190cdc9c6" executionId="e5f2185d-475c-420b-aae8-79f5e6c22abe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="83704ebb-8b69-8a86-1edb-51e9dc0e6700" executionId="35eb5766-9306-4041-8158-49117e64e95c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="703c6614-ac31-d134-c6a2-5562a81eda69" executionId="5c42b6ff-134e-42b1-8f77-ccc87fbe8cf5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3929b5d6-2048-fb43-cdea-6e8e8661e538" executionId="484b1940-df53-48a2-a6c6-e51ee6ac306f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1ec79eb0-d536-bbd8-028f-4c6f9ae92ff5" executionId="f3effcab-066e-49d5-a352-a4dd1e095a8f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b329a29-bd6f-73c5-1052-5ebec51c975b" executionId="2ffdebc0-0dcb-4be4-8154-39ab86d9452d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6c98eb1f-c49e-0466-c5a1-40ce309be169" executionId="22662e15-6bf2-4cd1-8f02-41483499b028" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3e4e6a18-d399-a520-5489-1668327a22ee" executionId="36668d4f-3ec1-45ca-aac5-c73c28f3da3e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6d3c3a36-3a00-a618-7b64-94afe470bf58" executionId="099efa3d-c439-471a-a773-d0074340670e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8813acf1-0cef-a91e-ae30-4769c55be626" executionId="36ad1896-0f58-406f-a4d9-d4d1bc06f98e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cba0f115-3925-6cc3-29e5-c08c6f9910a4" executionId="a57e6e13-9bb9-4535-abb6-42e7262a3e35" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d803c73f-7fb9-3ae9-a0bf-7c080430f60f" executionId="0efe7996-b436-49c2-8361-a46b3772e063" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="69286d13-334b-2fb5-52ce-75cfdc3af5cf" executionId="ac2ba241-3a0f-48d3-84a1-5b1d42663db8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="809436b3-e55a-cf2e-d7ba-c086e0ec2f64" executionId="36d880ef-669b-4612-8590-75636ddbff55" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="63e6558f-fd1b-1f0f-f92c-b86069dd70b2" executionId="57ee8e0f-a8e5-4fbb-94ff-a528aa357ed5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0eb6c1b2-6be7-95fa-b2a0-94b98556e816" executionId="d3f504ee-c6ed-4666-b048-0ba1dff6d6e3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b24d2444-4938-a69d-8377-ff6a00f6fd2c" executionId="1662824b-2e07-46f4-b2a7-5081462e9ffe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3ed01a22-f9ef-0303-c603-7f590f1dc398" executionId="eb560513-6d22-4329-9413-3ec72ee80cd0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9a83f079-782f-23af-202a-c4aa5c95a258" executionId="59a142fa-2214-4326-a782-f9223ea9153b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8414e698-ab34-f2a3-23f2-2df4cba301b6" executionId="2e484cc8-10b3-44f0-a0d2-8fc39aea3007" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="56f81190-f9c5-2d67-3386-194e0a2828f9" executionId="cead1cff-fa1b-41cb-b43d-155eb4faea2c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="292aee90-e4a4-3a90-fa27-15ac762f4a15" executionId="241a9784-325d-4e29-86df-24c8952efdb1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f9a5a275-7c12-0e7f-566b-0466feb029f4" executionId="fabac27b-4579-4794-a34a-c2c16f9af72d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4339810b-7292-72d8-b98a-295c7c571d23" executionId="7705b3ed-761c-4ed3-a691-7bfae54d6442" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="754a6fe7-13bb-783c-5f7c-979d8f1fb06f" executionId="63ac56cc-21c3-41c8-bbc6-72c9d2001000" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="27" executed="27" passed="27" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.16)
+[xUnit.net 00:00:00.07]   Discovering: Pictyping.Core.Tests
+[xUnit.net 00:00:00.10]   Discovered:  Pictyping.Core.Tests
+[xUnit.net 00:00:00.10]   Starting:    Pictyping.Core.Tests
+[xUnit.net 00:00:00.64]   Finished:    Pictyping.Core.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
