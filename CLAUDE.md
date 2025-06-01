@@ -33,8 +33,19 @@ npm run lint
 ```
 
 ### Full Environment
+
+#### Development (with hot reload)
 ```bash
-docker-compose up --build
+./scripts/start-dev.sh
+# OR
+docker-compose -f docker-compose.development.yml up --build
+```
+
+#### Production
+```bash
+./scripts/start-prod.sh
+# OR
+docker-compose -f docker-compose.production.yml up --build
 ```
 
 ### Testing
@@ -59,9 +70,15 @@ dotnet test
 
 ## Access Points
 
+### Development Environment
 - Frontend: http://localhost:3000
 - API: http://localhost:5000
 - Swagger: http://localhost:5000/swagger
+- Adminer (DB UI): http://localhost:8080
+
+### Production Environment
+- Application: http://localhost:80
+- API: http://localhost:5000
 
 ## Key Implementation Notes
 
