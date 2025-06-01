@@ -76,14 +76,20 @@ terraform destroy -var-file=environments/sandbox.tfvars
 
 以下のシークレットをGitHubリポジトリに設定してください：
 
-- `LINODE_TOKEN`: Linode APIトークン
-- `SSH_PUBLIC_KEY`: SSH公開鍵
-- `GH_TOKEN`: GitHub Personal Access Token
-- `JWT_KEY`: JWT署名キー
-- `GOOGLE_CLIENT_ID`: Google OAuth Client ID
-- `GOOGLE_CLIENT_SECRET`: Google OAuth Client Secret
-- `DB_PASSWORD`: PostgreSQLパスワード
-- `REDIS_PASSWORD`: Redisパスワード
+**実際のデプロイに必要:**
+- `LINODE_TOKEN`: Linode APIトークン（必須）
+- `SSH_PUBLIC_KEY`: SSH公開鍵（必須）
+- `JWT_KEY`: JWT署名キー（必須）
+- `GOOGLE_CLIENT_ID`: Google OAuth Client ID（必須）
+- `GOOGLE_CLIENT_SECRET`: Google OAuth Client Secret（必須）
+- `DB_PASSWORD`: PostgreSQLパスワード（必須）
+- `REDIS_PASSWORD`: Redisパスワード（必須）
+
+**オプション:**
+- `GH_TOKEN`: GitHub Personal Access Token（デフォルトで`github.token`を使用）
+
+**Terraform Plan（PR時）の場合:**
+シークレットが設定されていない場合、ダミー値で構文チェックのみ実行されます。
 
 ### バックエンドストレージ（オプション）
 

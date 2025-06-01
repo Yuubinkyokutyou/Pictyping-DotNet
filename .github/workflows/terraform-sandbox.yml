@@ -50,7 +50,20 @@ jobs:
 
     - name: Configure Terraform Backend
       run: |
-        cat > backend.tf <<EOF
+        # Use local backend for development/testing if no S3 backend is configured
+        if [ -z "${{ secrets.TF_STATE_BUCKET }}" ]; then
+          echo "Using local backend (no S3 configuration found)"
+          cat > backend.tf <<EOF
+        # Local backend for development
+        terraform {
+          backend "local" {
+            path = "./terraform.tfstate"
+          }
+        }
+        EOF
+        else
+          echo "Using S3 backend"
+          cat > backend.tf <<EOF
         terraform {
           backend "s3" {
             bucket = "${{ secrets.TF_STATE_BUCKET }}"
@@ -62,6 +75,7 @@ jobs:
           }
         }
         EOF
+        fi
 
     - name: Terraform Init
       run: terraform init
@@ -83,15 +97,16 @@ jobs:
     - name: Terraform Plan
       if: github.event_name == 'pull_request' || github.event.inputs.action == 'plan'
       run: |
+        # Create terraform plan with conditional variables
         terraform plan \
-          -var="linode_token=${{ secrets.LINODE_TOKEN }}" \
-          -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
-          -var="github_token=${{ secrets.GH_TOKEN }}" \
-          -var="jwt_key=${{ secrets.JWT_KEY }}" \
-          -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID }}" \
-          -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
-          -var="db_password=${{ secrets.DB_PASSWORD }}" \
-          -var="redis_password=${{ secrets.REDIS_PASSWORD }}" \
+          -var="linode_token=${{ secrets.LINODE_TOKEN || 'dummy-token-for-validation' }}" \
+          -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY || 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAB dummy-key-for-validation' }}" \
+          -var="github_token=${{ secrets.GH_TOKEN || github.token }}" \
+          -var="jwt_key=${{ secrets.JWT_KEY || 'dummy-jwt-key-for-validation' }}" \
+          -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID || 'dummy-client-id' }}" \
+          -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET || 'dummy-client-secret' }}" \
+          -var="db_password=${{ secrets.DB_PASSWORD || 'dummy-db-password' }}" \
+          -var="redis_password=${{ secrets.REDIS_PASSWORD || 'dummy-redis-password' }}" \
           -out=tfplan
 
     - name: Upload Plan
@@ -125,7 +140,7 @@ jobs:
         terraform apply -auto-approve \
           -var="linode_token=${{ secrets.LINODE_TOKEN }}" \
           -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
-          -var="github_token=${{ secrets.GH_TOKEN }}" \
+          -var="github_token=${{ secrets.GH_TOKEN || github.token }}" \
           -var="jwt_key=${{ secrets.JWT_KEY }}" \
           -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID }}" \
           -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
@@ -150,7 +165,7 @@ jobs:
         terraform destroy -auto-approve \
           -var="linode_token=${{ secrets.LINODE_TOKEN }}" \
           -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
-          -var="github_token=${{ secrets.GH_TOKEN }}" \
+          -var="github_token=${{ secrets.GH_TOKEN || github.token }}" \
           -var="jwt_key=${{ secrets.JWT_KEY }}" \
           -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID }}" \
           -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
