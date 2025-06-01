@@ -1,0 +1,115 @@
+
+services:
+  # ASP.NET Core API (Development)
+  api:
+    build:
+      context: .
+      dockerfile: src/Pictyping.API/Dockerfile
+      target: development
+    ports:
+      - "0.0.0.0:5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Host=db;Database=pictyping_dev;Username=postgres;Password=password
+      - ConnectionStrings__Redis=redis:6379
+      - Jwt__Key=ThisIsMySecretKeyForJWTTokenGeneration2024!
+      - Jwt__Issuer=PictypingAPI
+      - Jwt__Audience=PictypingWebApp
+      - Jwt__ExpiryMinutes=60
+      - Authentication__Google__ClientId=your_google_client_id
+      - Authentication__Google__ClientSecret=your_google_client_secret
+      - DOTNET_USE_POLLING_FILE_WATCHER=true
+      - DOTNET_WATCH_RESTART_ON_RUDE_EDIT=true
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./src:/src:cached
+      - ~/.nuget/packages:/root/.nuget/packages:ro
+      - ~/.nuget/fallbackpackages:/root/.nuget/fallbackpackages:ro
+    networks:
+      - pictyping-network
+    working_dir: /src/Pictyping.API
+    command: ["dotnet", "watch", "run", "--no-launch-profile"]
+
+  # React フロントエンド (Development)
+  web:
+    build:
+      context: .
+      dockerfile: src/Pictyping.Web/Dockerfile
+      target: development
+    ports:
+      - "0.0.0.0:3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:5000
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - api
+    volumes:
+      - ./src/Pictyping.Web:/app:cached
+      - /app/node_modules
+    networks:
+      - pictyping-network
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+
+  # PostgreSQL (Development Database)
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=pictyping_dev
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    ports:
+      - "0.0.0.0:5432:5432"
+    networks:
+      - pictyping-network
+
+  # Redis (Development)
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "0.0.0.0:6379:6379"
+    volumes:
+      - redis_dev_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - pictyping-network
+
+  # Nginx (Development - Optional)
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "0.0.0.0:80:80"
+    volumes:
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+      - web
+    networks:
+      - pictyping-network
+
+  # Adminer (Database Management Tool - Development Only)
+  adminer:
+    image: adminer:latest
+    restart: always
+    ports:
+      - "0.0.0.0:8080:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=db
+    networks:
+      - pictyping-network
+    depends_on:
+      - db
+
+networks:
+  pictyping-network:
+    driver: bridge
+
+volumes:
+  postgres_dev_data:
+  redis_dev_data:

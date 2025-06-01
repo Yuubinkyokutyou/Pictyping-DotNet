@@ -43,13 +43,32 @@ cp .env.example .env
 ### 初回起動
 
 ```bash
-# Dockerイメージのビルドと起動
-docker-compose up --build
+# 開発環境の起動（ホットリロード対応）
+chmod +x scripts/start-dev.sh
+./scripts/start-dev.sh
+
+# 本番環境の起動
+chmod +x scripts/start-prod.sh
+./scripts/start-prod.sh
 
 # 別のターミナルでマイグレーション実行
 chmod +x scripts/migration/migrate-database.sh
 ./scripts/migration/migrate-database.sh
 ```
+
+### 環境別Docker Compose
+
+- **開発環境** (`docker-compose.development.yml`):
+  - ホットリロード対応
+  - ボリュームマウントによるコード変更の即時反映
+  - Adminer (データベース管理UI) 付属
+  - デバッグモード有効
+
+- **本番環境** (`docker-compose.production.yml`):
+  - 最適化されたビルド
+  - ヘルスチェック設定
+  - 自動再起動設定
+  - セキュリティ強化
 
 ## テスト
 
@@ -107,9 +126,15 @@ docker-compose logs -f web
 
 ## アクセスURL
 
+### 開発環境
 - フロントエンド: http://localhost:3000
 - API: http://localhost:5000
 - Swagger UI: http://localhost:5000/swagger
+- Adminer (DB管理): http://localhost:8080
+
+### 本番環境
+- Webアプリケーション: http://localhost:80
+- API: http://localhost:5000
 
 ## ドメイン間認証のテスト
 
