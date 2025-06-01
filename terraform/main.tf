@@ -63,10 +63,10 @@ resource "linode_instance" "main" {
   # StackScript for initial setup
   stackscript_id = linode_stackscript.docker_setup.id
   stackscript_data = {
-    "gh_token"     = var.github_token
-    "repo_url"     = var.repository_url
-    "branch"       = var.branch
-    "environment"  = var.environment
+    "gh_token"    = var.github_token
+    "repo_url"    = var.repository_url
+    "branch"      = var.branch
+    "environment" = var.environment
   }
 
   tags = [var.project_name, var.environment]
