@@ -110,6 +110,37 @@ npm install
 npm run dev
 ```
 
+### APIクライアントの自動生成
+
+フロントエンドでは、Swagger/OpenAPIからTypeScriptのAPIクライアントを自動生成できます：
+
+```bash
+cd src/Pictyping.Web
+
+# APIクライアントの生成（swagger.jsonから）
+npm run generate-api
+
+# APIの変更を監視して自動生成
+npm run generate-api:watch
+```
+
+生成されたAPIクライアントは `src/api/generated/` に出力され、以下のように使用できます：
+
+```typescript
+import { authApi, rankingApi } from '../api/apiConfig'
+
+// ログイン
+const response = await authApi.login({ 
+  requestBody: { email, password } 
+})
+
+// ランキング取得
+const rankings = await rankingApi.getRankings({ 
+  page: 1, 
+  pageSize: 20 
+})
+```
+
 ### Docker環境での開発
 
 ```bash
