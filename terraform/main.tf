@@ -91,7 +91,7 @@ resource "linode_stackscript" "docker_setup" {
 
 # Outputs
 output "instance_ip" {
-  value = linode_instance.main.ipv4[0]
+  value = tolist(linode_instance.main.ipv4)[0]
 }
 
 output "instance_id" {
