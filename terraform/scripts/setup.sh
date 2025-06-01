@@ -1,11 +1,16 @@
 #!/bin/bash
 set -e
 
+# <UDF name="gh_token" label="GitHub Token" />
+# <UDF name="repo_url" label="Repository URL" />
+# <UDF name="branch" label="Branch" />
+# <UDF name="environment" label="Environment" />
+
 # Get StackScript parameters
-GH_TOKEN="<UDF name=\"gh_token\" label=\"GitHub Token\" />"
-REPO_URL="<UDF name=\"repo_url\" label=\"Repository URL\" />"
-BRANCH="<UDF name=\"branch\" label=\"Branch\" />"
-ENVIRONMENT="<UDF name=\"environment\" label=\"Environment\" />"
+GH_TOKEN="$GH_TOKEN"
+REPO_URL="$REPO_URL" 
+BRANCH="$BRANCH"
+ENVIRONMENT="$ENVIRONMENT"
 
 # Update system
 apt-get update
