@@ -1,5 +1,10 @@
 name: Deploy Sandbox Environment
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 on:
   workflow_dispatch:
     inputs:
@@ -120,6 +125,7 @@ jobs:
       if: github.event_name == 'pull_request'
       uses: actions/github-script@v7
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
           #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
@@ -127,12 +133,17 @@ jobs:
           
           *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
           
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: output
-          })
+          try {
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            });
+          } catch (error) {
+            console.log('Failed to create PR comment:', error.message);
+            console.log('This is expected for forks or insufficient permissions');
+          }
 
     - name: Terraform Apply
       if: github.event.inputs.action == 'apply'
