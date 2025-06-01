@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./src/Pictyping.API
+      dockerfile: Dockerfile.dev
+      target: development
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000;https://+:5001
+      - ConnectionStrings__DefaultConnection=Host=db;Database=pictyping_development;Username=postgres;Password=postgres
+      - Redis__ConnectionString=redis:6379
+      - DOTNET_WATCH_RESTART_ON_RUDE_EDIT=true
+      - DOTNET_USE_POLLING_FILE_WATCHER=true
+    volumes:
+      - ./src/Pictyping.API:/app
+      - ./src/Pictyping.Core:/src/Pictyping.Core
+      - ./src/Pictyping.Infrastructure:/src/Pictyping.Infrastructure
+      - api-obj:/app/obj
+      - api-bin:/app/bin
+      - core-obj:/src/Pictyping.Core/obj
+      - core-bin:/src/Pictyping.Core/bin
+      - infra-obj:/src/Pictyping.Infrastructure/obj
+      - infra-bin:/src/Pictyping.Infrastructure/bin
+    depends_on:
+      - db
+      - redis
+    command: dotnet watch run --no-launch-profile
+
+  web:
+    build:
+      context: ./src/Pictyping.Web
+      dockerfile: Dockerfile.dev
+      target: development
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:5000
+    volumes:
+      - ./src/Pictyping.Web:/app
+      - /app/node_modules
+    depends_on:
+      - api
+    command: npm run dev -- --host
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=pictyping_development
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data_dev:/data
+
+volumes:
+  postgres_data_dev:
+  redis_data_dev:
+  api-obj:
+  api-bin:
+  core-obj:
+  core-bin:
+  infra-obj:
+  infra-bin:

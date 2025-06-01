@@ -1,0 +1,19 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS development
+
+WORKDIR /app
+
+# Copy project files
+COPY *.csproj ./
+COPY ../Pictyping.Core/*.csproj /src/Pictyping.Core/
+COPY ../Pictyping.Infrastructure/*.csproj /src/Pictyping.Infrastructure/
+
+# Restore dependencies
+RUN dotnet restore
+
+# Copy source files
+COPY . ./
+COPY ../Pictyping.Core /src/Pictyping.Core
+COPY ../Pictyping.Infrastructure /src/Pictyping.Infrastructure
+
+# Keep the container running
+ENTRYPOINT ["dotnet", "watch", "run", "--urls", "http://+:5000;https://+:5001"]
