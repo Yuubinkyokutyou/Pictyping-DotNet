@@ -109,6 +109,25 @@ systemctl daemon-reload
 systemctl enable pictyping
 systemctl start pictyping
 
+# Wait for Docker containers to be built and started
+echo "Waiting for Docker containers to build and start..."
+sleep 30
+
+# Check if containers are running
+cd /home/pictyping/app/Pictyping-DotNet
+for i in {1..10}; do
+    if docker-compose ps | grep -q "Up"; then
+        echo "Containers are starting up..."
+        break
+    fi
+    echo "Waiting for containers... (attempt $i/10)"
+    sleep 30
+done
+
+# Show final status
+echo "Final container status:"
+docker-compose ps
+
 # Configure firewall
 ufw allow 22/tcp
 ufw allow 80/tcp
