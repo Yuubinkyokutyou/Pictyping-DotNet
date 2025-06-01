@@ -122,6 +122,21 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
+    /// Google OAuth ログイン開始
+    /// </summary>
+    [HttpGet("google/login")]
+    public IActionResult GoogleLogin([FromQuery] string? returnUrl = null)
+    {
+        var properties = new AuthenticationProperties
+        {
+            RedirectUri = Url.Action(nameof(GoogleCallback)),
+            Items = { ["returnUrl"] = returnUrl ?? "/" }
+        };
+        
+        return Challenge(properties, "Google");
+    }
+
+    /// <summary>
     /// Google OAuth コールバック
     /// </summary>
     [HttpGet("google/callback")]

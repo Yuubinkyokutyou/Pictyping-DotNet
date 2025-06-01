@@ -16,8 +16,8 @@ services:
       - Jwt__Issuer=PictypingAPI
       - Jwt__Audience=PictypingWebApp
       - Jwt__ExpiryMinutes=60
-      - Authentication__Google__ClientId=your_google_client_id
-      - Authentication__Google__ClientSecret=your_google_client_secret
+      - Authentication__Google__ClientId=${GOOGLE_CLIENT_ID}
+      - Authentication__Google__ClientSecret=${GOOGLE_CLIENT_SECRET}
     depends_on:
       - db
       - redis
@@ -35,7 +35,7 @@ services:
     ports:
       - "0.0.0.0:3000:3000"
     environment:
-      - VITE_API_URL=http://api:5000
+      - VITE_API_URL=http://localhost:5000
     depends_on:
       - api
     volumes:
