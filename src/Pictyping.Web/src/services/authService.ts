@@ -49,10 +49,7 @@ axiosInstance.interceptors.response.use(
 )
 
 const authService = {
-  login: async (email: string, password: string) => {
-    const response = await axiosInstance.post(`${API_URL}/login`, { email, password })
-    return response
-  },
+  // Password login has been removed - only OAuth authentication is supported
 
   logout: async () => {
     localStorage.removeItem('token')
