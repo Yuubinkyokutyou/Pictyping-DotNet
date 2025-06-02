@@ -67,7 +67,8 @@ dotnet test
 
 ## Authentication Architecture
 
-- JWT tokens with Google OAuth integration
+- OAuth-only authentication (Google OAuth) - password login has been removed
+- JWT tokens for session management
 - Cross-domain session sharing between Rails and .NET apps via Redis
 - CORS configured for `pictyping.com`, `new.pictyping.com`, and localhost development
 - Cross-domain auth support in `CrossDomainAuth.tsx` for seamless user migration
