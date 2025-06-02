@@ -126,14 +126,34 @@ builder.Services.AddScoped<Pictyping.API.Services.IAuthenticationService, Authen
 builder.Services.AddScoped<Pictyping.Core.Interfaces.IUserService, Pictyping.Infrastructure.Services.UserService>();
 builder.Services.AddScoped<Pictyping.Core.Interfaces.ITypingBattleService, Pictyping.Infrastructure.Services.TypingBattleService>();
 builder.Services.AddScoped<Pictyping.Core.Interfaces.IRankingService, Pictyping.Infrastructure.Services.RankingService>();
+builder.Services.AddScoped<Pictyping.Core.Interfaces.IDataSeedingService, Pictyping.Infrastructure.Services.DataSeedingService>();
 
 var app = builder.Build();
 
-// Initialize database
-using (var scope = app.Services.CreateScope())
+// Initialize database and seed data
+await InitializeDatabaseAsync(app);
+
+async Task InitializeDatabaseAsync(WebApplication app)
 {
+    using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<PictypingDbContext>();
-    context.Database.EnsureCreated();
+    await context.Database.EnsureCreatedAsync();
+    
+    // Seed development data if in development environment and configured to do so
+    if (app.Environment.IsDevelopment())
+    {
+        var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+        var seedData = configuration.GetValue<bool>("DataSeeding:SeedDataOnStartup", false);
+        
+        if (seedData)
+        {
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Starting development data seeding...");
+            
+            var dataSeedingService = scope.ServiceProvider.GetRequiredService<IDataSeedingService>();
+            await dataSeedingService.SeedDevelopmentDataAsync();
+        }
+    }
 }
 
 // Configure the HTTP request pipeline.
