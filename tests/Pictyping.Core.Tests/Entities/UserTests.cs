@@ -11,7 +11,7 @@ public class UserTests
         var user = new User();
 
         Assert.Equal(string.Empty, user.Email);
-        Assert.Equal(string.Empty, user.EncryptedPassword);
+        // EncryptedPassword property removed - no longer using password authentication
         Assert.False(user.Guest);
         Assert.Equal(1200, user.Rating);
         Assert.False(user.Admin);
@@ -86,16 +86,7 @@ public class UserTests
         Assert.Equal(adminStatus, user.Admin);
     }
 
-    [Fact]
-    public void User_SetResetPasswordToken_UpdatesToken()
-    {
-        var user = new User();
-        var token = "reset_token_123";
-
-        user.ResetPasswordToken = token;
-
-        Assert.Equal(token, user.ResetPasswordToken);
-    }
+    // ResetPasswordToken test removed as password authentication is no longer supported
 
     [Fact]
     public void User_SetPlayFabId_UpdatesPlayFabId()
