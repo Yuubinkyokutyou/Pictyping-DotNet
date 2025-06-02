@@ -52,6 +52,9 @@ yarn-error.log*
 src/Pictyping.Web/dist/
 src/Pictyping.Web/build/
 
+# Generated API client - コミットに含める
+# src/Pictyping.Web/src/api/generated/
+
 # Environment files
 .env
 .env.local

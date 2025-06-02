@@ -30,6 +30,10 @@ npm install
 npm run dev
 npm run build
 npm run lint
+
+# Generate TypeScript API client from Swagger/OpenAPI
+npm run generate-api
+npm run generate-api:watch  # Auto-generate on API changes
 ```
 
 ### Full Environment
@@ -85,5 +89,6 @@ dotnet test
 - Uses dependency injection for all services (registered in `Program.cs`)
 - Entity Framework scaffolding generates models from existing Rails database schema
 - Frontend Redux store manages authentication state and API communication
+- TypeScript API clients are auto-generated from Swagger/OpenAPI specification using openapi-typescript-codegen
 - Docker containerization supports both development and production deployment
 - Nginx reverse proxy configuration for production routing
