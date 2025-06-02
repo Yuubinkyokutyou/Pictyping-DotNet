@@ -94,32 +94,6 @@ public class AuthController : ControllerBase
         return Redirect(redirectUrl);
     }
 
-    /// <summary>
-    /// ログイン（通常のログイン処理）
-    /// </summary>
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
-    {
-        var user = await _authService.ValidateUserAsync(request.Email, request.Password);
-        if (user == null)
-        {
-            return Unauthorized("Invalid credentials");
-        }
-
-        var token = await GenerateJwtToken(user.Id.ToString());
-        
-        return Ok(new
-        {
-            token,
-            user = new
-            {
-                id = user.Id,
-                email = user.Email,
-                displayName = user.DisplayName,
-                rating = user.Rating
-            }
-        });
-    }
 
     /// <summary>
     /// Google OAuth コールバック
@@ -226,8 +200,3 @@ public class AuthController : ControllerBase
     }
 }
 
-public class LoginRequest
-{
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-}

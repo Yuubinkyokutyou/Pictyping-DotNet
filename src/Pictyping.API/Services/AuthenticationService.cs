@@ -23,18 +23,6 @@ public class AuthenticationService : IAuthenticationService
         _configuration = configuration;
     }
 
-    public async Task<User?> ValidateUserAsync(string email, string password)
-    {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-        if (user == null) return null;
-
-        // Deviseと同じ方式でパスワードを検証（BCrypt）
-        // 注：実際の実装では BCrypt.Net-Next パッケージを使用
-        // if (!BCrypt.Net.BCrypt.Verify(password, user.EncryptedPassword))
-        //     return null;
-
-        return user;
-    }
 
     public async Task<User> FindOrCreateUserByEmailAsync(string email)
     {
@@ -44,7 +32,6 @@ public class AuthenticationService : IAuthenticationService
         user = new User
         {
             Email = email,
-            EncryptedPassword = "", // OAuthユーザーはパスワードなし
             Guest = false,
             Rating = 1200,
             CreatedAt = DateTime.UtcNow,
