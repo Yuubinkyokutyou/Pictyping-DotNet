@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAppDispatch } from '../store/hooks'
 import { setUser } from '../store/authSlice'
-import authService from '../services/authService'
+import { AuthService } from '../api/generated'
 
 const AuthCallback = () => {
   const navigate = useNavigate()
@@ -24,8 +24,8 @@ const AuthCallback = () => {
         localStorage.setItem('token', token)
         
         // ユーザー情報を取得
-        const response = await authService.getCurrentUser()
-        dispatch(setUser(response.data))
+        const user = await AuthService.getApiAuthMe()
+        dispatch(setUser(user))
         
         // 元のページへリダイレクト
         navigate(returnUrl)

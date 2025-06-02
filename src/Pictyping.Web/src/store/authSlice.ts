@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import authService from '../services/authService'
+import { AuthService } from '../api/generated'
+import type { LoginRequest } from '../api/generated'
 
 interface User {
   id: number
@@ -27,23 +28,27 @@ const initialState: AuthState = {
 export const checkAuthStatus = createAsyncThunk(
   'auth/checkStatus',
   async () => {
-    const response = await authService.getCurrentUser()
-    return response.data
+    const user = await AuthService.getApiAuthMe()
+    return user
   }
 )
 
 export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }: { email: string; password: string }) => {
-    const response = await authService.login(email, password)
-    return response.data
+    const loginRequest: LoginRequest = { email, password }
+    const response = await AuthService.postApiAuthLogin({ body: loginRequest })
+    return response
   }
 )
 
 export const logout = createAsyncThunk(
   'auth/logout',
   async () => {
-    await authService.logout()
+    // ローカルストレージからトークンを削除
+    localStorage.removeItem('token')
+    // Note: サーバーサイドのログアウトエンドポイントが必要な場合は、
+    // 生成されたAPIクライアントに追加する必要があります
   }
 )
 
@@ -83,9 +88,12 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false
-        state.user = action.payload.user
+        // レスポンス構造に応じて調整が必要な場合があります
+        state.user = action.payload?.user || action.payload
         state.isAuthenticated = true
-        localStorage.setItem('token', action.payload.token)
+        if (action.payload?.token) {
+          localStorage.setItem('token', action.payload.token)
+        }
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false
