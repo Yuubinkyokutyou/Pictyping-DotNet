@@ -1,10 +1,8 @@
 import { useNavigate } from 'react-router-dom'
-import { useAppDispatch } from '../store/hooks'
 import './LoginPage.css'
 
 const LoginPage = () => {
   const navigate = useNavigate()
-  const dispatch = useAppDispatch()
 
   const handleGoogleLogin = () => {
     // Google OAuth ログイン処理は後で実装
