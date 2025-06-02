@@ -49,32 +49,6 @@
         }
       }
     },
-    "/api/Auth/login": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "consumes": [
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/LoginRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
     "/api/Auth/google/callback": {
       "get": {
         "tags": [
@@ -186,17 +160,6 @@
     }
   },
   "definitions": {
-    "LoginRequest": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        }
-      }
-    },
     "UpdateRatingRequest": {
       "type": "object",
       "properties": {
