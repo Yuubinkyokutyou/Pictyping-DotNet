@@ -42,57 +42,7 @@ public class AuthControllerTests
         _mockConfiguration.Setup(c => c["DomainSettings:OldDomain"]).Returns("https://pictyping.com");
     }
 
-    [Fact]
-    public async Task Login_ValidCredentials_ReturnsOkWithToken()
-    {
-        var loginRequest = new LoginRequest
-        {
-            Email = "test@example.com",
-            Password = "password123"
-        };
-
-        var user = new User
-        {
-            Id = 1,
-            Email = "test@example.com",
-            DisplayName = "Test User",
-            Rating = 1500
-        };
-
-        _mockAuthService.Setup(s => s.ValidateUserAsync(loginRequest.Email, loginRequest.Password))
-            .ReturnsAsync(user);
-
-        var result = await _controller.Login(loginRequest);
-
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.NotNull(okResult.Value);
-        
-        var response = okResult.Value;
-        var tokenProperty = response.GetType().GetProperty("token");
-        var userProperty = response.GetType().GetProperty("user");
-        
-        Assert.NotNull(tokenProperty);
-        Assert.NotNull(userProperty);
-        Assert.NotNull(tokenProperty.GetValue(response));
-    }
-
-    [Fact]
-    public async Task Login_InvalidCredentials_ReturnsUnauthorized()
-    {
-        var loginRequest = new LoginRequest
-        {
-            Email = "test@example.com",
-            Password = "wrongpassword"
-        };
-
-        _mockAuthService.Setup(s => s.ValidateUserAsync(loginRequest.Email, loginRequest.Password))
-            .ReturnsAsync((User?)null);
-
-        var result = await _controller.Login(loginRequest);
-
-        var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
-        Assert.Equal("Invalid credentials", unauthorizedResult.Value);
-    }
+    // Password-based login tests removed as password authentication is no longer supported
 
     [Fact]
     public async Task GetCurrentUser_ValidUser_ReturnsUserData()

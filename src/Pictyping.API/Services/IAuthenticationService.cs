@@ -4,7 +4,6 @@ namespace Pictyping.API.Services;
 
 public interface IAuthenticationService
 {
-    Task<User?> ValidateUserAsync(string email, string password);
     Task<User> FindOrCreateUserByEmailAsync(string email);
     Task<User?> GetUserByIdAsync(int userId);
     Task SaveSessionAsync(string userId, string token);

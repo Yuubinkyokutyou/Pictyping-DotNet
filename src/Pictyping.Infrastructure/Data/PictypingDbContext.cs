@@ -26,9 +26,6 @@ public class PictypingDbContext : DbContext
             
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Email).HasColumnName("email").HasDefaultValue("");
-            entity.Property(e => e.EncryptedPassword).HasColumnName("encrypted_password").HasDefaultValue("");
-            entity.Property(e => e.ResetPasswordToken).HasColumnName("reset_password_token");
-            entity.Property(e => e.ResetPasswordSentAt).HasColumnName("reset_password_sent_at");
             entity.Property(e => e.RememberCreatedAt).HasColumnName("remember_created_at");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
@@ -39,7 +36,6 @@ public class PictypingDbContext : DbContext
             entity.Property(e => e.DisplayName).HasColumnName("display_name");
 
             entity.HasIndex(e => e.Email).HasDatabaseName("index_users_on_email");
-            entity.HasIndex(e => e.ResetPasswordToken).HasDatabaseName("index_users_on_reset_password_token");
             entity.HasIndex(e => e.Rating).HasDatabaseName("index_users_on_rating");
         });
 

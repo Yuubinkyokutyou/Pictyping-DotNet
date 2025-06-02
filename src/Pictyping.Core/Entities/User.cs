@@ -3,9 +3,6 @@ namespace Pictyping.Core.Entities;
 public class User : BaseEntity
 {
     public string Email { get; set; } = string.Empty;
-    public string EncryptedPassword { get; set; } = string.Empty;
-    public string? ResetPasswordToken { get; set; }
-    public DateTime? ResetPasswordSentAt { get; set; }
     public DateTime? RememberCreatedAt { get; set; }
     public bool Guest { get; set; } = false;
     public string? PlayFabId { get; set; }

@@ -17,19 +17,7 @@ public class AuthIntegrationTests : IClassFixture<ApiTestFixture>
         _client = _factory.CreateClient();
     }
 
-    [Fact]
-    public async Task Login_InvalidCredentials_ReturnsUnauthorized()
-    {
-        var loginRequest = new
-        {
-            Email = "nonexistent@example.com",
-            Password = "wrongpassword"
-        };
-
-        var response = await _client.PostAsJsonAsync("/api/auth/login", loginRequest);
-
-        Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
-    }
+    // Password-based login test removed as password authentication is no longer supported
 
     [Fact]
     public async Task GetCurrentUser_WithoutAuthentication_ReturnsUnauthorized()
@@ -66,7 +54,7 @@ public class AuthIntegrationTests : IClassFixture<ApiTestFixture>
                 Email = "test@example.com",
                 DisplayName = "Test User",
                 Rating = 1500,
-                EncryptedPassword = "hashed_password_here"
+                // EncryptedPassword removed - no longer using password authentication
             };
 
             context.Users.Add(user);

@@ -32,13 +32,7 @@ export const checkAuthStatus = createAsyncThunk(
   }
 )
 
-export const login = createAsyncThunk(
-  'auth/login',
-  async ({ email, password }: { email: string; password: string }) => {
-    const response = await authService.login(email, password)
-    return response.data
-  }
-)
+// Password login has been removed - only OAuth authentication is supported
 
 export const logout = createAsyncThunk(
   'auth/logout',
@@ -76,21 +70,7 @@ const authSlice = createSlice({
         state.loading = false
         state.isAuthenticated = false
       })
-      // login
-      .addCase(login.pending, (state) => {
-        state.loading = true
-        state.error = null
-      })
-      .addCase(login.fulfilled, (state, action) => {
-        state.loading = false
-        state.user = action.payload.user
-        state.isAuthenticated = true
-        localStorage.setItem('token', action.payload.token)
-      })
-      .addCase(login.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.error.message || 'ログインに失敗しました'
-      })
+      // Password login has been removed
       // logout
       .addCase(logout.fulfilled, (state) => {
         state.user = null
