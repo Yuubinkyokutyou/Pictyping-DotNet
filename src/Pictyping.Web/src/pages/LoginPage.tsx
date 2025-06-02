@@ -1,19 +1,10 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch } from '../store/hooks'
 import './LoginPage.css'
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // ログイン処理は後で実装
-    console.log('Login attempt:', { email, password })
-  }
 
   const handleGoogleLogin = () => {
     // Google OAuth ログイン処理は後で実装
@@ -25,38 +16,8 @@ const LoginPage = () => {
       <div className="login-box">
         <h1 className="login-title">Pictypingへログイン</h1>
         
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="form-group">
-            <label htmlFor="email">メールアドレス</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@email.com"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">パスワード</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="パスワードを入力"
-              required
-            />
-          </div>
-
-          <button type="submit" className="login-button">
-            ログイン
-          </button>
-        </form>
-
-        <div className="divider">
-          <span>または</span>
+        <div className="login-message">
+          <p>Pictypingを利用するには、以下のアカウントでログインしてください。</p>
         </div>
 
         <button onClick={handleGoogleLogin} className="google-login-button">
@@ -69,9 +30,11 @@ const LoginPage = () => {
           Googleでログイン
         </button>
 
-        <div className="login-links">
-          <a href="#" onClick={() => navigate('/signup')}>新規登録はこちら</a>
-          <a href="#" onClick={() => navigate('/forgot-password')}>パスワードを忘れた方</a>
+        <div className="login-footer">
+          <p className="privacy-notice">
+            ログインすることで、<a href="/terms" onClick={(e) => {e.preventDefault(); navigate('/terms')}}>利用規約</a>および
+            <a href="/privacy" onClick={(e) => {e.preventDefault(); navigate('/privacy')}}>プライバシーポリシー</a>に同意したものとみなされます。
+          </p>
         </div>
       </div>
     </div>
