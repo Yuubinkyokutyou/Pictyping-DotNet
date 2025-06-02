@@ -139,11 +139,20 @@ async Task InitializeDatabaseAsync(WebApplication app)
     var context = scope.ServiceProvider.GetRequiredService<PictypingDbContext>();
     await context.Database.EnsureCreatedAsync();
     
-    // Seed development data if in development environment
+    // Seed development data if in development environment and configured to do so
     if (app.Environment.IsDevelopment())
     {
-        var dataSeedingService = scope.ServiceProvider.GetRequiredService<IDataSeedingService>();
-        await dataSeedingService.SeedDevelopmentDataAsync();
+        var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+        var seedData = configuration.GetValue<bool>("DataSeeding:SeedDataOnStartup", false);
+        
+        if (seedData)
+        {
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Starting development data seeding...");
+            
+            var dataSeedingService = scope.ServiceProvider.GetRequiredService<IDataSeedingService>();
+            await dataSeedingService.SeedDevelopmentDataAsync();
+        }
     }
 }
 
