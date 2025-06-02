@@ -17,18 +17,24 @@ public class TypingBattleService : ITypingBattleService
     public async Task<OnesideTwoPlayerTypingMatch?> GetMatchByIdAsync(int id)
     {
         return await _context.OnesideTwoPlayerTypingMatches
-            .Include(m => m.User)
+            .Include(m => m.RegisterUser)
             .FirstOrDefaultAsync(m => m.Id == id);
     }
 
     public async Task<OnesideTwoPlayerTypingMatch> CreateMatchAsync(int userId)
     {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null)
+            throw new ArgumentException("User not found");
+
         var match = new OnesideTwoPlayerTypingMatch
         {
-            UserId = userId,
-            BattleStatus = "pending",
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            RegisterId = userId,
+            MatchId = Guid.NewGuid().ToString(),
+            StartedRating = user.Rating,
+            EnemyStartedRating = 1200, // Default rating
+            BattleStatus = 0, // pending
+            IsFinished = false
         };
 
         _context.OnesideTwoPlayerTypingMatches.Add(match);
@@ -38,7 +44,6 @@ public class TypingBattleService : ITypingBattleService
 
     public async Task<OnesideTwoPlayerTypingMatch> UpdateMatchAsync(OnesideTwoPlayerTypingMatch match)
     {
-        match.UpdatedAt = DateTime.UtcNow;
         _context.Entry(match).State = EntityState.Modified;
         await _context.SaveChangesAsync();
         return match;
@@ -47,7 +52,7 @@ public class TypingBattleService : ITypingBattleService
     public async Task<IEnumerable<OnesideTwoPlayerTypingMatch>> GetUserMatchesAsync(int userId)
     {
         return await _context.OnesideTwoPlayerTypingMatches
-            .Where(m => m.UserId == userId)
+            .Where(m => m.RegisterId == userId || m.EnemyId == userId)
             .OrderByDescending(m => m.CreatedAt)
             .ToListAsync();
     }
@@ -55,7 +60,7 @@ public class TypingBattleService : ITypingBattleService
     public async Task<OnesideTwoPlayerTypingMatch?> GetActiveMatchAsync(int userId)
     {
         return await _context.OnesideTwoPlayerTypingMatches
-            .Where(m => m.UserId == userId && m.BattleStatus == "active")
+            .Where(m => (m.RegisterId == userId || m.EnemyId == userId) && m.BattleStatus == 1)
             .FirstOrDefaultAsync();
     }
 }

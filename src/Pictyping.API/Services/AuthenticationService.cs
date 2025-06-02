@@ -139,13 +139,18 @@ public class TypingBattleService : ITypingBattleService
 
     public async Task<OnesideTwoPlayerTypingMatch> StartBattleAsync(int userId, int? enemyUserId)
     {
+        var user = await _context.Users.FindAsync(userId);
+        var enemyUser = enemyUserId.HasValue ? await _context.Users.FindAsync(enemyUserId.Value) : null;
+        
         var match = new OnesideTwoPlayerTypingMatch
         {
-            UserId = userId,
-            EnemyUserId = enemyUserId,
-            BattleStatus = "started",
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            RegisterId = userId,
+            EnemyId = enemyUserId,
+            MatchId = Guid.NewGuid().ToString(),
+            StartedRating = user?.Rating ?? 1200,
+            EnemyStartedRating = enemyUser?.Rating ?? 1200,
+            BattleStatus = 1, // started
+            IsFinished = false
         };
 
         _context.OnesideTwoPlayerTypingMatches.Add(match);
@@ -160,11 +165,10 @@ public class TypingBattleService : ITypingBattleService
         var match = await _context.OnesideTwoPlayerTypingMatches.FindAsync(matchId);
         if (match == null) throw new InvalidOperationException("Match not found");
 
-        match.Score = score;
-        match.Accuracy = accuracy;
-        match.TypeSpeed = typeSpeed;
-        match.BattleStatus = "finished";
-        match.UpdatedAt = DateTime.UtcNow;
+        // Rails schema doesn't have Score, Accuracy, TypeSpeed directly
+        // These would be stored in BattleDataJson if needed
+        match.BattleStatus = 2; // finished
+        match.IsFinished = true;
 
         await _context.SaveChangesAsync();
 
@@ -174,7 +178,7 @@ public class TypingBattleService : ITypingBattleService
     public async Task<IEnumerable<OnesideTwoPlayerTypingMatch>> GetUserMatchesAsync(int userId)
     {
         return await _context.OnesideTwoPlayerTypingMatches
-            .Where(m => m.UserId == userId || m.EnemyUserId == userId)
+            .Where(m => m.RegisterId == userId || m.EnemyId == userId)
             .OrderByDescending(m => m.CreatedAt)
             .ToListAsync();
     }

@@ -131,28 +131,42 @@ builder.Services.AddScoped<Pictyping.Core.Interfaces.IDataSeedingService, Pictyp
 var app = builder.Build();
 
 // Initialize database and seed data
-await InitializeDatabaseAsync(app);
+// await InitializeDatabaseAsync(app);  // Temporarily disabled for testing
 
 async Task InitializeDatabaseAsync(WebApplication app)
 {
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<PictypingDbContext>();
-    await context.Database.EnsureCreatedAsync();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
     
-    // Seed development data if in development environment and configured to do so
-    if (app.Environment.IsDevelopment())
+    try
     {
-        var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-        var seedData = configuration.GetValue<bool>("DataSeeding:SeedDataOnStartup", false);
+        // Test database connection
+        await context.Database.CanConnectAsync();
+        logger.LogInformation("Database connection successful");
         
-        if (seedData)
+        // Check if we have existing data (migrated from Rails)
+        var userCount = await context.Users.CountAsync();
+        logger.LogInformation($"Found {userCount} users in database");
+        
+        // Only seed if no data exists and seeding is enabled
+        if (userCount == 0 && app.Environment.IsDevelopment())
         {
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation("Starting development data seeding...");
+            var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+            var seedData = configuration.GetValue<bool>("DataSeeding:SeedDataOnStartup", false);
             
-            var dataSeedingService = scope.ServiceProvider.GetRequiredService<IDataSeedingService>();
-            await dataSeedingService.SeedDevelopmentDataAsync();
+            if (seedData)
+            {
+                logger.LogInformation("Starting development data seeding...");
+                var dataSeedingService = scope.ServiceProvider.GetRequiredService<IDataSeedingService>();
+                await dataSeedingService.SeedDevelopmentDataAsync();
+            }
         }
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Database initialization failed");
+        throw;
     }
 }
 

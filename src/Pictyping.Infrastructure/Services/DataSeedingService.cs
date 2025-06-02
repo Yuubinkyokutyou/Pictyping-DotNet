@@ -39,41 +39,41 @@ public class DataSeedingService : IDataSeedingService
                 {
                     Email = "admin@example.com",
                     EncryptedPassword = HashPassword("password123"),
-                    DisplayName = "Admin User",
+                    Name = "Admin User",
                     Admin = true,
                     Rating = 1500,
                     Guest = false,
-                    PlayFabId = "ADMIN123"
+                    PlayfabId = "ADMIN123"
                 },
                 new User
                 {
                     Email = "player1@example.com",
                     EncryptedPassword = HashPassword("password123"),
-                    DisplayName = "Player One",
+                    Name = "Player One",
                     Admin = false,
                     Rating = 1200,
                     Guest = false,
-                    PlayFabId = "PLAYER001"
+                    PlayfabId = "PLAYER001"
                 },
                 new User
                 {
                     Email = "player2@example.com",
                     EncryptedPassword = HashPassword("password123"),
-                    DisplayName = "Player Two",
+                    Name = "Player Two",
                     Admin = false,
                     Rating = 1350,
                     Guest = false,
-                    PlayFabId = "PLAYER002"
+                    PlayfabId = "PLAYER002"
                 },
                 new User
                 {
                     Email = "guest@example.com",
                     EncryptedPassword = HashPassword("password123"),
-                    DisplayName = "Guest Player",
+                    Name = "Guest Player",
                     Admin = false,
                     Rating = 1000,
                     Guest = true,
-                    PlayFabId = "GUEST001"
+                    PlayfabId = "GUEST001"
                 }
             };
 
@@ -87,45 +87,35 @@ public class DataSeedingService : IDataSeedingService
             {
                 new OnesideTwoPlayerTypingMatch
                 {
-                    UserId = users[1].Id,
-                    EnemyUserId = users[2].Id,
-                    Score = 850,
-                    Accuracy = 95.5,
-                    TypeSpeed = 4.2,
-                    MissCount = 5,
-                    BattleTime = 60,
-                    QuestionContents = "The quick brown fox jumps over the lazy dog",
-                    InputContents = "The quick brown fox jumps over the lazy dog",
-                    MissTypeContents = "[]",
-                    BattleStatus = "completed"
+                    RegisterId = users[1].Id,
+                    EnemyId = users[2].Id,
+                    MatchId = "MATCH_DEV_001",
+                    StartedRating = users[1].Rating,
+                    EnemyStartedRating = users[2].Rating,
+                    IsFinished = true,
+                    FinishedRating = users[1].Rating + 25,
+                    BattleStatus = 2
                 },
                 new OnesideTwoPlayerTypingMatch
                 {
-                    UserId = users[2].Id,
-                    EnemyUserId = users[1].Id,
-                    Score = 920,
-                    Accuracy = 98.2,
-                    TypeSpeed = 4.5,
-                    MissCount = 2,
-                    BattleTime = 60,
-                    QuestionContents = "The quick brown fox jumps over the lazy dog",
-                    InputContents = "The quick brown fox jumps over the lazy dog",
-                    MissTypeContents = "[]",
-                    BattleStatus = "completed"
+                    RegisterId = users[2].Id,
+                    EnemyId = users[1].Id,
+                    MatchId = "MATCH_DEV_002",
+                    StartedRating = users[2].Rating,
+                    EnemyStartedRating = users[1].Rating,
+                    IsFinished = true,
+                    FinishedRating = users[2].Rating + 30,
+                    BattleStatus = 2
                 },
                 new OnesideTwoPlayerTypingMatch
                 {
-                    UserId = users[1].Id,
-                    EnemyUserId = users[3].Id,
-                    Score = 1050,
-                    Accuracy = 99.1,
-                    TypeSpeed = 5.1,
-                    MissCount = 1,
-                    BattleTime = 60,
-                    QuestionContents = "Programming is fun and challenging",
-                    InputContents = "Programming is fun and challenging",
-                    MissTypeContents = "[]",
-                    BattleStatus = "completed"
+                    RegisterId = users[1].Id,
+                    EnemyId = users[3].Id,
+                    MatchId = "MATCH_DEV_003",
+                    StartedRating = users[1].Rating,
+                    EnemyStartedRating = users[3].Rating,
+                    IsFinished = false,
+                    BattleStatus = 1
                 }
             };
 

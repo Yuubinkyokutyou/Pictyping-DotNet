@@ -11,7 +11,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5000
-      - ConnectionStrings__DefaultConnection=Host=db;Database=pictyping_dev;Username=postgres;Password=password
+      - ConnectionStrings__DefaultConnection=Host=db;Database=myapp_development;Username=postgres;Password=password
       - ConnectionStrings__Redis=redis:6379
       - DataSeeding__SeedDataOnStartup=true
       - Jwt__Key=ThisIsMySecretKeyForJWTTokenGeneration2024!
