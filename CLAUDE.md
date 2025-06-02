@@ -92,3 +92,25 @@ dotnet test
 - TypeScript API clients are auto-generated from Swagger/OpenAPI specification using openapi-typescript-codegen
 - Docker containerization supports both development and production deployment
 - Nginx reverse proxy configuration for production routing
+
+## Pull Request Guidelines
+
+**IMPORTANT**: Always write pull request titles and descriptions in Japanese. Use the following format:
+
+### PR Title Format (Japanese)
+- 新機能: [feature description in Japanese]
+- 修正: [bug fix description in Japanese]  
+- 改善: [improvement description in Japanese]
+- リファクタリング: [refactoring description in Japanese]
+
+### PR Description Format (Japanese)
+```
+## 概要
+[Brief summary of changes in Japanese]
+
+## 変更内容
+- [List of changes in Japanese]
+
+## テスト内容
+[Testing approach in Japanese]
+```

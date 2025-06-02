@@ -32,16 +32,18 @@ axiosInstance.interceptors.response.use(
       // トークンが無効な場合
       localStorage.removeItem('token')
       
-      // 現在のドメインを確認
+      // 開発環境では何もしない（リダイレクトしない）
+      if (import.meta.env.DEV) {
+        return Promise.reject(error)
+      }
+      
+      // 本番環境でのみドメイン間処理
       const currentDomain = window.location.hostname
       const isOldDomain = currentDomain === 'pictyping.com'
       
       if (isOldDomain) {
         // 旧ドメインから新ドメインへリダイレクト
         window.location.href = `https://new.pictyping.com/auth/cross-domain?returnUrl=${encodeURIComponent(window.location.pathname)}`
-      } else {
-        // 新ドメインでログインページへ
-        window.location.href = '/login'
       }
     }
     return Promise.reject(error)

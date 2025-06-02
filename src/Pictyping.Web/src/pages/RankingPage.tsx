@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { axiosInstance } from '../services/authService'
+import { RankingService } from '../api/generated'
 
 interface RankingUser {
   id: number
@@ -11,14 +11,18 @@ interface RankingUser {
 const RankingPage = () => {
   const [rankings, setRankings] = useState<RankingUser[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchRankings = async () => {
       try {
-        const response = await axiosInstance.get('/api/rankings')
-        setRankings(response.data)
-      } catch (error) {
-        console.error('Failed to fetch rankings:', error)
+        setLoading(true)
+        setError(null)
+        const response = await RankingService.getApiRanking({ count: 100 })
+        setRankings(response || [])
+      } catch (err) {
+        console.error('Failed to fetch rankings:', err)
+        setError('ランキングの取得に失敗しました')
       } finally {
         setLoading(false)
       }
@@ -29,6 +33,10 @@ const RankingPage = () => {
 
   if (loading) {
     return <div>読み込み中...</div>
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>
   }
 
   return (

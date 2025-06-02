@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAppDispatch } from '../store/hooks'
 import { setUser } from '../store/authSlice'
-import authService from '../services/authService'
+import { AuthService } from '../api/generated'
 
 /**
  * ドメイン間認証処理コンポーネント
@@ -25,9 +25,15 @@ const CrossDomainAuth = () => {
       }
 
       try {
-        // トークンを使って認証
-        const response = await authService.handleCrossDomainAuth(token)
-        dispatch(setUser(response.data))
+        // トークンを使ってクロスドメイン認証
+        await AuthService.getApiAuthCrossDomainLogin({ token, returnUrl })
+        
+        // トークンを保存
+        localStorage.setItem('token', token)
+        
+        // ユーザー情報を取得
+        const user = await AuthService.getApiAuthMe()
+        dispatch(setUser(user))
         
         // 元のページへリダイレクト
         navigate(returnUrl)
