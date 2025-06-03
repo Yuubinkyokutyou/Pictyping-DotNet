@@ -57,6 +57,58 @@ public class AuthenticationService : IAuthenticationService
         return user;
     }
 
+    public async Task<User> FindOrCreateUserByOAuthAsync(string provider, string providerUserId, string email, string? displayName = null)
+    {
+        // まずOAuthアイデンティティで既存ユーザーを検索
+        var identity = await _context.OmniAuthIdentities
+            .Include(i => i.User)
+            .FirstOrDefaultAsync(i => i.Provider == provider && i.Uid == providerUserId);
+
+        if (identity?.User != null)
+        {
+            return identity.User;
+        }
+
+        // 次にメールアドレスで既存ユーザーを検索
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        
+        if (user == null)
+        {
+            // 新しいユーザーを作成
+            user = new User
+            {
+                Email = email,
+                Name = displayName ?? email.Split('@')[0], // 表示名がない場合はメールのローカル部分を使用
+                EncryptedPassword = "", // OAuthユーザーはパスワードなし
+                Guest = false,
+                Rating = 1200,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+        }
+
+        // OAuthアイデンティティが存在しない場合は作成
+        if (identity == null)
+        {
+            identity = new OmniAuthIdentity
+            {
+                Provider = provider,
+                Uid = providerUserId,
+                UserId = user.Id,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            _context.OmniAuthIdentities.Add(identity);
+            await _context.SaveChangesAsync();
+        }
+
+        return user;
+    }
+
     public async Task<User?> GetUserByIdAsync(int userId)
     {
         return await _context.Users.FindAsync(userId);
