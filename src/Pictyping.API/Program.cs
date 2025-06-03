@@ -131,7 +131,7 @@ builder.Services.AddScoped<Pictyping.Core.Interfaces.IDataSeedingService, Pictyp
 var app = builder.Build();
 
 // Initialize database and seed data
-// await InitializeDatabaseAsync(app);  // Temporarily disabled for testing
+await InitializeDatabaseAsync(app);
 
 async Task InitializeDatabaseAsync(WebApplication app)
 {
