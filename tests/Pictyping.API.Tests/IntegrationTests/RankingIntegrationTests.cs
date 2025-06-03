@@ -95,10 +95,10 @@ public class RankingIntegrationTests : IClassFixture<ApiTestFixture>
         {
             var users = new[]
             {
-                new User { Email = "fourth@example.com", DisplayName = "Fourth Player", Rating = 1400 },
-                new User { Email = "third@example.com", DisplayName = "Third Player", Rating = 1600 },
-                new User { Email = "second@example.com", DisplayName = "Second Player", Rating = 1800 },
-                new User { Email = "top@example.com", DisplayName = "Top Player", Rating = 2000 }
+                new User { Email = "fourth@example.com", Name = "Fourth Player", Rating = 1400 },
+                new User { Email = "third@example.com", Name = "Third Player", Rating = 1600 },
+                new User { Email = "second@example.com", Name = "Second Player", Rating = 1800 },
+                new User { Email = "top@example.com", Name = "Top Player", Rating = 2000 }
             };
 
             context.Users.AddRange(users);

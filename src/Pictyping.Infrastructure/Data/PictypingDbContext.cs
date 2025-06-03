@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pictyping.Core.Entities;
+using System.Text.Json;
 
 namespace Pictyping.Infrastructure.Data;
 
@@ -50,8 +52,15 @@ public class PictypingDbContext : DbContext
             entity.ToTable("oneside_two_player_typing_matches");
             
             entity.Property(e => e.Id).HasColumnName("id");
+            var jsonConverter = new ValueConverter<JsonDocument, string>(
+                v => v.RootElement.GetRawText(),
+                v => JsonDocument.Parse(string.IsNullOrEmpty(v) ? "{}" : v, new JsonDocumentOptions()));
+                
             entity.Property(e => e.BattleDataJson).HasColumnName("battle_data_json")
-                .HasColumnType("jsonb").HasDefaultValue("{}").IsRequired();
+                .HasColumnType("jsonb")
+                .HasConversion(jsonConverter)
+                .HasDefaultValueSql("'{}'::jsonb")
+                .IsRequired();
             entity.Property(e => e.MatchId).HasColumnName("match_id").IsRequired();
             entity.Property(e => e.RegisterId).HasColumnName("register_id").IsRequired();
             entity.Property(e => e.EnemyId).HasColumnName("enemy_id");

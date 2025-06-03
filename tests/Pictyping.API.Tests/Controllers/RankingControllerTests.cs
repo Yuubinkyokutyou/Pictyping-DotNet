@@ -26,9 +26,9 @@ public class RankingControllerTests
     {
         var users = new List<User>
         {
-            new User { Id = 1, DisplayName = "Top Player", Rating = 2000, Email = "top@example.com" },
-            new User { Id = 2, DisplayName = "Second Player", Rating = 1800, Email = "second@example.com" },
-            new User { Id = 3, DisplayName = null, Rating = 1600, Email = "third@example.com" }
+            new User { Id = 1, Name = "Top Player", Rating = 2000, Email = "top@example.com" },
+            new User { Id = 2, Name = "Second Player", Rating = 1800, Email = "second@example.com" },
+            new User { Id = 3, Name = null, Rating = 1600, Email = "third@example.com" }
         };
 
         _mockRankingService.Setup(s => s.GetTopRankingsAsync(100))
@@ -50,8 +50,8 @@ public class RankingControllerTests
     {
         var users = new List<User>
         {
-            new User { Id = 1, DisplayName = "Top Player", Rating = 2000, Email = "top@example.com" },
-            new User { Id = 2, DisplayName = "Second Player", Rating = 1800, Email = "second@example.com" }
+            new User { Id = 1, Name = "Top Player", Rating = 2000, Email = "top@example.com" },
+            new User { Id = 2, Name = "Second Player", Rating = 1800, Email = "second@example.com" }
         };
 
         _mockRankingService.Setup(s => s.GetTopRankingsAsync(50))
