@@ -12,12 +12,12 @@ const LoginPage = () => {
   return (
     <div className="login-container">
       <div className="login-box">
-        <h1 className="login-title">Pictypingへログイン</h1>
-        
-        <div className="login-message">
-          <p>Pictypingを利用するには、以下のアカウントでログインしてください。</p>
+        <div className="login-header">
+          <img src="/pictyping-logo.png" alt="Pictyping Logo" className="logo-image" />
+          <h1 className="login-title">Pictyping</h1>
+          <p className="login-message">Googleアカウントでログインしてください</p>
         </div>
-
+        
         <button onClick={handleGoogleLogin} className="google-login-button">
           <svg className="google-icon" viewBox="0 0 24 24" width="18" height="18">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
