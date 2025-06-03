@@ -1,20 +1,20 @@
+using System.Text.Json;
+
 namespace Pictyping.Core.Entities;
 
 public class OnesideTwoPlayerTypingMatch : BaseEntity
 {
-    public int UserId { get; set; }
-    public int? EnemyUserId { get; set; }
-    public int Score { get; set; }
-    public double Accuracy { get; set; }
-    public double TypeSpeed { get; set; }
-    public int MissCount { get; set; }
-    public double BattleTime { get; set; }
-    public string? QuestionContents { get; set; }
-    public string? InputContents { get; set; }
-    public string? MissTypeContents { get; set; }
-    public string? BattleStatus { get; set; }
+    public JsonDocument BattleDataJson { get; set; } = JsonDocument.Parse("{}");
+    public string MatchId { get; set; } = string.Empty;
+    public int RegisterId { get; set; }
+    public int? EnemyId { get; set; }
+    public int EnemyStartedRating { get; set; }
+    public int StartedRating { get; set; }
+    public bool IsFinished { get; set; } = false;
+    public int? FinishedRating { get; set; }
+    public int? BattleStatus { get; set; }
 
     // Navigation properties
-    public virtual User User { get; set; } = null!;
+    public virtual User RegisterUser { get; set; } = null!;
     public virtual User? EnemyUser { get; set; }
 }

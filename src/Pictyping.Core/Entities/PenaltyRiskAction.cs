@@ -2,10 +2,9 @@ namespace Pictyping.Core.Entities;
 
 public class PenaltyRiskAction : BaseEntity
 {
-    public int ReporterId { get; set; }
-    public string? PlayFabId { get; set; }
-    public string? MatchId { get; set; }
-    public string ActionType { get; set; } = string.Empty;
-    public string? Detail { get; set; }
-    public int? UserId { get; set; }
+    public int UserId { get; set; }
+    public int ActionType { get; set; }
+
+    // Navigation properties
+    public virtual User User { get; set; } = null!;
 }

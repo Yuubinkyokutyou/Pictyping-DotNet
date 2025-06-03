@@ -28,7 +28,7 @@ public class RankingController : ControllerBase
             return Ok(rankings.Select(user => new
             {
                 id = user.Id,
-                displayName = user.DisplayName ?? "Anonymous",
+                displayName = user.Name ?? "Anonymous",
                 rating = user.Rating,
                 email = user.Email
             }));

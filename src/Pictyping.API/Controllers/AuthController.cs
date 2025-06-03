@@ -115,7 +115,7 @@ public class AuthController : ControllerBase
             {
                 id = user.Id,
                 email = user.Email,
-                displayName = user.DisplayName,
+                displayName = user.Name,
                 rating = user.Rating
             }
         });
@@ -171,7 +171,7 @@ public class AuthController : ControllerBase
         {
             id = user.Id,
             email = user.Email,
-            displayName = user.DisplayName,
+            displayName = user.Name,
             rating = user.Rating,
             isAdmin = user.Admin
         });

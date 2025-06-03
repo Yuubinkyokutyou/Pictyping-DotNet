@@ -55,7 +55,7 @@ public class AuthControllerTests
         {
             Id = 1,
             Email = "test@example.com",
-            DisplayName = "Test User",
+            Name = "Test User",
             Rating = 1500
         };
 
@@ -102,7 +102,7 @@ public class AuthControllerTests
         {
             Id = 1,
             Email = "test@example.com",
-            DisplayName = "Test User",
+            Name = "Test User",
             Rating = 1500,
             Admin = false
         };

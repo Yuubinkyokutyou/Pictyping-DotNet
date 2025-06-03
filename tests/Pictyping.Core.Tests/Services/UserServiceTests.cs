@@ -27,7 +27,7 @@ public class UserServiceTests : IDisposable
         var user = new User
         {
             Email = "test@example.com",
-            DisplayName = "Test User",
+            Name = "Test User",
             Rating = 1500
         };
         _context.Users.Add(user);
@@ -37,7 +37,7 @@ public class UserServiceTests : IDisposable
 
         Assert.NotNull(result);
         Assert.Equal(user.Email, result.Email);
-        Assert.Equal(user.DisplayName, result.DisplayName);
+        Assert.Equal(user.Name, result.Name);
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public class UserServiceTests : IDisposable
         var user = new User
         {
             Email = email,
-            DisplayName = "Test User"
+            Name = "Test User"
         };
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
@@ -80,7 +80,7 @@ public class UserServiceTests : IDisposable
         var user = new User
         {
             Email = "newuser@example.com",
-            DisplayName = "New User",
+            Name = "New User",
             Rating = 1200
         };
 
@@ -89,7 +89,7 @@ public class UserServiceTests : IDisposable
         Assert.NotNull(result);
         Assert.True(result.Id > 0);
         Assert.Equal(user.Email, result.Email);
-        Assert.Equal(user.DisplayName, result.DisplayName);
+        Assert.Equal(user.Name, result.Name);
 
         var savedUser = await _context.Users.FindAsync(result.Id);
         Assert.NotNull(savedUser);
@@ -102,24 +102,24 @@ public class UserServiceTests : IDisposable
         var user = new User
         {
             Email = "original@example.com",
-            DisplayName = "Original Name",
+            Name = "Original Name",
             Rating = 1200
         };
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        user.DisplayName = "Updated Name";
+        user.Name = "Updated Name";
         user.Rating = 1600;
 
         var result = await _userService.UpdateAsync(user);
 
         Assert.NotNull(result);
-        Assert.Equal("Updated Name", result.DisplayName);
+        Assert.Equal("Updated Name", result.Name);
         Assert.Equal(1600, result.Rating);
 
         var updatedUser = await _context.Users.FindAsync(user.Id);
         Assert.NotNull(updatedUser);
-        Assert.Equal("Updated Name", updatedUser.DisplayName);
+        Assert.Equal("Updated Name", updatedUser.Name);
         Assert.Equal(1600, updatedUser.Rating);
     }
 
@@ -129,7 +129,7 @@ public class UserServiceTests : IDisposable
         var user = new User
         {
             Email = "todelete@example.com",
-            DisplayName = "To Delete"
+            Name = "To Delete"
         };
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
@@ -155,9 +155,9 @@ public class UserServiceTests : IDisposable
     {
         var users = new[]
         {
-            new User { Email = "user1@example.com", DisplayName = "User 1" },
-            new User { Email = "user2@example.com", DisplayName = "User 2" },
-            new User { Email = "user3@example.com", DisplayName = "User 3" }
+            new User { Email = "user1@example.com", Name = "User 1" },
+            new User { Email = "user2@example.com", Name = "User 2" },
+            new User { Email = "user3@example.com", Name = "User 3" }
         };
 
         _context.Users.AddRange(users);

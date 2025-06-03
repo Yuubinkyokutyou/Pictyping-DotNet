@@ -64,7 +64,7 @@ public class AuthIntegrationTests : IClassFixture<ApiTestFixture>
             var user = new User
             {
                 Email = "test@example.com",
-                DisplayName = "Test User",
+                Name = "Test User",
                 Rating = 1500,
                 EncryptedPassword = "hashed_password_here"
             };

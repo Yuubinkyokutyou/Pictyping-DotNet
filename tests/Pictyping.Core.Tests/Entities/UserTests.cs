@@ -15,7 +15,6 @@ public class UserTests
         Assert.False(user.Guest);
         Assert.Equal(1200, user.Rating);
         Assert.False(user.Admin);
-        Assert.NotNull(user.TypingMatchesAsPlayer);
         Assert.NotNull(user.TypingMatchesAsEnemy);
         Assert.NotNull(user.OmniAuthIdentities);
     }
@@ -32,14 +31,14 @@ public class UserTests
     }
 
     [Fact]
-    public void User_SetDisplayName_UpdatesDisplayName()
+    public void User_SetName_UpdatesName()
     {
         var user = new User();
-        var displayName = "TestUser";
+        var name = "TestUser";
 
-        user.DisplayName = displayName;
+        user.Name = name;
 
-        Assert.Equal(displayName, user.DisplayName);
+        Assert.Equal(name, user.Name);
     }
 
     [Fact]
@@ -98,13 +97,13 @@ public class UserTests
     }
 
     [Fact]
-    public void User_SetPlayFabId_UpdatesPlayFabId()
+    public void User_SetPlayfabId_UpdatesPlayfabId()
     {
         var user = new User();
-        var playFabId = "playfab_123";
+        var playfabId = "playfab_123";
 
-        user.PlayFabId = playFabId;
+        user.PlayfabId = playfabId;
 
-        Assert.Equal(playFabId, user.PlayFabId);
+        Assert.Equal(playfabId, user.PlayfabId);
     }
 }
