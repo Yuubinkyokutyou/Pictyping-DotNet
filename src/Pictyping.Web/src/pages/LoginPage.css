@@ -1,112 +1,131 @@
+/* Minimalist Blue Login Page Styles */
 .login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  background-color: #f0f9ff;
+  background-image: linear-gradient(to bottom, #f0f9ff, #ffffff);
+  padding: 2rem;
 }
 
 .login-box {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  padding: 60px 40px;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: 3rem;
   width: 100%;
   max-width: 400px;
   text-align: center;
 }
 
 .login-title {
-  color: #333;
-  font-size: 32px;
-  margin-bottom: 20px;
+  color: #1e40af;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
   font-weight: 600;
+  letter-spacing: -0.025em;
 }
 
 .login-message {
-  margin-bottom: 40px;
+  margin-bottom: 2rem;
 }
 
 .login-message p {
-  color: #666;
-  font-size: 16px;
+  color: #6b7280;
+  font-size: 1rem;
   line-height: 1.6;
 }
 
 .google-login-button {
   width: 100%;
-  padding: 14px 20px;
+  padding: 0.75rem 1.5rem;
   background: white;
-  color: #333;
-  border: 2px solid #4285F4;
+  color: #374151;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  transition: all 0.3s ease;
-  margin-bottom: 20px;
+  gap: 0.75rem;
+  transition: all 0.2s;
+  margin-bottom: 1.5rem;
 }
 
 .google-login-button:hover {
-  background: #4285F4;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+  background: #f9fafb;
+  border-color: #d1d5db;
+  transform: translateY(-1px);
 }
 
-.google-login-button:hover svg path {
-  fill: white;
+.google-login-button:hover svg path[fill="#4285F4"] {
+  fill: #4285F4;
+}
+
+.google-login-button:hover svg path[fill="#34A853"] {
+  fill: #34A853;
+}
+
+.google-login-button:hover svg path[fill="#FBBC05"] {
+  fill: #FBBC05;
+}
+
+.google-login-button:hover svg path[fill="#EA4335"] {
+  fill: #EA4335;
 }
 
 .google-icon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .login-footer {
-  margin-top: 40px;
-  padding-top: 30px;
+  margin-top: 2rem;
+  padding-top: 2rem;
   border-top: 1px solid #e5e7eb;
 }
 
 .privacy-notice {
-  color: #666;
-  font-size: 13px;
+  color: #6b7280;
+  font-size: 0.875rem;
   line-height: 1.6;
 }
 
 .privacy-notice a {
-  color: #667eea;
+  color: #2563eb;
   text-decoration: none;
-  margin: 0 4px;
-  transition: color 0.3s;
+  margin: 0 0.25rem;
+  transition: color 0.2s;
+  font-weight: 500;
 }
 
 .privacy-notice a:hover {
-  color: #5a67d8;
+  color: #1d4ed8;
   text-decoration: underline;
 }
 
 @media (max-width: 480px) {
+  .login-container {
+    padding: 1rem;
+  }
+  
   .login-box {
-    padding: 40px 20px;
+    padding: 2rem;
   }
   
   .login-title {
-    font-size: 28px;
+    font-size: 1.75rem;
   }
   
   .login-message p {
-    font-size: 15px;
+    font-size: 0.9rem;
   }
   
   .google-login-button {
-    font-size: 15px;
-    padding: 12px 16px;
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
   }
 }
