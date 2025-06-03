@@ -17,6 +17,7 @@ const Layout = () => {
       <header className="app-header">
         <div className="header-content">
           <Link to="/" className="logo">
+            <img src="/pictyping-logo.png" alt="Pictyping Logo" />
             <h1>Pictyping</h1>
           </Link>
           
