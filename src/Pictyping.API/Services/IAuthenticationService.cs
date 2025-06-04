@@ -9,6 +9,10 @@ public interface IAuthenticationService
     Task<User?> GetUserByIdAsync(int userId);
     Task SaveSessionAsync(string userId, string token);
     Task<string> GenerateTemporaryTokenAsync(string userId);
+    
+    // Domain Migration Strategy Implementation
+    Task<User> CreateUserAsync(User user);
+    Task UpdateUserAsync(User user);
 }
 
 public interface IUserService

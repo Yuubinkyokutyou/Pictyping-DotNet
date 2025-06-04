@@ -28,46 +28,31 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// ドメイン間認証のためのエンドポイント
+    /// ドメイン間認証のためのエンドポイント (Domain Migration Strategy Implementation)
     /// 旧システムから新システムへリダイレクトされた際に使用
     /// </summary>
     [HttpGet("cross-domain-login")]
-    public async Task<IActionResult> CrossDomainLogin([FromQuery] string token, [FromQuery] string? returnUrl)
+    public async Task<IActionResult> CrossDomainLogin([FromQuery] string token)
     {
         try
         {
-            // 旧システムから渡されたトークンを検証
-            var principal = ValidateToken(token);
-            if (principal == null)
+            var userInfo = await ValidateMigrationToken(token);
+            if (userInfo != null)
             {
-                return Unauthorized("Invalid token");
+                // ユーザー情報から新システムでユーザー作成/更新
+                var user = await CreateOrUpdateUserFromMigration(userInfo);
+                
+                // 新システム用のJWTトークン生成
+                var jwtToken = await GenerateJwtToken(user.Id.ToString());
+                return Redirect($"https://picclass.com/auth/callback?token={jwtToken}");
             }
-
-            // ユーザー情報を取得
-            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-            {
-                return BadRequest("User ID not found in token");
-            }
-
-            // 新システム用のトークンを生成
-            var newToken = await GenerateJwtToken(userId);
-
-            // Redisにセッション情報を保存（両システムで共有）
-            await _authService.SaveSessionAsync(userId, newToken);
-
-            // フロントエンドへリダイレクト（トークンを含む）
-            var redirectUrl = $"{_configuration["DomainSettings:NewDomain"]}/auth/callback" +
-                            $"?token={newToken}" +
-                            $"&returnUrl={Uri.EscapeDataString(returnUrl ?? "/")}";
-
-            return Redirect(redirectUrl);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Cross domain login failed");
-            return BadRequest("Authentication failed");
+            _logger.LogError(ex, "Cross-domain authentication failed");
         }
+        
+        return Redirect("https://picclass.com/login?migration_failed=true");
     }
 
     /// <summary>
@@ -201,6 +186,92 @@ public class AuthController : ControllerBase
         return tokenHandler.WriteToken(token);
     }
 
+    /// <summary>
+    /// 移行トークン検証サービス (Domain Migration Strategy Implementation)
+    /// </summary>
+    private async Task<MigrationUserInfo?> ValidateMigrationToken(string token)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var sharedSecret = _configuration["SharedJwtSecret"] ?? _configuration["Jwt:Key"];
+        
+        var validationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(sharedSecret ?? "")
+            ),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero
+        };
+
+        try
+        {
+            var principal = handler.ValidateToken(token, validationParameters, out var validatedToken);
+            var jwtToken = validatedToken as JwtSecurityToken;
+            
+            if (jwtToken == null) return null;
+            
+            // トークンから情報抽出
+            return new MigrationUserInfo
+            {
+                UserId = int.Parse(jwtToken.Claims.First(x => x.Type == "user_id").Value),
+                Email = jwtToken.Claims.First(x => x.Type == "email").Value,
+                Name = jwtToken.Claims.FirstOrDefault(x => x.Type == "name")?.Value,
+                Provider = jwtToken.Claims.FirstOrDefault(x => x.Type == "provider")?.Value,
+                Admin = bool.Parse(jwtToken.Claims.FirstOrDefault(x => x.Type == "admin")?.Value ?? "false"),
+                Rating = int.Parse(jwtToken.Claims.FirstOrDefault(x => x.Type == "rating")?.Value ?? "1000")
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Token validation failed");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// 移行ユーザー情報からユーザーを作成または更新
+    /// </summary>
+    private async Task<User> CreateOrUpdateUserFromMigration(MigrationUserInfo userInfo)
+    {
+        var user = await _authService.GetUserByIdAsync(userInfo.UserId);
+        if (user == null)
+        {
+            // 新規ユーザー作成
+            user = new User
+            {
+                Id = userInfo.UserId,
+                Email = userInfo.Email,
+                Name = userInfo.Name,
+                Provider = userInfo.Provider,
+                Admin = userInfo.Admin,
+                Rating = userInfo.Rating,
+                EncryptedPassword = "", // Migration users don't need password
+                Guest = false,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            
+            // 既存のDB接続でユーザーを作成
+            await _authService.CreateUserAsync(user);
+        }
+        else
+        {
+            // 既存ユーザーの更新
+            user.Email = userInfo.Email;
+            user.Name = userInfo.Name;
+            user.Provider = userInfo.Provider;
+            user.Admin = userInfo.Admin;
+            user.Rating = userInfo.Rating;
+            user.UpdatedAt = DateTime.UtcNow;
+            
+            await _authService.UpdateUserAsync(user);
+        }
+
+        return user;
+    }
+
     private ClaimsPrincipal? ValidateToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -230,4 +301,17 @@ public class LoginRequest
 {
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// 移行ユーザー情報 (Domain Migration Strategy Implementation)
+/// </summary>
+public class MigrationUserInfo
+{
+    public int UserId { get; set; }
+    public string Email { get; set; } = string.Empty;
+    public string? Name { get; set; }
+    public string? Provider { get; set; }
+    public bool Admin { get; set; }
+    public int Rating { get; set; }
 }
