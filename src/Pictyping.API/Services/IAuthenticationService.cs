@@ -13,6 +13,12 @@ public interface IAuthenticationService
     // Domain Migration Strategy Implementation
     Task<User> CreateUserAsync(User user);
     Task UpdateUserAsync(User user);
+    
+    // Migration Token Validation
+    Task<MigrationUserInfo?> ValidateMigrationToken(string token);
+    Task<User> CreateOrUpdateUserFromMigration(MigrationUserInfo userInfo);
+    Task<string> GenerateJwtToken(User user);
+    Task<bool> IsTokenUsed(string jti);
 }
 
 public interface IUserService
