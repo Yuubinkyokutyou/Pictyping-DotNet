@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Pictyping.Core.Entities;
+using Pictyping.Core.DTOs;
 using Pictyping.Infrastructure.Data;
 using StackExchange.Redis;
 using System.IdentityModel.Tokens.Jwt;
@@ -216,7 +217,7 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    public async Task<string> GenerateJwtToken(User user)
+    public string GenerateJwtToken(User user)
     {
         var jwtSecret = _configuration["Jwt:Key"];
         if (string.IsNullOrEmpty(jwtSecret))

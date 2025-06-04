@@ -13,6 +13,7 @@ public class User : BaseEntity
     public int Rating { get; set; } = 1200;
     public DateTime? OnlineGameBanDate { get; set; }  // Rails schema has "online_game_ban_date"
     public bool Admin { get; set; } = false;
+    public string? Provider { get; set; }  // OAuth provider (google, etc.) for migration compatibility
 
     // Navigation properties
     public virtual ICollection<OnesideTwoPlayerTypingMatch> TypingMatchesAsRegister { get; set; } = new List<OnesideTwoPlayerTypingMatch>();

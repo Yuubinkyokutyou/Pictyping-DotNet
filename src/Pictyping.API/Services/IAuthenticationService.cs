@@ -1,4 +1,5 @@
 using Pictyping.Core.Entities;
+using Pictyping.Core.DTOs;
 
 namespace Pictyping.API.Services;
 
@@ -17,7 +18,7 @@ public interface IAuthenticationService
     // Migration Token Validation
     Task<MigrationUserInfo?> ValidateMigrationToken(string token);
     Task<User> CreateOrUpdateUserFromMigration(MigrationUserInfo userInfo);
-    Task<string> GenerateJwtToken(User user);
+    string GenerateJwtToken(User user);
     Task<bool> IsTokenUsed(string jti);
 }
 

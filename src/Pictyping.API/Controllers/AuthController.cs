@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using Pictyping.API.Services;
 using Pictyping.Core.Entities;
+using Pictyping.Core.DTOs;
 
 namespace Pictyping.API.Controllers;
 
@@ -44,8 +45,8 @@ public class AuthController : ControllerBase
                 var user = await _authService.CreateOrUpdateUserFromMigration(userInfo);
                 
                 // 新システム用のJWTトークン生成
-                var jwtToken = await _authService.GenerateJwtToken(user);
-                return Redirect($"https://picclass.com/auth/callback?token={jwtToken}");
+                var jwtToken = _authService.GenerateJwtToken(user);
+                return Redirect($"https://picclass.com/cross-domain-auth?token={jwtToken}");
             }
         }
         catch (Exception ex)
@@ -92,7 +93,7 @@ public class AuthController : ControllerBase
             return Unauthorized("Invalid credentials");
         }
 
-        var token = await GenerateJwtToken(user.Id.ToString());
+        var token = GenerateJwtToken(user.Id.ToString());
         
         return Ok(new
         {
@@ -128,7 +129,7 @@ public class AuthController : ControllerBase
 
         // ユーザーを作成または取得
         var user = await _authService.FindOrCreateUserByEmailAsync(email);
-        var token = await GenerateJwtToken(user.Id.ToString());
+        var token = GenerateJwtToken(user.Id.ToString());
 
         // フロントエンドへリダイレクト
         return Redirect($"{_configuration["DomainSettings:NewDomain"]}/auth/success?token={token}");
@@ -163,7 +164,7 @@ public class AuthController : ControllerBase
         });
     }
 
-    private async Task<string> GenerateJwtToken(string userId)
+    private string GenerateJwtToken(string userId)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException());
