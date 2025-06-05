@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Pictyping.Core.Entities;
 using System.Net.Http.Json;
@@ -40,11 +41,19 @@ public class AuthIntegrationTests : IClassFixture<ApiTestFixture>
     }
 
     [Fact]
-    public async Task CrossDomainLogin_InvalidToken_ReturnsUnauthorized()
+    public async Task CrossDomainLogin_InvalidToken_RedirectsToErrorPage()
     {
-        var response = await _client.GetAsync("/api/auth/cross-domain-login?token=invalid_token");
+        // Configure client to not follow redirects so we can check the redirect response
+        var client = _factory.CreateClient(new WebApplicationFactoryClientOptions
+        {
+            AllowAutoRedirect = false
+        });
+        
+        var response = await client.GetAsync("/api/auth/cross-domain-login?token=invalid_token");
 
-        Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
+        // Should redirect to error page when token is invalid
+        Assert.Equal(System.Net.HttpStatusCode.Redirect, response.StatusCode);
+        Assert.Contains("picclass.com/login?migration_failed=true", response.Headers.Location?.ToString());
     }
 
     [Fact]

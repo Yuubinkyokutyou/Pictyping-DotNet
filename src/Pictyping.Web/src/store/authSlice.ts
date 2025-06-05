@@ -60,6 +60,11 @@ const authSlice = createSlice({
       state.user = action.payload
       state.isAuthenticated = true
     },
+    setAuthToken: (_state, action: PayloadAction<string>) => {
+      // Store token in localStorage for API calls
+      localStorage.setItem('authToken', action.payload)
+      // Note: User data will be fetched later via API
+    },
     clearAuth: (state) => {
       state.user = null
       state.isAuthenticated = false
@@ -108,5 +113,5 @@ const authSlice = createSlice({
   },
 })
 
-export const { setUser, clearAuth } = authSlice.actions
+export const { setUser, setAuthToken, clearAuth } = authSlice.actions
 export default authSlice.reducer

@@ -6,6 +6,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Pictyping.API.Services;
+using Pictyping.Core.Entities;
+using Pictyping.Core.DTOs;
 
 namespace Pictyping.API.Controllers;
 
@@ -28,46 +30,31 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// ドメイン間認証のためのエンドポイント
+    /// ドメイン間認証のためのエンドポイント (Domain Migration Strategy Implementation)
     /// 旧システムから新システムへリダイレクトされた際に使用
     /// </summary>
     [HttpGet("cross-domain-login")]
-    public async Task<IActionResult> CrossDomainLogin([FromQuery] string token, [FromQuery] string? returnUrl)
+    public async Task<IActionResult> CrossDomainLogin([FromQuery] string token)
     {
         try
         {
-            // 旧システムから渡されたトークンを検証
-            var principal = ValidateToken(token);
-            if (principal == null)
+            var userInfo = await _authService.ValidateMigrationToken(token);
+            if (userInfo != null)
             {
-                return Unauthorized("Invalid token");
+                // ユーザー情報から新システムでユーザー作成/更新
+                var user = await _authService.CreateOrUpdateUserFromMigration(userInfo);
+                
+                // 新システム用のJWTトークン生成
+                var jwtToken = _authService.GenerateJwtToken(user);
+                return Redirect($"https://picclass.com/cross-domain-auth?token={jwtToken}");
             }
-
-            // ユーザー情報を取得
-            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-            {
-                return BadRequest("User ID not found in token");
-            }
-
-            // 新システム用のトークンを生成
-            var newToken = await GenerateJwtToken(userId);
-
-            // Redisにセッション情報を保存（両システムで共有）
-            await _authService.SaveSessionAsync(userId, newToken);
-
-            // フロントエンドへリダイレクト（トークンを含む）
-            var redirectUrl = $"{_configuration["DomainSettings:NewDomain"]}/auth/callback" +
-                            $"?token={newToken}" +
-                            $"&returnUrl={Uri.EscapeDataString(returnUrl ?? "/")}";
-
-            return Redirect(redirectUrl);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Cross domain login failed");
-            return BadRequest("Authentication failed");
+            _logger.LogError(ex, "Cross-domain authentication failed");
         }
+        
+        return Redirect("https://picclass.com/login?migration_failed=true");
     }
 
     /// <summary>
@@ -106,7 +93,7 @@ public class AuthController : ControllerBase
             return Unauthorized("Invalid credentials");
         }
 
-        var token = await GenerateJwtToken(user.Id.ToString());
+        var token = GenerateJwtToken(user.Id.ToString());
         
         return Ok(new
         {
@@ -142,7 +129,7 @@ public class AuthController : ControllerBase
 
         // ユーザーを作成または取得
         var user = await _authService.FindOrCreateUserByEmailAsync(email);
-        var token = await GenerateJwtToken(user.Id.ToString());
+        var token = GenerateJwtToken(user.Id.ToString());
 
         // フロントエンドへリダイレクト
         return Redirect($"{_configuration["DomainSettings:NewDomain"]}/auth/success?token={token}");
@@ -177,7 +164,7 @@ public class AuthController : ControllerBase
         });
     }
 
-    private async Task<string> GenerateJwtToken(string userId)
+    private string GenerateJwtToken(string userId)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException());
@@ -200,6 +187,7 @@ public class AuthController : ControllerBase
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+
 
     private ClaimsPrincipal? ValidateToken(string token)
     {
@@ -231,3 +219,4 @@ public class LoginRequest
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
 }
+

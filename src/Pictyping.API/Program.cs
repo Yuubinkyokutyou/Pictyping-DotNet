@@ -61,7 +61,7 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
     return ConnectionMultiplexer.Connect(configuration);
 });
 
-// CORS - Unity WebGLとドメイン間通信のため
+// CORS - Domain Migration Strategy Implementation
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
@@ -69,6 +69,7 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins(
                     "https://pictyping.com",
+                    "https://picclass.com",
                     "https://new.pictyping.com",
                     "http://localhost:3000",
                     "http://localhost:5173")

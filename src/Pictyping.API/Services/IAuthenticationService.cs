@@ -1,4 +1,5 @@
 using Pictyping.Core.Entities;
+using Pictyping.Core.DTOs;
 
 namespace Pictyping.API.Services;
 
@@ -9,6 +10,16 @@ public interface IAuthenticationService
     Task<User?> GetUserByIdAsync(int userId);
     Task SaveSessionAsync(string userId, string token);
     Task<string> GenerateTemporaryTokenAsync(string userId);
+    
+    // Domain Migration Strategy Implementation
+    Task<User> CreateUserAsync(User user);
+    Task UpdateUserAsync(User user);
+    
+    // Migration Token Validation
+    Task<MigrationUserInfo?> ValidateMigrationToken(string token);
+    Task<User> CreateOrUpdateUserFromMigration(MigrationUserInfo userInfo);
+    string GenerateJwtToken(User user);
+    Task<bool> IsTokenUsed(string jti);
 }
 
 public interface IUserService
