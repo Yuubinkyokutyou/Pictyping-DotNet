@@ -5,8 +5,12 @@ const LoginPage = () => {
   const navigate = useNavigate()
 
   const handleGoogleLogin = () => {
-    // Google OAuth ログイン処理は後で実装
-    console.log('Google login clicked')
+    // 現在のURLをreturnUrlとして保存
+    const returnUrl = new URLSearchParams(window.location.search).get('returnUrl') || '/'
+    
+    // Google OAuth ログインエンドポイントにリダイレクト
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+    window.location.href = `${apiUrl}/api/auth/google/login?returnUrl=${encodeURIComponent(returnUrl)}`
   }
 
   return (
