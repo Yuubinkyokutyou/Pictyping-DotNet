@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAppDispatch } from '../store/hooks'
-import { setUser } from '../store/authSlice'
+import { setAuthToken } from '../store/authSlice'
 import { AuthService } from '../api/generated'
 
 /**
- * ドメイン間認証処理コンポーネント
+ * リダイレクト処理コンポーネント (Domain Migration Strategy Implementation)
  * 旧システムから新システムへリダイレクトされた際の認証処理を行う
  */
 const CrossDomainAuth = () => {
@@ -16,30 +16,28 @@ const CrossDomainAuth = () => {
   useEffect(() => {
     const handleAuth = async () => {
       const token = searchParams.get('token')
-      const returnUrl = searchParams.get('returnUrl') || '/'
 
-      if (!token) {
-        console.error('No token provided')
-        navigate('/login')
-        return
-      }
-
-      try {
-        // トークンを使ってクロスドメイン認証
-        await AuthService.getApiAuthCrossDomainLogin({ token, returnUrl })
-        
-        // トークンを保存
-        localStorage.setItem('token', token)
-        
-        // ユーザー情報を取得
-        const user = await AuthService.getApiAuthMe()
-        dispatch(setUser(user))
-        
-        // 元のページへリダイレクト
-        navigate(returnUrl)
-      } catch (error) {
-        console.error('Cross domain authentication failed:', error)
-        navigate('/login')
+      if (token) {
+        try {
+          // JWTトークンをlocalStorageに保存
+          localStorage.setItem('authToken', token)
+          
+          // Reduxストアを更新
+          dispatch(setAuthToken(token))
+          
+          // ユーザー情報を取得して確認
+          const user = await AuthService.getApiAuthMe()
+          console.log('Migration successful for user:', user)
+          
+          // ホームページにリダイレクト
+          navigate('/')
+        } catch (error) {
+          console.error('Migration token validation failed:', error)
+          navigate('/login?error=migration_failed')
+        }
+      } else {
+        console.error('No migration token provided')
+        navigate('/login?error=migration_failed')
       }
     }
 
@@ -54,7 +52,7 @@ const CrossDomainAuth = () => {
       height: '100vh' 
     }}>
       <div>
-        <h2>認証処理中...</h2>
+        <h2>認証情報を移行中...</h2>
         <p>しばらくお待ちください。</p>
       </div>
     </div>

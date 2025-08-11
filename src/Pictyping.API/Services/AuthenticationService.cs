@@ -1,7 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Pictyping.Core.Entities;
+using Pictyping.Core.DTOs;
 using Pictyping.Infrastructure.Data;
 using StackExchange.Redis;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -12,15 +16,18 @@ public class AuthenticationService : IAuthenticationService
     private readonly PictypingDbContext _context;
     private readonly IConnectionMultiplexer _redis;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<AuthenticationService> _logger;
 
     public AuthenticationService(
         PictypingDbContext context,
         IConnectionMultiplexer redis,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        ILogger<AuthenticationService> logger)
     {
         _context = context;
         _redis = redis;
         _configuration = configuration;
+        _logger = logger;
     }
 
     public async Task<User?> ValidateUserAsync(string email, string password)
@@ -82,6 +89,189 @@ public class AuthenticationService : IAuthenticationService
         await db.StringSetAsync(key, userId, TimeSpan.FromMinutes(5));
 
         return token;
+    }
+
+    // Domain Migration Strategy Implementation
+    public async Task<User> CreateUserAsync(User user)
+    {
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+        return user;
+    }
+
+    public async Task UpdateUserAsync(User user)
+    {
+        _context.Entry(user).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+    }
+
+    // Migration Token Validation Implementation
+    public async Task<MigrationUserInfo?> ValidateMigrationToken(string token)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var sharedSecret = _configuration["SharedJwtSecret"];
+        
+        if (string.IsNullOrEmpty(sharedSecret))
+        {
+            _logger.LogError("SharedJwtSecret not configured");
+            return null;
+        }
+
+        var validationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(sharedSecret)
+            ),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero
+        };
+
+        try
+        {
+            var principal = handler.ValidateToken(token, validationParameters, out var validatedToken);
+            var jwtToken = validatedToken as JwtSecurityToken;
+            
+            if (jwtToken == null)
+            {
+                _logger.LogWarning("Invalid token format");
+                return null;
+            }
+            
+            // ワンタイムトークンチェック（オプション）
+            var jti = jwtToken.Claims.FirstOrDefault(x => x.Type == "jti")?.Value;
+            if (!string.IsNullOrEmpty(jti) && await IsTokenUsed(jti))
+            {
+                _logger.LogWarning("Token already used: {Jti}", jti);
+                throw new SecurityTokenException("Token already used");
+            }
+            
+            // トークンから情報抽出
+            var userInfo = new MigrationUserInfo
+            {
+                UserId = int.Parse(jwtToken.Claims.First(x => x.Type == "user_id").Value),
+                Email = jwtToken.Claims.First(x => x.Type == "email").Value,
+                Name = jwtToken.Claims.FirstOrDefault(x => x.Type == "name")?.Value,
+                Provider = jwtToken.Claims.FirstOrDefault(x => x.Type == "provider")?.Value,
+                Admin = bool.Parse(jwtToken.Claims.FirstOrDefault(x => x.Type == "admin")?.Value ?? "false"),
+                Rating = int.Parse(jwtToken.Claims.FirstOrDefault(x => x.Type == "rating")?.Value ?? "1000"),
+                CreatedAt = DateTimeOffset.FromUnixTimeSeconds(
+                    long.Parse(jwtToken.Claims.FirstOrDefault(x => x.Type == "created_at")?.Value ?? "0")
+                ).DateTime,
+                Jti = jti
+            };
+
+            // トークンを使用済みとしてマーク
+            if (!string.IsNullOrEmpty(jti))
+            {
+                await MarkTokenAsUsed(jti);
+            }
+
+            return userInfo;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Token validation failed");
+            return null;
+        }
+    }
+
+    public async Task<User> CreateOrUpdateUserFromMigration(MigrationUserInfo userInfo)
+    {
+        // 既存ユーザーを検索（EmailまたはRailsのuser_idで）
+        var existingUser = await _context.Users
+            .FirstOrDefaultAsync(u => u.Email == userInfo.Email);
+
+        if (existingUser != null)
+        {
+            // 既存ユーザーの情報を更新
+            existingUser.Name = userInfo.Name ?? existingUser.Name;
+            existingUser.Provider = userInfo.Provider ?? existingUser.Provider;
+            existingUser.Admin = userInfo.Admin;
+            existingUser.Rating = userInfo.Rating;
+            existingUser.UpdatedAt = DateTime.UtcNow;
+            
+            await _context.SaveChangesAsync();
+            return existingUser;
+        }
+        else
+        {
+            // 新規ユーザーを作成
+            var newUser = new User
+            {
+                Email = userInfo.Email,
+                Name = userInfo.Name,
+                Provider = userInfo.Provider,
+                Admin = userInfo.Admin,
+                Rating = userInfo.Rating,
+                EncryptedPassword = "", // OAuth/Migration users don't have passwords
+                Guest = false,
+                CreatedAt = userInfo.CreatedAt,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
+            return newUser;
+        }
+    }
+
+    public string GenerateJwtToken(User user)
+    {
+        var jwtSecret = _configuration["Jwt:Key"];
+        if (string.IsNullOrEmpty(jwtSecret))
+        {
+            throw new InvalidOperationException("JWT secret not configured");
+        }
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(jwtSecret);
+        
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Name, user.Name ?? user.Email),
+            new Claim("admin", user.Admin.ToString().ToLower()),
+            new Claim("rating", user.Rating.ToString()),
+            new Claim("provider", user.Provider ?? "email"),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(JwtRegisteredClaimNames.Iat, 
+                new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString(), 
+                ClaimValueTypes.Integer64)
+        };
+
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddDays(7), // 7 days expiry
+            Issuer = _configuration["Jwt:Issuer"],
+            Audience = _configuration["Jwt:Audience"],
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), 
+                SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
+    }
+
+    public async Task<bool> IsTokenUsed(string jti)
+    {
+        if (string.IsNullOrEmpty(jti)) return false;
+        
+        var db = _redis.GetDatabase();
+        var key = $"used_token:{jti}";
+        return await db.KeyExistsAsync(key);
+    }
+
+    private async Task MarkTokenAsUsed(string jti)
+    {
+        if (string.IsNullOrEmpty(jti)) return;
+        
+        var db = _redis.GetDatabase();
+        var key = $"used_token:{jti}";
+        await db.StringSetAsync(key, "used", TimeSpan.FromHours(24)); // Keep for 24 hours
     }
 }
 
