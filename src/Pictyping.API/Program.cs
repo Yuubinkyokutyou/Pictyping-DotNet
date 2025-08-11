@@ -141,26 +141,39 @@ async Task InitializeDatabaseAsync(WebApplication app)
     
     try
     {
-        // Test database connection
+        // Test database connection (all environments)
         await context.Database.CanConnectAsync();
         logger.LogInformation("Database connection successful");
         
-        // Check if we have existing data (migrated from Rails)
+        // Check existing data count (useful for monitoring in all environments)
         var userCount = await context.Users.CountAsync();
         logger.LogInformation($"Found {userCount} users in database");
         
-        // Only seed if no data exists and seeding is enabled
-        if (userCount == 0 && app.Environment.IsDevelopment())
+        // Development-only operations
+        if (app.Environment.IsDevelopment())
         {
-            var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-            var seedData = configuration.GetValue<bool>("DataSeeding:SeedDataOnStartup", false);
+            // Apply any pending migrations automatically
+            logger.LogInformation("Development environment: Checking for pending migrations...");
+            await context.Database.MigrateAsync();
+            logger.LogInformation("Database migrations applied successfully");
             
-            if (seedData)
+            // Seed development data if configured and no data exists
+            if (userCount == 0)
             {
-                logger.LogInformation("Starting development data seeding...");
-                var dataSeedingService = scope.ServiceProvider.GetRequiredService<IDataSeedingService>();
-                await dataSeedingService.SeedDevelopmentDataAsync();
+                var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+                var seedData = configuration.GetValue<bool>("DataSeeding:SeedDataOnStartup", false);
+                
+                if (seedData)
+                {
+                    logger.LogInformation("Starting development data seeding...");
+                    var dataSeedingService = scope.ServiceProvider.GetRequiredService<IDataSeedingService>();
+                    await dataSeedingService.SeedDevelopmentDataAsync();
+                }
             }
+        }
+        else
+        {
+            logger.LogInformation("Production environment: Skipping automatic migrations and seeding");
         }
     }
     catch (Exception ex)
