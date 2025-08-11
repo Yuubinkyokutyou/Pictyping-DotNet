@@ -6,6 +6,11 @@ import path from 'path'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   
+  // Docker環境の場合はコンテナ名を使用
+  const apiUrl = process.env.VITE_API_URL || env.VITE_API_URL || 'http://localhost:5000'
+  const isDocker = apiUrl.includes('api:')
+  const proxyTarget = isDocker ? 'http://api:5000' : apiUrl
+  
   return {
     plugins: [react()],
     resolve: {
@@ -18,7 +23,7 @@ export default defineConfig(({ mode }) => {
       port: 3000,
       proxy: {
         '/api': {
-          target: env.VITE_API_URL || 'http://localhost:5000',
+          target: proxyTarget,
           changeOrigin: true,
         },
       },
