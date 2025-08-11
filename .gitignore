@@ -88,3 +88,7 @@ nginx/ssl/
 # Temporary files
 *.tmp
 *.temp
+
+# Test Results
+TestResults/
+[Tt]est[Rr]esults/
