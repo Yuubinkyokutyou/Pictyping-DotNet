@@ -122,6 +122,22 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
+    /// Google OAuth ログイン開始
+    /// </summary>
+    [HttpGet("google/login")]
+    public IActionResult GoogleLogin([FromQuery] string? returnUrl)
+    {
+        var redirectUrl = Url.Action(nameof(GoogleCallback), "Auth");
+        var properties = new AuthenticationProperties 
+        { 
+            RedirectUri = redirectUrl,
+            Items = { { "returnUrl", returnUrl ?? "/" } }
+        };
+        
+        return Challenge(properties, "Google");
+    }
+
+    /// <summary>
     /// Google OAuth コールバック
     /// </summary>
     [HttpGet("google/callback")]
@@ -131,21 +147,44 @@ public class AuthController : ControllerBase
         var authenticateResult = await HttpContext.AuthenticateAsync("Google");
         if (!authenticateResult.Succeeded)
         {
-            return BadRequest("Google authentication failed");
+            _logger.LogError("Google authentication failed");
+            return Redirect($"{_configuration["DomainSettings:NewDomain"]}/login?error=google_auth_failed");
         }
 
         var email = authenticateResult.Principal?.FindFirst(ClaimTypes.Email)?.Value;
-        if (string.IsNullOrEmpty(email))
+        var googleId = authenticateResult.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var displayName = authenticateResult.Principal?.FindFirst(ClaimTypes.Name)?.Value;
+
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(googleId))
         {
-            return BadRequest("Email not found");
+            _logger.LogError("Required Google user information not found. Email: {Email}, GoogleId: {GoogleId}", email, googleId);
+            return Redirect($"{_configuration["DomainSettings:NewDomain"]}/login?error=missing_user_info");
         }
 
-        // ユーザーを作成または取得
-        var user = await _authService.FindOrCreateUserByEmailAsync(email);
-        var token = await GenerateJwtToken(user.Id.ToString());
+        try
+        {
+            // OAuthアイデンティティでユーザーを作成または取得
+            var user = await _authService.FindOrCreateUserByOAuthAsync("google", googleId, email, displayName);
+            var token = await GenerateJwtToken(user.Id.ToString());
+            
+            // セッション情報を保存
+            await _authService.SaveSessionAsync(user.Id.ToString(), token);
 
-        // フロントエンドへリダイレクト
-        return Redirect($"{_configuration["DomainSettings:NewDomain"]}/auth/success?token={token}");
+            // returnUrlがあれば取得
+            var returnUrl = HttpContext.Request.Query["state"].FirstOrDefault() ?? "/";
+
+            // フロントエンドへリダイレクト
+            var redirectUrl = $"{_configuration["DomainSettings:NewDomain"]}/auth/callback" +
+                             $"?token={token}" +
+                             $"&returnUrl={Uri.EscapeDataString(returnUrl)}";
+            
+            return Redirect(redirectUrl);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Google OAuth callback processing failed for email: {Email}", email);
+            return Redirect($"{_configuration["DomainSettings:NewDomain"]}/login?error=oauth_processing_failed");
+        }
     }
 
     /// <summary>
