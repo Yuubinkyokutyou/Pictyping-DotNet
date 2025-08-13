@@ -4,7 +4,10 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
+  // .envファイルから環境変数を読み込み（開発時は.env.development、本番は.env.production）
   const env = loadEnv(mode, process.cwd(), '')
+
+  const apiUrl = env.VITE_API_URL
   
   return {
     plugins: [react()],
@@ -18,7 +21,7 @@ export default defineConfig(({ mode }) => {
       port: 3000,
       proxy: {
         '/api': {
-          target: env.VITE_API_URL || 'http://localhost:5000',
+          target: apiUrl,
           changeOrigin: true,
         },
       },
