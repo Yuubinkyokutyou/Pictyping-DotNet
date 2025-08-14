@@ -8,15 +8,13 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Cookie送信を有効化
 })
 
 // リクエストインターセプター
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
+    // Cookie認証を使用するため、Authorization headerは不要
     return config
   },
   (error) => {
@@ -29,21 +27,9 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      // トークンが無効な場合
-      localStorage.removeItem('token')
-      
-      // 開発環境では何もしない（リダイレクトしない）
-      if (import.meta.env.DEV) {
-        return Promise.reject(error)
-      }
-      
-      // 本番環境でのみドメイン間処理
-      const currentDomain = window.location.hostname
-      const isOldDomain = currentDomain === 'pictyping.com'
-      
-      if (isOldDomain) {
-        // 旧ドメインから新ドメインへリダイレクト
-        window.location.href = `https://new.pictyping.com/auth/cross-domain?returnUrl=${encodeURIComponent(window.location.pathname)}`
+      // 認証エラーの場合、ログインページへリダイレクト
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login'
       }
     }
     return Promise.reject(error)
@@ -57,8 +43,7 @@ const authService = {
   },
 
   logout: async () => {
-    localStorage.removeItem('token')
-    // 両ドメインのセッションをクリア
+    // Cookie認証のログアウト
     await axiosInstance.post(`${API_URL}/logout`)
   },
 
@@ -66,19 +51,6 @@ const authService = {
     return await axiosInstance.get(`${API_URL}/me`)
   },
 
-  // ドメイン間認証用
-  handleCrossDomainAuth: async (token: string) => {
-    localStorage.setItem('token', token)
-    return await axiosInstance.get(`${API_URL}/me`)
-  },
-
-  // 旧システムへのリダイレクト用トークン取得
-  getRedirectToken: async (targetPath: string) => {
-    const response = await axiosInstance.get(`${API_URL}/redirect-to-legacy`, {
-      params: { targetPath }
-    })
-    return response.data
-  },
 }
 
 export default authService

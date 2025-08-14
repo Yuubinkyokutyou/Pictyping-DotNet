@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using Pictyping.API.Services;
 
 namespace Pictyping.API.Controllers;
@@ -27,72 +25,6 @@ public class AuthController : ControllerBase
         _logger = logger;
     }
 
-    /// <summary>
-    /// ドメイン間認証のためのエンドポイント
-    /// 旧システムから新システムへリダイレクトされた際に使用
-    /// </summary>
-    [HttpGet("cross-domain-login")]
-    public async Task<IActionResult> CrossDomainLogin([FromQuery] string token, [FromQuery] string? returnUrl)
-    {
-        try
-        {
-            // 旧システムから渡されたトークンを検証
-            var principal = ValidateToken(token);
-            if (principal == null)
-            {
-                return Unauthorized("Invalid token");
-            }
-
-            // ユーザー情報を取得
-            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-            {
-                return BadRequest("User ID not found in token");
-            }
-
-            // 新システム用のトークンを生成
-            var newToken = await GenerateJwtToken(userId);
-
-            // Redisにセッション情報を保存（両システムで共有）
-            await _authService.SaveSessionAsync(userId, newToken);
-
-            // フロントエンドへリダイレクト（トークンを含む）
-            var redirectUrl = $"{_configuration["DomainSettings:NewDomain"]}/auth/callback" +
-                            $"?token={newToken}" +
-                            $"&returnUrl={Uri.EscapeDataString(returnUrl ?? "/")}";
-
-            return Redirect(redirectUrl);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Cross domain login failed");
-            return BadRequest("Authentication failed");
-        }
-    }
-
-    /// <summary>
-    /// 新システムから旧システムへアクセスする際のリダイレクト
-    /// </summary>
-    [HttpGet("redirect-to-legacy")]
-    [Authorize]
-    public async Task<IActionResult> RedirectToLegacy([FromQuery] string targetPath)
-    {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Unauthorized();
-        }
-
-        // 一時的な認証トークンを生成
-        var temporaryToken = await _authService.GenerateTemporaryTokenAsync(userId);
-
-        // 旧システムへリダイレクト
-        var redirectUrl = $"{_configuration["DomainSettings:OldDomain"]}/auth/verify" +
-                         $"?token={temporaryToken}" +
-                         $"&redirect={Uri.EscapeDataString(targetPath)}";
-
-        return Redirect(redirectUrl);
-    }
 
     /// <summary>
     /// ログイン（通常のログイン処理）
@@ -106,19 +38,51 @@ public class AuthController : ControllerBase
             return Unauthorized("Invalid credentials");
         }
 
-        var token = await GenerateJwtToken(user.Id.ToString());
+        // Cookie認証用のClaimsを作成
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Name, user.Name ?? user.Email),
+            new Claim("rating", user.Rating.ToString()),
+            new Claim("isAdmin", user.Admin.ToString())
+        };
+
+        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var authProperties = new AuthenticationProperties
+        {
+            IsPersistent = true,
+            ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
+        };
+
+        // Cookieを設定してサインイン
+        await HttpContext.SignInAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            new ClaimsPrincipal(claimsIdentity),
+            authProperties);
         
         return Ok(new
         {
-            token,
             user = new
             {
                 id = user.Id,
                 email = user.Email,
                 displayName = user.Name,
-                rating = user.Rating
+                rating = user.Rating,
+                isAdmin = user.Admin
             }
         });
+    }
+
+    /// <summary>
+    /// ログアウト
+    /// </summary>
+    [HttpPost("logout")]
+    [Authorize]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return Ok(new { message = "Logged out successfully" });
     }
 
     /// <summary>
@@ -165,18 +129,36 @@ public class AuthController : ControllerBase
         {
             // OAuthアイデンティティでユーザーを作成または取得
             var user = await _authService.FindOrCreateUserByOAuthAsync("google", googleId, email, displayName);
-            var token = await GenerateJwtToken(user.Id.ToString());
             
-            // セッション情報を保存
-            await _authService.SaveSessionAsync(user.Id.ToString(), token);
+            // Cookie認証用のClaimsを作成
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.Name ?? user.Email),
+                new Claim("rating", user.Rating.ToString()),
+                new Claim("isAdmin", user.Admin.ToString())
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
+            };
+
+            // Cookieを設定してサインイン
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                authProperties);
 
             // returnUrlがあれば取得
             var returnUrl = HttpContext.Request.Query["state"].FirstOrDefault() ?? "/";
 
             // フロントエンドへリダイレクト
             var redirectUrl = $"{_configuration["DomainSettings:NewDomain"]}/auth/callback" +
-                             $"?token={token}" +
-                             $"&returnUrl={Uri.EscapeDataString(returnUrl)}";
+                             $"?returnUrl={Uri.EscapeDataString(returnUrl)}";
             
             return Redirect(redirectUrl);
         }
@@ -214,54 +196,6 @@ public class AuthController : ControllerBase
             rating = user.Rating,
             isAdmin = user.Admin
         });
-    }
-
-    private async Task<string> GenerateJwtToken(string userId)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException());
-        
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, userId),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            }),
-            Expires = DateTime.UtcNow.AddMinutes(double.Parse(_configuration["Jwt:ExpiryMinutes"] ?? "60")),
-            Issuer = _configuration["Jwt:Issuer"],
-            Audience = _configuration["Jwt:Audience"],
-            SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(key),
-                SecurityAlgorithms.HmacSha256Signature)
-        };
-
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
-    }
-
-    private ClaimsPrincipal? ValidateToken(string token)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException());
-
-        try
-        {
-            var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false, // 旧システムからのトークンも受け入れる
-                ValidateAudience = false,
-                ClockSkew = TimeSpan.Zero
-            }, out SecurityToken validatedToken);
-
-            return principal;
-        }
-        catch
-        {
-            return null;
-        }
     }
 }
 

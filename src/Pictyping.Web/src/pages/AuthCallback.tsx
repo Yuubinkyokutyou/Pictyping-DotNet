@@ -11,19 +11,10 @@ const AuthCallback = () => {
 
   useEffect(() => {
     const handleCallback = async () => {
-      const token = searchParams.get('token')
       const returnUrl = searchParams.get('returnUrl') || '/'
 
-      if (!token) {
-        navigate('/login')
-        return
-      }
-
       try {
-        // トークンを保存
-        localStorage.setItem('token', token)
-        
-        // ユーザー情報を取得
+        // Cookie認証後、ユーザー情報を取得
         const user = await AuthService.getApiAuthMe()
         dispatch(setUser(user))
         

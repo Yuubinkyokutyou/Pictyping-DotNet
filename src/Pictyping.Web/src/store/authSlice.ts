@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { AuthService } from '../api/generated'
 import type { LoginRequest } from '../api/generated'
+import authService from '../services/authService'
 
 interface User {
   id: number
@@ -45,10 +46,8 @@ export const login = createAsyncThunk(
 export const logout = createAsyncThunk(
   'auth/logout',
   async () => {
-    // ローカルストレージからトークンを削除
-    localStorage.removeItem('token')
-    // Note: サーバーサイドのログアウトエンドポイントが必要な場合は、
-    // 生成されたAPIクライアントに追加する必要があります
+    // サーバーサイドのCookieをクリア
+    await authService.logout()
   }
 )
 
@@ -91,9 +90,6 @@ const authSlice = createSlice({
         // レスポンス構造に応じて調整が必要な場合があります
         state.user = action.payload?.user || action.payload
         state.isAuthenticated = true
-        if (action.payload?.token) {
-          localStorage.setItem('token', action.payload.token)
-        }
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false
@@ -103,7 +99,6 @@ const authSlice = createSlice({
       .addCase(logout.fulfilled, (state) => {
         state.user = null
         state.isAuthenticated = false
-        localStorage.removeItem('token')
       })
   },
 })
