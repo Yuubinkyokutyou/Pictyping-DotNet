@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,12 +19,12 @@ public class ApiTestFixture : WebApplicationFactory<Program>
         builder.ConfigureServices(services =>
         {
             // Remove the real database context
-            var descriptor = services.SingleOrDefault(
+            var dbDescriptor = services.SingleOrDefault(
                 d => d.ServiceType == typeof(DbContextOptions<PictypingDbContext>));
 
-            if (descriptor != null)
+            if (dbDescriptor != null)
             {
-                services.Remove(descriptor);
+                services.Remove(dbDescriptor);
             }
 
             // Remove Redis connection
@@ -45,6 +48,27 @@ public class ApiTestFixture : WebApplicationFactory<Program>
             services.AddSingleton(mockRedis.Object);
 
             services.AddLogging(builder => builder.AddConsole());
+
+            // 既存の認証サービスを削除
+            var authServiceDescriptors = services
+                .Where(d => d.ServiceType == typeof(IAuthenticationService) ||
+                           d.ServiceType == typeof(IAuthenticationSchemeProvider) ||
+                           d.ServiceType == typeof(IAuthenticationHandlerProvider))
+                .ToList();
+
+            foreach (var descriptor in authServiceDescriptors)
+            {
+                services.Remove(descriptor);
+            }
+
+            // テスト用の認証を追加
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = TestAuthenticationHandler.AuthenticationScheme;
+                options.DefaultChallengeScheme = TestAuthenticationHandler.AuthenticationScheme;
+            })
+            .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
+                TestAuthenticationHandler.AuthenticationScheme, options => { });
         });
 
         builder.UseEnvironment("Testing");
