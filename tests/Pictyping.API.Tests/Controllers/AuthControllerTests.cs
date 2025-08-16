@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Pictyping.API.Controllers;
@@ -62,18 +63,41 @@ public class AuthControllerTests
         _mockAuthService.Setup(s => s.ValidateUserAsync(loginRequest.Email, loginRequest.Password))
             .ReturnsAsync(user);
 
+        // HttpContextをモック
+        var httpContext = new DefaultHttpContext();
+        var authServiceMock = new Mock<Microsoft.AspNetCore.Authentication.IAuthenticationService>();
+        authServiceMock
+            .Setup(s => s.SignInAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<ClaimsPrincipal>(), It.IsAny<Microsoft.AspNetCore.Authentication.AuthenticationProperties>()))
+            .Returns(Task.CompletedTask);
+
+        httpContext.RequestServices = new ServiceCollection()
+            .AddSingleton(authServiceMock.Object)
+            .BuildServiceProvider();
+
+        _controller.ControllerContext = new ControllerContext()
+        {
+            HttpContext = httpContext
+        };
+
         var result = await _controller.Login(loginRequest);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.NotNull(okResult.Value);
         
         var response = okResult.Value;
-        var tokenProperty = response.GetType().GetProperty("token");
         var userProperty = response.GetType().GetProperty("user");
         
-        Assert.NotNull(tokenProperty);
         Assert.NotNull(userProperty);
-        Assert.NotNull(tokenProperty.GetValue(response));
+        var userObject = userProperty.GetValue(response);
+        Assert.NotNull(userObject);
+        
+        // Cookie認証に変更されたため、tokenプロパティはもう存在しない
+        // 代わりにSignInAsyncが呼ばれたことを確認
+        authServiceMock.Verify(s => s.SignInAsync(
+            It.IsAny<HttpContext>(),
+            It.IsAny<string>(),
+            It.IsAny<ClaimsPrincipal>(),
+            It.IsAny<Microsoft.AspNetCore.Authentication.AuthenticationProperties>()), Times.Once);
     }
 
     [Fact]
