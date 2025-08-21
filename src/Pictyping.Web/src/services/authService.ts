@@ -1,14 +1,6 @@
 import axios from 'axios'
 
 const API_URL = '/api/auth'
-const TOKEN_KEY = 'auth_token'
-
-// トークン管理
-const tokenManager = {
-  getToken: () => localStorage.getItem(TOKEN_KEY),
-  setToken: (token: string) => localStorage.setItem(TOKEN_KEY, token),
-  removeToken: () => localStorage.removeItem(TOKEN_KEY),
-}
 
 // Axiosインスタンスの作成
 const axiosInstance = axios.create({
@@ -16,14 +8,12 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: false, // JWTトークン認証なのでCookie送信は不要
 })
 
 // リクエストインターセプター
 axiosInstance.interceptors.request.use(
   (config) => {
-    // トークンがあればAuthorizationヘッダーに追加
-    const token = tokenManager.getToken()
+    const token = localStorage.getItem('token')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -39,10 +29,21 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      // 認証エラーの場合、トークンを削除してログインページへリダイレクト
-      tokenManager.removeToken()
-      if (!window.location.pathname.includes('/login')) {
-        window.location.href = '/login'
+      // トークンが無効な場合
+      localStorage.removeItem('token')
+      
+      // 開発環境では何もしない（リダイレクトしない）
+      if (import.meta.env.DEV) {
+        return Promise.reject(error)
+      }
+      
+      // 本番環境でのみドメイン間処理
+      const currentDomain = window.location.hostname
+      const isOldDomain = currentDomain === 'pictyping.com'
+      
+      if (isOldDomain) {
+        // 旧ドメインから新ドメインへリダイレクト
+        window.location.href = `https://new.pictyping.com/auth/cross-domain?returnUrl=${encodeURIComponent(window.location.pathname)}`
       }
     }
     return Promise.reject(error)
@@ -52,29 +53,33 @@ axiosInstance.interceptors.response.use(
 const authService = {
   login: async (email: string, password: string) => {
     const response = await axiosInstance.post(`${API_URL}/login`, { email, password })
-    // トークンを保存
-    if (response.data?.token) {
-      tokenManager.setToken(response.data.token)
-    }
     return response
   },
 
   logout: async () => {
-    // サーバーにログアウトリクエストを送信
+    localStorage.removeItem('token')
+    // 両ドメインのセッションをクリア
     await axiosInstance.post(`${API_URL}/logout`)
-    // ローカルのトークンを削除
-    tokenManager.removeToken()
   },
 
   getCurrentUser: async () => {
     return await axiosInstance.get(`${API_URL}/me`)
   },
 
-  // トークン管理用のメソッドをエクスポート
-  setToken: tokenManager.setToken,
-  getToken: tokenManager.getToken,
-  removeToken: tokenManager.removeToken,
+  // ドメイン間認証用
+  handleCrossDomainAuth: async (token: string) => {
+    localStorage.setItem('token', token)
+    return await axiosInstance.get(`${API_URL}/me`)
+  },
+
+  // 旧システムへのリダイレクト用トークン取得
+  getRedirectToken: async (targetPath: string) => {
+    const response = await axiosInstance.get(`${API_URL}/redirect-to-legacy`, {
+      params: { targetPath }
+    })
+    return response.data
+  },
 }
 
 export default authService
-export { axiosInstance, tokenManager }
+export { axiosInstance }

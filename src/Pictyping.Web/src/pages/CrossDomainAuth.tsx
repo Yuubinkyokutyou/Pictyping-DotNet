@@ -4,22 +4,30 @@ import { useAppDispatch } from '../store/hooks'
 import { setUser } from '../store/authSlice'
 import { AuthService } from '../api/generated'
 
-const AuthCallback = () => {
+/**
+ * ドメイン間認証処理コンポーネント
+ * 旧システムから新システムへリダイレクトされた際の認証処理を行う
+ */
+const CrossDomainAuth = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const [searchParams] = useSearchParams()
 
   useEffect(() => {
-    const handleCallback = async () => {
+    const handleAuth = async () => {
       const token = searchParams.get('token')
       const returnUrl = searchParams.get('returnUrl') || '/'
 
       if (!token) {
+        console.error('No token provided')
         navigate('/login')
         return
       }
 
       try {
+        // トークンを使ってクロスドメイン認証
+        await AuthService.getApiAuthCrossDomainLogin({ token, returnUrl })
+        
         // トークンを保存
         localStorage.setItem('token', token)
         
@@ -30,12 +38,12 @@ const AuthCallback = () => {
         // 元のページへリダイレクト
         navigate(returnUrl)
       } catch (error) {
-        console.error('Authentication failed:', error)
+        console.error('Cross domain authentication failed:', error)
         navigate('/login')
       }
     }
 
-    handleCallback()
+    handleAuth()
   }, [dispatch, navigate, searchParams])
 
   return (
@@ -46,11 +54,11 @@ const AuthCallback = () => {
       height: '100vh' 
     }}>
       <div>
-        <h2>ログイン処理中...</h2>
+        <h2>認証処理中...</h2>
         <p>しばらくお待ちください。</p>
       </div>
     </div>
   )
 }
 
-export default AuthCallback
+export default CrossDomainAuth

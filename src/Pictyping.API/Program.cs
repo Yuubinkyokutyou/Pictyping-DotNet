@@ -1,10 +1,9 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Pictyping.Infrastructure.Data;
 using StackExchange.Redis;
+using System.Text;
 using Pictyping.API.Services;
 using Pictyping.Core.Interfaces;
 using Pictyping.Infrastructure.Services;
@@ -21,6 +20,31 @@ builder.Services.AddSwaggerGen(c =>
         Title = "Pictyping API",
         Version = "v1",
         Description = "Pictyping game API for typing battles and rankings"
+    });
+    
+    // JWT Bearer認証の設定
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
     });
 });
 
@@ -55,10 +79,6 @@ builder.Services.AddCors(options =>
 });
 
 // Authentication
-var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is not configured");
-var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "Pictyping";
-var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "PictypingUsers";
-
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -72,50 +92,37 @@ builder.Services.AddAuthentication(options =>
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtIssuer,
-            ValidAudience = jwtAudience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
-            ClockSkew = TimeSpan.Zero
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? ""))
         };
-
+        
+        // ドメイン間でトークンを共有するための設定
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
             {
-                // Allow the token to be passed from query string for SignalR
-                var accessToken = context.Request.Query["access_token"];
-                var path = context.HttpContext.Request.Path;
-                if (!string.IsNullOrEmpty(accessToken) && 
-                    (path.StartsWithSegments("/hubs")))
+                // クエリパラメータからもトークンを取得（リダイレクト時用）
+                var token = context.Request.Query["access_token"];
+                if (!string.IsNullOrEmpty(token))
                 {
-                    context.Token = accessToken;
+                    context.Token = token;
                 }
                 return Task.CompletedTask;
             }
         };
     })
-    .AddCookie("TempCookie", options =>
-    {
-        options.Cookie.Name = "Pictyping.TempAuth";
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() 
-            ? CookieSecurePolicy.SameAsRequest 
-            : CookieSecurePolicy.Always;
-        options.Cookie.SameSite = SameSiteMode.Lax;
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-    })
     .AddGoogle(googleOptions =>
     {
         googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"] ?? "";
         googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"] ?? "";
-        googleOptions.SignInScheme = "TempCookie";
     });
 
 builder.Services.AddAuthorization();
 
 // Services
 builder.Services.AddScoped<Pictyping.API.Services.IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<Pictyping.API.Services.IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<Pictyping.Core.Interfaces.IUserService, Pictyping.Infrastructure.Services.UserService>();
 builder.Services.AddScoped<Pictyping.Core.Interfaces.ITypingBattleService, Pictyping.Infrastructure.Services.TypingBattleService>();
 builder.Services.AddScoped<Pictyping.Core.Interfaces.IRankingService, Pictyping.Infrastructure.Services.RankingService>();
@@ -124,11 +131,7 @@ builder.Services.AddScoped<Pictyping.Core.Interfaces.IDataSeedingService, Pictyp
 var app = builder.Build();
 
 // Initialize database and seed data
-// Only initialize database in non-test environments
-if (!app.Environment.IsEnvironment("Testing"))
-{
-    await InitializeDatabaseAsync(app);
-}
+// await InitializeDatabaseAsync(app);  // Temporarily disabled for testing
 
 async Task InitializeDatabaseAsync(WebApplication app)
 {

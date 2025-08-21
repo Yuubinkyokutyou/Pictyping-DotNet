@@ -145,7 +145,8 @@ export const resolve = async <T>(options: ApiRequestOptions, resolver?: T | Reso
 };
 
 export const getHeaders = async (config: OpenAPIConfig, options: ApiRequestOptions, formData?: FormData): Promise<Record<string, string>> => {
-    const [username, password, additionalHeaders] = await Promise.all([
+    const [token, username, password, additionalHeaders] = await Promise.all([
+        resolve(options, config.TOKEN),
         resolve(options, config.USERNAME),
         resolve(options, config.PASSWORD),
         resolve(options, config.HEADERS),
@@ -165,10 +166,9 @@ export const getHeaders = async (config: OpenAPIConfig, options: ApiRequestOptio
         [key]: String(value),
     }), {} as Record<string, string>);
 
-    // Cookie認証を使用するため、Authorization headerは不要
-    // if (isStringWithValue(token)) {
-    //     headers['Authorization'] = `Bearer ${token}`;
-    // }
+    if (isStringWithValue(token)) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
 
     if (isStringWithValue(username) && isStringWithValue(password)) {
         const credentials = base64(`${username}:${password}`);

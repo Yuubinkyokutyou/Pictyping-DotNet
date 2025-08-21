@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Pictyping.API.Controllers;
@@ -16,7 +15,6 @@ public class AuthControllerTests
 {
     private readonly Mock<IConfiguration> _mockConfiguration;
     private readonly Mock<IAuthenticationService> _mockAuthService;
-    private readonly Mock<IJwtTokenService> _mockJwtTokenService;
     private readonly Mock<ILogger<AuthController>> _mockLogger;
     private readonly AuthController _controller;
 
@@ -24,7 +22,6 @@ public class AuthControllerTests
     {
         _mockConfiguration = new Mock<IConfiguration>();
         _mockAuthService = new Mock<IAuthenticationService>();
-        _mockJwtTokenService = new Mock<IJwtTokenService>();
         _mockLogger = new Mock<ILogger<AuthController>>();
 
         SetupConfiguration();
@@ -32,7 +29,6 @@ public class AuthControllerTests
         _controller = new AuthController(
             _mockConfiguration.Object,
             _mockAuthService.Object,
-            _mockJwtTokenService.Object,
             _mockLogger.Object);
     }
 
@@ -63,36 +59,21 @@ public class AuthControllerTests
             Rating = 1500
         };
 
-        var expectedToken = "test-jwt-token";
-
         _mockAuthService.Setup(s => s.ValidateUserAsync(loginRequest.Email, loginRequest.Password))
             .ReturnsAsync(user);
-        
-        _mockJwtTokenService.Setup(s => s.GenerateToken(user))
-            .Returns(expectedToken);
 
         var result = await _controller.Login(loginRequest);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.NotNull(okResult.Value);
         
-        dynamic response = okResult.Value;
-        Assert.NotNull(response);
-        
-        // JWTトークンが返されることを確認
+        var response = okResult.Value;
         var tokenProperty = response.GetType().GetProperty("token");
-        Assert.NotNull(tokenProperty);
-        var token = tokenProperty.GetValue(response);
-        Assert.Equal(expectedToken, token);
-        
-        // ユーザー情報が返されることを確認
         var userProperty = response.GetType().GetProperty("user");
-        Assert.NotNull(userProperty);
-        var userObject = userProperty.GetValue(response);
-        Assert.NotNull(userObject);
         
-        // JWTトークン生成メソッドが呼ばれたことを確認
-        _mockJwtTokenService.Verify(s => s.GenerateToken(It.IsAny<User>()), Times.Once);
+        Assert.NotNull(tokenProperty);
+        Assert.NotNull(userProperty);
+        Assert.NotNull(tokenProperty.GetValue(response));
     }
 
     [Fact]
@@ -207,4 +188,58 @@ public class AuthControllerTests
         Assert.IsType<UnauthorizedResult>(result);
     }
 
+    [Fact]
+    public async Task RedirectToLegacy_ValidUser_ReturnsRedirect()
+    {
+        var userId = "1";
+        var targetPath = "/some/path";
+        var temporaryToken = "temp_token_123";
+
+        _mockAuthService.Setup(s => s.GenerateTemporaryTokenAsync(userId))
+            .ReturnsAsync(temporaryToken);
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, userId)
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuth");
+        var claimsPrincipal = new ClaimsPrincipal(identity);
+
+        _controller.ControllerContext = new ControllerContext()
+        {
+            HttpContext = new DefaultHttpContext()
+            {
+                User = claimsPrincipal
+            }
+        };
+
+        var result = await _controller.RedirectToLegacy(targetPath);
+
+        var redirectResult = Assert.IsType<RedirectResult>(result);
+        Assert.Contains("https://pictyping.com/auth/verify", redirectResult.Url);
+        Assert.Contains(temporaryToken, redirectResult.Url);
+        Assert.Contains(Uri.EscapeDataString(targetPath), redirectResult.Url);
+    }
+
+    [Fact]
+    public async Task RedirectToLegacy_NoUserIdInClaims_ReturnsUnauthorized()
+    {
+        var targetPath = "/some/path";
+
+        var claims = new List<Claim>();
+        var identity = new ClaimsIdentity(claims, "TestAuth");
+        var claimsPrincipal = new ClaimsPrincipal(identity);
+
+        _controller.ControllerContext = new ControllerContext()
+        {
+            HttpContext = new DefaultHttpContext()
+            {
+                User = claimsPrincipal
+            }
+        };
+
+        var result = await _controller.RedirectToLegacy(targetPath);
+
+        Assert.IsType<UnauthorizedResult>(result);
+    }
 }

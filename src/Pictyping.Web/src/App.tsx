@@ -10,6 +10,7 @@ import PrivacyPage from './pages/PrivacyPage'
 import TermsPage from './pages/TermsPage'
 import ContactPage from './pages/ContactPage'
 import AuthCallback from './pages/AuthCallback'
+import CrossDomainAuth from './pages/CrossDomainAuth'
 import LoginPage from './pages/LoginPage'
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
       {/* 認証関連のルート */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
+      <Route path="/auth/cross-domain" element={<CrossDomainAuth />} />
       
       {/* 404 */}
       <Route path="*" element={<Navigate to="/" replace />} />
