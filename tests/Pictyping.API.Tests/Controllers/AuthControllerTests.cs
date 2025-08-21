@@ -16,6 +16,7 @@ public class AuthControllerTests
 {
     private readonly Mock<IConfiguration> _mockConfiguration;
     private readonly Mock<IAuthenticationService> _mockAuthService;
+    private readonly Mock<IJwtTokenService> _mockJwtTokenService;
     private readonly Mock<ILogger<AuthController>> _mockLogger;
     private readonly AuthController _controller;
 
@@ -23,6 +24,7 @@ public class AuthControllerTests
     {
         _mockConfiguration = new Mock<IConfiguration>();
         _mockAuthService = new Mock<IAuthenticationService>();
+        _mockJwtTokenService = new Mock<IJwtTokenService>();
         _mockLogger = new Mock<ILogger<AuthController>>();
 
         SetupConfiguration();
@@ -30,6 +32,7 @@ public class AuthControllerTests
         _controller = new AuthController(
             _mockConfiguration.Object,
             _mockAuthService.Object,
+            _mockJwtTokenService.Object,
             _mockLogger.Object);
     }
 
@@ -60,44 +63,36 @@ public class AuthControllerTests
             Rating = 1500
         };
 
+        var expectedToken = "test-jwt-token";
+
         _mockAuthService.Setup(s => s.ValidateUserAsync(loginRequest.Email, loginRequest.Password))
             .ReturnsAsync(user);
-
-        // HttpContextをモック
-        var httpContext = new DefaultHttpContext();
-        var authServiceMock = new Mock<Microsoft.AspNetCore.Authentication.IAuthenticationService>();
-        authServiceMock
-            .Setup(s => s.SignInAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<ClaimsPrincipal>(), It.IsAny<Microsoft.AspNetCore.Authentication.AuthenticationProperties>()))
-            .Returns(Task.CompletedTask);
-
-        httpContext.RequestServices = new ServiceCollection()
-            .AddSingleton(authServiceMock.Object)
-            .BuildServiceProvider();
-
-        _controller.ControllerContext = new ControllerContext()
-        {
-            HttpContext = httpContext
-        };
+        
+        _mockJwtTokenService.Setup(s => s.GenerateToken(user))
+            .Returns(expectedToken);
 
         var result = await _controller.Login(loginRequest);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.NotNull(okResult.Value);
         
-        var response = okResult.Value;
-        var userProperty = response.GetType().GetProperty("user");
+        dynamic response = okResult.Value;
+        Assert.NotNull(response);
         
+        // JWTトークンが返されることを確認
+        var tokenProperty = response.GetType().GetProperty("token");
+        Assert.NotNull(tokenProperty);
+        var token = tokenProperty.GetValue(response);
+        Assert.Equal(expectedToken, token);
+        
+        // ユーザー情報が返されることを確認
+        var userProperty = response.GetType().GetProperty("user");
         Assert.NotNull(userProperty);
         var userObject = userProperty.GetValue(response);
         Assert.NotNull(userObject);
         
-        // Cookie認証に変更されたため、tokenプロパティはもう存在しない
-        // 代わりにSignInAsyncが呼ばれたことを確認
-        authServiceMock.Verify(s => s.SignInAsync(
-            It.IsAny<HttpContext>(),
-            It.IsAny<string>(),
-            It.IsAny<ClaimsPrincipal>(),
-            It.IsAny<Microsoft.AspNetCore.Authentication.AuthenticationProperties>()), Times.Once);
+        // JWTトークン生成メソッドが呼ばれたことを確認
+        _mockJwtTokenService.Verify(s => s.GenerateToken(It.IsAny<User>()), Times.Once);
     }
 
     [Fact]

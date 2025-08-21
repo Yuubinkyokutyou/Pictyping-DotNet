@@ -13,15 +13,18 @@ public class AuthController : ControllerBase
 {
     private readonly IConfiguration _configuration;
     private readonly Pictyping.API.Services.IAuthenticationService _authService;
+    private readonly IJwtTokenService _jwtTokenService;
     private readonly ILogger<AuthController> _logger;
 
     public AuthController(
         IConfiguration configuration,
         Pictyping.API.Services.IAuthenticationService authService,
+        IJwtTokenService jwtTokenService,
         ILogger<AuthController> logger)
     {
         _configuration = configuration;
         _authService = authService;
+        _jwtTokenService = jwtTokenService;
         _logger = logger;
     }
 
@@ -38,31 +41,12 @@ public class AuthController : ControllerBase
             return Unauthorized("Invalid credentials");
         }
 
-        // Cookie認証用のClaimsを作成
-        var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Name, user.Name ?? user.Email),
-            new Claim("rating", user.Rating.ToString()),
-            new Claim("isAdmin", user.Admin.ToString())
-        };
-
-        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var authProperties = new AuthenticationProperties
-        {
-            IsPersistent = true,
-            ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
-        };
-
-        // Cookieを設定してサインイン
-        await HttpContext.SignInAsync(
-            CookieAuthenticationDefaults.AuthenticationScheme,
-            new ClaimsPrincipal(claimsIdentity),
-            authProperties);
+        // JWTトークンを生成
+        var token = _jwtTokenService.GenerateToken(user);
         
         return Ok(new
         {
+            token = token,
             user = new
             {
                 id = user.Id,
@@ -79,9 +63,10 @@ public class AuthController : ControllerBase
     /// </summary>
     [HttpPost("logout")]
     [Authorize]
-    public async Task<IActionResult> Logout()
+    public IActionResult Logout()
     {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        // JWTトークンはステートレスなので、サーバー側では特に処理は不要
+        // クライアント側でトークンを削除することでログアウトとなる
         return Ok(new { message = "Logged out successfully" });
     }
 
@@ -107,8 +92,8 @@ public class AuthController : ControllerBase
     [HttpGet("google/callback")]
     public async Task<IActionResult> GoogleCallback()
     {
-        // Google認証の処理
-        var authenticateResult = await HttpContext.AuthenticateAsync("Google");
+        // TempCookieから認証情報を取得
+        var authenticateResult = await HttpContext.AuthenticateAsync("TempCookie");
         if (!authenticateResult.Succeeded)
         {
             _logger.LogError("Google authentication failed");
@@ -130,35 +115,19 @@ public class AuthController : ControllerBase
             // OAuthアイデンティティでユーザーを作成または取得
             var user = await _authService.FindOrCreateUserByOAuthAsync("google", googleId, email, displayName);
             
-            // Cookie認証用のClaimsを作成
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.Name ?? user.Email),
-                new Claim("rating", user.Rating.ToString()),
-                new Claim("isAdmin", user.Admin.ToString())
-            };
+            // JWTトークンを生成
+            var token = _jwtTokenService.GenerateToken(user);
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
-            };
-
-            // Cookieを設定してサインイン
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties);
+            // TempCookieをクリア
+            await HttpContext.SignOutAsync("TempCookie");
 
             // returnUrlがあれば取得
             var returnUrl = HttpContext.Request.Query["state"].FirstOrDefault() ?? "/";
 
-            // フロントエンドへリダイレクト
+            // フロントエンドへリダイレクト（トークンをクエリパラメータで渡す）
             var redirectUrl = $"{_configuration["DomainSettings:NewDomain"]}/auth/callback" +
-                             $"?returnUrl={Uri.EscapeDataString(returnUrl)}";
+                             $"?token={Uri.EscapeDataString(token)}" +
+                             $"&returnUrl={Uri.EscapeDataString(returnUrl)}";
             
             return Redirect(redirectUrl);
         }

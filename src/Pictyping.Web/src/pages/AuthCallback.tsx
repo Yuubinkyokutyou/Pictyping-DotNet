@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAppDispatch } from '../store/hooks'
 import { setUser } from '../store/authSlice'
 import { AuthService } from '../api/generated'
+import authService from '../services/authService'
 
 const AuthCallback = () => {
   const navigate = useNavigate()
@@ -11,17 +12,28 @@ const AuthCallback = () => {
 
   useEffect(() => {
     const handleCallback = async () => {
+      const token = searchParams.get('token')
       const returnUrl = searchParams.get('returnUrl') || '/'
 
-      try {
-        // Cookie認証後、ユーザー情報を取得
-        const user = await AuthService.getApiAuthMe()
-        dispatch(setUser(user))
-        
-        // 元のページへリダイレクト
-        navigate(returnUrl)
-      } catch (error) {
-        console.error('Authentication failed:', error)
+      if (token) {
+        try {
+          // トークンを保存
+          authService.setToken(token)
+          
+          // ユーザー情報を取得
+          const user = await AuthService.getApiAuthMe()
+          dispatch(setUser(user))
+          
+          // 元のページへリダイレクト
+          navigate(returnUrl)
+        } catch (error) {
+          console.error('Authentication failed:', error)
+          authService.removeToken()
+          navigate('/login')
+        }
+      } else {
+        // トークンがない場合はログインページへ
+        console.error('No token received')
         navigate('/login')
       }
     }

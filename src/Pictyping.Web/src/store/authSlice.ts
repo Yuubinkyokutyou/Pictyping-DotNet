@@ -46,7 +46,7 @@ export const login = createAsyncThunk(
 export const logout = createAsyncThunk(
   'auth/logout',
   async () => {
-    // サーバーサイドのCookieをクリア
+    // サーバーにログアウトリクエストを送信し、トークンを削除
     await authService.logout()
   }
 )
@@ -87,8 +87,8 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false
-        // レスポンス構造に応じて調整が必要な場合があります
-        state.user = action.payload?.user || action.payload
+        // レスポンスからユーザー情報を取得（トークンはauthServiceで既に保存済み）
+        state.user = action.payload?.user
         state.isAuthenticated = true
       })
       .addCase(login.rejected, (state, action) => {

@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Pictyping.Infrastructure.Data;
 using StackExchange.Redis;
@@ -52,51 +55,67 @@ builder.Services.AddCors(options =>
 });
 
 // Authentication
+var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is not configured");
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "Pictyping";
+var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "PictypingUsers";
+
 builder.Services.AddAuthentication(options =>
     {
-        options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = "Google";
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     })
-    .AddCookie(options =>
+    .AddJwtBearer(options =>
     {
-        options.Cookie.Name = "Pictyping.Auth";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            ClockSkew = TimeSpan.Zero
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                // Allow the token to be passed from query string for SignalR
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && 
+                    (path.StartsWithSegments("/hubs")))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
+    })
+    .AddCookie("TempCookie", options =>
+    {
+        options.Cookie.Name = "Pictyping.TempAuth";
         options.Cookie.HttpOnly = true;
         options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() 
             ? CookieSecurePolicy.SameAsRequest 
             : CookieSecurePolicy.Always;
         options.Cookie.SameSite = SameSiteMode.Lax;
-        options.ExpireTimeSpan = TimeSpan.FromDays(7);
-        options.SlidingExpiration = true;
-        options.LoginPath = "/api/auth/login";
-        options.LogoutPath = "/api/auth/logout";
-        options.AccessDeniedPath = "/api/auth/access-denied";
-        
-        options.Events = new CookieAuthenticationEvents
-        {
-            OnRedirectToLogin = context =>
-            {
-                context.Response.StatusCode = 401;
-                return Task.CompletedTask;
-            },
-            OnRedirectToAccessDenied = context =>
-            {
-                context.Response.StatusCode = 403;
-                return Task.CompletedTask;
-            }
-        };
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
     })
     .AddGoogle(googleOptions =>
     {
         googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"] ?? "";
         googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"] ?? "";
-        googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        googleOptions.SignInScheme = "TempCookie";
     });
 
 builder.Services.AddAuthorization();
 
 // Services
 builder.Services.AddScoped<Pictyping.API.Services.IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<Pictyping.API.Services.IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<Pictyping.Core.Interfaces.IUserService, Pictyping.Infrastructure.Services.UserService>();
 builder.Services.AddScoped<Pictyping.Core.Interfaces.ITypingBattleService, Pictyping.Infrastructure.Services.TypingBattleService>();
 builder.Services.AddScoped<Pictyping.Core.Interfaces.IRankingService, Pictyping.Infrastructure.Services.RankingService>();
