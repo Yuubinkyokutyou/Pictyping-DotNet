@@ -28,6 +28,31 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
+    /// URLが安全なリダイレクト先かを検証
+    /// </summary>
+    /// <param name="url">検証するURL</param>
+    /// <returns>安全な場合はtrue</returns>
+    private bool IsValidReturnUrl(string? url)
+    {
+        if (string.IsNullOrEmpty(url))
+            return false;
+        
+        // 相対URLのみ許可（/で始まる）
+        if (!url.StartsWith("/"))
+            return false;
+        
+        // プロトコルやドメインが含まれていないことを確認
+        if (url.Contains("://") || url.Contains("//"))
+            return false;
+        
+        // 危険な文字列パターンをチェック
+        if (url.Contains("..") || url.Contains("\\0"))
+            return false;
+        
+        return true;
+    }
+
+    /// <summary>
     /// ドメイン間認証のためのエンドポイント
     /// 旧システムから新システムへリダイレクトされた際に使用
     /// </summary>
@@ -56,10 +81,13 @@ public class AuthController : ControllerBase
             // Redisにセッション情報を保存（両システムで共有）
             await _authService.SaveSessionAsync(userId, newToken);
 
+            // returnUrlを検証し、安全でない場合はデフォルトにフォールバック
+            var safeReturnUrl = IsValidReturnUrl(returnUrl) ? returnUrl : "/";
+            
             // フロントエンドへリダイレクト（トークンを含む）
             var redirectUrl = $"{_configuration["DomainSettings:NewDomain"]}/auth/callback" +
                             $"?token={newToken}" +
-                            $"&returnUrl={Uri.EscapeDataString(returnUrl ?? "/")}";
+                            $"&returnUrl={Uri.EscapeDataString(safeReturnUrl)}";
 
             return Redirect(redirectUrl);
         }
@@ -127,11 +155,14 @@ public class AuthController : ControllerBase
     [HttpGet("google/login")]
     public IActionResult GoogleLogin([FromQuery] string? returnUrl)
     {
+        // returnUrlを検証し、安全でない場合はデフォルトにフォールバック
+        var safeReturnUrl = IsValidReturnUrl(returnUrl) ? returnUrl : "/";
+        
         var redirectUrl = Url.Action(nameof(GoogleCallback), "Auth");
         var properties = new AuthenticationProperties 
         { 
             RedirectUri = redirectUrl,
-            Items = { { "returnUrl", returnUrl ?? "/" } }
+            Items = { { "returnUrl", safeReturnUrl } }
         };
         
         return Challenge(properties, "Google");
@@ -148,7 +179,8 @@ public class AuthController : ControllerBase
         if (!authenticateResult.Succeeded)
         {
             _logger.LogError("Google authentication failed");
-            return Redirect($"{_configuration["DomainSettings:NewDomain"]}/login?error=google_auth_failed");
+            var errorUrl = $"{_configuration["DomainSettings:NewDomain"]}/login?error=google_auth_failed";
+            return Redirect(errorUrl);
         }
 
         var email = authenticateResult.Principal?.FindFirst(ClaimTypes.Email)?.Value;
@@ -158,7 +190,8 @@ public class AuthController : ControllerBase
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(googleId))
         {
             _logger.LogError("Required Google user information not found. Email: {Email}, GoogleId: {GoogleId}", email, googleId);
-            return Redirect($"{_configuration["DomainSettings:NewDomain"]}/login?error=missing_user_info");
+            var errorUrl = $"{_configuration["DomainSettings:NewDomain"]}/login?error=missing_user_info";
+            return Redirect(errorUrl);
         }
 
         try
@@ -170,20 +203,22 @@ public class AuthController : ControllerBase
             // セッション情報を保存
             await _authService.SaveSessionAsync(user.Id.ToString(), token);
 
-            // returnUrlがあれば取得
-            var returnUrl = HttpContext.Request.Query["state"].FirstOrDefault() ?? "/";
+            // returnUrlを取得して検証
+            var returnUrl = authenticateResult.Properties?.Items["returnUrl"];
+            var safeReturnUrl = IsValidReturnUrl(returnUrl) ? returnUrl : "/";
 
             // フロントエンドへリダイレクト
             var redirectUrl = $"{_configuration["DomainSettings:NewDomain"]}/auth/callback" +
                              $"?token={token}" +
-                             $"&returnUrl={Uri.EscapeDataString(returnUrl)}";
+                             $"&returnUrl={Uri.EscapeDataString(safeReturnUrl)}";
             
             return Redirect(redirectUrl);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Google OAuth callback processing failed for email: {Email}", email);
-            return Redirect($"{_configuration["DomainSettings:NewDomain"]}/login?error=oauth_processing_failed");
+            var errorUrl = $"{_configuration["DomainSettings:NewDomain"]}/login?error=oauth_processing_failed";
+            return Redirect(errorUrl);
         }
     }
 
