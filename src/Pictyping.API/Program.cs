@@ -7,6 +7,10 @@ using System.Text;
 using Pictyping.API.Services;
 using Pictyping.Core.Interfaces;
 using Pictyping.Infrastructure.Services;
+using DotNetEnv;
+
+// Load .env file
+Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
