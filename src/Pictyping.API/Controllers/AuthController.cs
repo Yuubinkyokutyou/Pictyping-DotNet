@@ -131,18 +131,38 @@ public class AuthController : ControllerBase
         var authenticateResult = await HttpContext.AuthenticateAsync("Google");
         if (!authenticateResult.Succeeded)
         {
+            _logger.LogWarning("Google authentication failed");
             return BadRequest("Google authentication failed");
         }
 
         var email = authenticateResult.Principal?.FindFirst(ClaimTypes.Email)?.Value;
         if (string.IsNullOrEmpty(email))
         {
+            _logger.LogWarning("Google OAuth: Email not found in claims");
             return BadRequest("Email not found");
         }
 
-        // ユーザーを作成または取得
-        var user = await _authService.FindOrCreateUserByEmailAsync(email);
+        // Google OAuth email verification check
+        var emailVerifiedClaim = authenticateResult.Principal?.FindFirst("email_verified")?.Value;
+        if (emailVerifiedClaim != "true")
+        {
+            _logger.LogWarning("Google OAuth: Email not verified for {Email}", email);
+            return BadRequest("Email not verified by Google");
+        }
+
+        // Get Google user ID for proper OAuth identity management
+        var googleUid = authenticateResult.Principal?.FindFirst("sub")?.Value;
+        if (string.IsNullOrEmpty(googleUid))
+        {
+            _logger.LogWarning("Google OAuth: Google UID not found in claims for {Email}", email);
+            return BadRequest("Google user ID not found");
+        }
+
+        // ユーザーを作成または取得（OAuth identity management）
+        var user = await _authService.FindOrCreateUserByOAuthAsync(email, "google", googleUid);
         var token = await GenerateJwtToken(user.Id.ToString());
+
+        _logger.LogInformation("Google OAuth successful for user {UserId} with email {Email}", user.Id, email);
 
         // フロントエンドへリダイレクト
         return Redirect($"{_configuration["DomainSettings:NewDomain"]}/auth/success?token={token}");
