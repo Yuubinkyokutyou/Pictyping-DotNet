@@ -117,6 +117,10 @@ builder.Services.AddAuthentication(options =>
     {
         googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"] ?? "";
         googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"] ?? "";
+        
+        // Ensure we get the necessary scopes for email verification
+        googleOptions.Scope.Add("email");
+        googleOptions.Scope.Add("profile");
     });
 
 builder.Services.AddAuthorization();
