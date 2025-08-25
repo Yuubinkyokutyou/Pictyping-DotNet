@@ -75,18 +75,15 @@ public class AuthController : ControllerBase
                 return BadRequest("User ID not found in token");
             }
 
-            // 新システム用のトークンを生成
-            var newToken = await GenerateJwtToken(userId);
-
-            // Redisにセッション情報を保存（両システムで共有）
-            await _authService.SaveSessionAsync(userId, newToken);
+            // セキュアな一時認証コードを生成
+            var authCode = await _authService.GenerateAuthorizationCodeAsync(userId);
 
             // returnUrlを検証し、安全でない場合はデフォルトにフォールバック
             var safeReturnUrl = IsValidReturnUrl(returnUrl) ? returnUrl : "/";
             
-            // フロントエンドへリダイレクト（トークンを含む）
+            // フロントエンドへリダイレクト（トークンではなくコードを使用）
             var redirectUrl = $"{_configuration["DomainSettings:NewDomain"]}/auth/callback" +
-                            $"?token={newToken}" +
+                            $"?code={authCode}" +
                             $"&returnUrl={Uri.EscapeDataString(safeReturnUrl)}";
 
             return Redirect(redirectUrl);
@@ -198,18 +195,17 @@ public class AuthController : ControllerBase
         {
             // OAuthアイデンティティでユーザーを作成または取得
             var user = await _authService.FindOrCreateUserByOAuthAsync("google", googleId, email, displayName);
-            var token = await GenerateJwtToken(user.Id.ToString());
             
-            // セッション情報を保存
-            await _authService.SaveSessionAsync(user.Id.ToString(), token);
-
+            // セキュアな一時認証コードを生成
+            var authCode = await _authService.GenerateAuthorizationCodeAsync(user.Id.ToString());
+            
             // returnUrlを取得して検証
             var returnUrl = authenticateResult.Properties?.Items["returnUrl"];
             var safeReturnUrl = IsValidReturnUrl(returnUrl) ? returnUrl : "/";
 
-            // フロントエンドへリダイレクト
+            // フロントエンドへリダイレクト（トークンではなくコードを使用）
             var redirectUrl = $"{_configuration["DomainSettings:NewDomain"]}/auth/callback" +
-                             $"?token={token}" +
+                             $"?code={authCode}" +
                              $"&returnUrl={Uri.EscapeDataString(safeReturnUrl)}";
             
             return Redirect(redirectUrl);
@@ -219,6 +215,64 @@ public class AuthController : ControllerBase
             _logger.LogError(ex, "Google OAuth callback processing failed for email: {Email}", email);
             var errorUrl = $"{_configuration["DomainSettings:NewDomain"]}/login?error=oauth_processing_failed";
             return Redirect(errorUrl);
+        }
+    }
+
+    /// <summary>
+    /// 認証コードをJWTトークンと交換
+    /// </summary>
+    [HttpPost("exchange-code")]
+    public async Task<IActionResult> ExchangeCode([FromBody] ExchangeCodeRequest request)
+    {
+        if (string.IsNullOrEmpty(request.Code))
+        {
+            return BadRequest("Authorization code is required");
+        }
+
+        try
+        {
+            // コードをトークンと交換
+            var token = await _authService.ExchangeCodeForTokenAsync(request.Code);
+            
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized("Invalid or expired authorization code");
+            }
+
+            // トークンからユーザーIDを取得
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwt = tokenHandler.ReadJwtToken(token);
+            var userId = jwt.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            
+            if (!string.IsNullOrEmpty(userId))
+            {
+                // セッション情報を保存
+                await _authService.SaveSessionAsync(userId, token);
+                
+                // ユーザー情報を取得
+                var user = await _authService.GetUserByIdAsync(int.Parse(userId));
+                if (user != null)
+                {
+                    return Ok(new
+                    {
+                        token,
+                        user = new
+                        {
+                            id = user.Id,
+                            email = user.Email,
+                            displayName = user.Name,
+                            rating = user.Rating
+                        }
+                    });
+                }
+            }
+
+            return Ok(new { token });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Code exchange failed");
+            return StatusCode(500, "An error occurred while exchanging the authorization code");
         }
     }
 
@@ -304,4 +358,9 @@ public class LoginRequest
 {
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
+}
+
+public class ExchangeCodeRequest
+{
+    public string Code { get; set; } = string.Empty;
 }

@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Pictyping.Core.Entities;
 using Pictyping.Infrastructure.Data;
 using StackExchange.Redis;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -134,6 +137,61 @@ public class AuthenticationService : IAuthenticationService
         await db.StringSetAsync(key, userId, TimeSpan.FromMinutes(5));
 
         return token;
+    }
+
+    public async Task<string> GenerateAuthorizationCodeAsync(string userId)
+    {
+        // セキュアな一時認証コードを生成（30秒間有効）
+        using var rng = RandomNumberGenerator.Create();
+        var codeBytes = new byte[32];
+        rng.GetBytes(codeBytes);
+        var code = Convert.ToBase64String(codeBytes)
+            .Replace("+", "-")
+            .Replace("/", "_")
+            .Replace("=", "");
+
+        // Redisに保存（30秒の有効期限）
+        var db = _redis.GetDatabase();
+        var key = $"auth_code:{code}";
+        await db.StringSetAsync(key, userId, TimeSpan.FromSeconds(30));
+
+        return code;
+    }
+
+    public async Task<string?> ExchangeCodeForTokenAsync(string code)
+    {
+        var db = _redis.GetDatabase();
+        var key = $"auth_code:{code}";
+        
+        // コードからユーザーIDを取得し、同時に削除（ワンタイム使用）
+        var userId = await db.StringGetDeleteAsync(key);
+        
+        if (userId.IsNullOrEmpty)
+        {
+            return null; // コードが無効または期限切れ
+        }
+
+        // 新しいJWTトークンを生成
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var jwtKey = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException());
+        
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            }),
+            Expires = DateTime.UtcNow.AddMinutes(double.Parse(_configuration["Jwt:ExpiryMinutes"] ?? "60")),
+            Issuer = _configuration["Jwt:Issuer"],
+            Audience = _configuration["Jwt:Audience"],
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(jwtKey),
+                SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
     }
 }
 

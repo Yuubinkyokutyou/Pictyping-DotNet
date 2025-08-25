@@ -10,6 +10,8 @@ public interface IAuthenticationService
     Task<User?> GetUserByIdAsync(int userId);
     Task SaveSessionAsync(string userId, string token);
     Task<string> GenerateTemporaryTokenAsync(string userId);
+    Task<string> GenerateAuthorizationCodeAsync(string userId);
+    Task<string?> ExchangeCodeForTokenAsync(string code);
 }
 
 public interface IUserService
