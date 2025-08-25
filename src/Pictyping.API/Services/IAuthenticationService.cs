@@ -6,6 +6,7 @@ public interface IAuthenticationService
 {
     Task<User?> ValidateUserAsync(string email, string password);
     Task<User> FindOrCreateUserByEmailAsync(string email);
+    Task<User> FindOrCreateUserByOAuthAsync(string email, string provider, string providerUid);
     Task<User?> GetUserByIdAsync(int userId);
     Task SaveSessionAsync(string userId, string token);
     Task<string> GenerateTemporaryTokenAsync(string userId);

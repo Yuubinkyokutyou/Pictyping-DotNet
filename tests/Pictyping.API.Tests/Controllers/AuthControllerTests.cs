@@ -1,13 +1,14 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Pictyping.API.Controllers;
-using Pictyping.API.Services;
 using Pictyping.Core.Entities;
 using System.Security.Claims;
 using Xunit;
+using IAuthenticationService = Pictyping.API.Services.IAuthenticationService;
 
 namespace Pictyping.API.Tests.Controllers;
 

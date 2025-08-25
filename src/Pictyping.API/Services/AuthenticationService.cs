@@ -36,6 +36,77 @@ public class AuthenticationService : IAuthenticationService
         return user;
     }
 
+    public async Task<User> FindOrCreateUserByOAuthAsync(string email, string provider, string providerUid)
+    {
+        // First check if OAuth identity already exists
+        var existingIdentity = await _context.OmniAuthIdentities
+            .Include(o => o.User)
+            .FirstOrDefaultAsync(o => o.Provider == provider && o.Uid == providerUid);
+
+        if (existingIdentity != null)
+        {
+            // Update email if it changed
+            if (existingIdentity.Email != email)
+            {
+                existingIdentity.Email = email;
+                existingIdentity.User.Email = email;
+                existingIdentity.User.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+            }
+            return existingIdentity.User;
+        }
+
+        // Check if user exists with this email (from previous non-OAuth registration)
+        var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        
+        if (existingUser != null)
+        {
+            // Link OAuth identity to existing user
+            var identity = new OmniAuthIdentity
+            {
+                Provider = provider,
+                Uid = providerUid,
+                Email = email,
+                UserId = existingUser.Id,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            _context.OmniAuthIdentities.Add(identity);
+            await _context.SaveChangesAsync();
+            return existingUser;
+        }
+
+        // Create new user with OAuth identity
+        var user = new User
+        {
+            Email = email,
+            EncryptedPassword = "", // OAuthユーザーはパスワードなし
+            Guest = false,
+            Rating = 1200,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+
+        var newIdentity = new OmniAuthIdentity
+        {
+            Provider = provider,
+            Uid = providerUid,
+            Email = email,
+            UserId = user.Id,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        _context.OmniAuthIdentities.Add(newIdentity);
+        await _context.SaveChangesAsync();
+
+        return user;
+    }
+
     public async Task<User> FindOrCreateUserByEmailAsync(string email)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
