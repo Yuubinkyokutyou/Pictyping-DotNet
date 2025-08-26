@@ -305,7 +305,7 @@ public class AuthController : ControllerBase
         });
     }
 
-    private async Task<string> GenerateJwtToken(string userId)
+    private Task<string> GenerateJwtToken(string userId)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException());
@@ -326,7 +326,7 @@ public class AuthController : ControllerBase
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+        return Task.FromResult(tokenHandler.WriteToken(token));
     }
 
     private ClaimsPrincipal? ValidateToken(string token)
