@@ -68,11 +68,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigins",
         policy =>
         {
-            policy.WithOrigins(
-                    "https://pictyping.com",
-                    "https://new.pictyping.com",
-                    "http://localhost:3000",
-                    "http://localhost:5173")
+            var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() 
+                ?? new[] { "https://pictyping.com", "https://new.pictyping.com" };
+            
+            policy.WithOrigins(corsOrigins)
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
@@ -155,33 +154,34 @@ async Task InitializeDatabaseAsync(WebApplication app)
         await context.Database.CanConnectAsync();
         logger.LogInformation("Database connection successful");
         
-        // Check existing data count (useful for monitoring in all environments)
-        var userCount = await context.Users.CountAsync();
-        logger.LogInformation($"Found {userCount} users in database");
-        
         // Development-only operations
         if (app.Environment.IsDevelopment())
         {
-            // Apply any pending migrations automatically
+            // Apply any pending migrations automatically BEFORE checking data
             logger.LogInformation("Development environment: Checking for pending migrations...");
             await context.Database.MigrateAsync();
             logger.LogInformation("Database migrations applied successfully");
+        }
+        
+        // Check existing data count AFTER migrations (useful for monitoring in all environments)
+        var userCount = await context.Users.CountAsync();
+        logger.LogInformation($"Found {userCount} users in database");
+        
+        // Seed development data if configured and no data exists
+        if (app.Environment.IsDevelopment() && userCount == 0)
+        {
+            var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+            var seedData = configuration.GetValue<bool>("DataSeeding:SeedDataOnStartup", false);
             
-            // Seed development data if configured and no data exists
-            if (userCount == 0)
+            if (seedData)
             {
-                var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-                var seedData = configuration.GetValue<bool>("DataSeeding:SeedDataOnStartup", false);
-                
-                if (seedData)
-                {
-                    logger.LogInformation("Starting development data seeding...");
-                    var dataSeedingService = scope.ServiceProvider.GetRequiredService<IDataSeedingService>();
-                    await dataSeedingService.SeedDevelopmentDataAsync();
-                }
+                logger.LogInformation("Starting development data seeding...");
+                var dataSeedingService = scope.ServiceProvider.GetRequiredService<IDataSeedingService>();
+                await dataSeedingService.SeedDevelopmentDataAsync();
             }
         }
-        else
+        
+        if (!app.Environment.IsDevelopment())
         {
             logger.LogInformation("Production environment: Skipping automatic migrations and seeding");
         }

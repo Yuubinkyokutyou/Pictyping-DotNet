@@ -8,7 +8,7 @@ const LoginPage = () => {
     const returnUrl = new URLSearchParams(window.location.search).get('returnUrl') || '/'
     
     // Google OAuth ログインエンドポイントにリダイレクト
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+    const apiUrl = import.meta.env.VITE_API_URL || ''
     window.location.href = `${apiUrl}/api/auth/google/login?returnUrl=${encodeURIComponent(returnUrl)}`
   }
 
