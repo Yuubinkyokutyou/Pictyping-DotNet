@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAppDispatch } from '../store/hooks'
 import { setUser } from '../store/authSlice'
@@ -8,30 +8,71 @@ const AuthCallback = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const [searchParams] = useSearchParams()
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const handleCallback = async () => {
-      const token = searchParams.get('token')
+      const code = searchParams.get('code')
       const returnUrl = searchParams.get('returnUrl') || '/'
 
-      if (!token) {
-        navigate('/login')
+      if (!code) {
+        // 旧バージョンとの互換性のため、tokenパラメータもチェック
+        const token = searchParams.get('token')
+        if (token) {
+          console.warn('Using legacy token parameter. This will be deprecated.')
+          localStorage.setItem('token', token)
+          try {
+            const user = await AuthService.getApiAuthMe()
+            dispatch(setUser(user))
+            navigate(returnUrl)
+            return
+          } catch (error) {
+            console.error('Legacy authentication failed:', error)
+            navigate('/login')
+            return
+          }
+        }
+        
+        setError('認証コードが見つかりません')
+        setTimeout(() => navigate('/login'), 2000)
         return
       }
 
       try {
-        // トークンを保存
-        localStorage.setItem('token', token)
+        // 認証コードをトークンと交換
+        const response = await fetch('/api/auth/exchange-code', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ code }),
+        })
+
+        if (!response.ok) {
+          const errorData = await response.text()
+          throw new Error(errorData || 'Code exchange failed')
+        }
+
+        const data = await response.json()
         
-        // ユーザー情報を取得
-        const user = await AuthService.getApiAuthMe()
-        dispatch(setUser(user))
+        // トークンを保存
+        localStorage.setItem('token', data.token)
+        
+        // ユーザー情報をストアに保存
+        if (data.user) {
+          dispatch(setUser(data.user))
+        } else {
+          // ユーザー情報が含まれていない場合は別途取得
+          const user = await AuthService.getApiAuthMe()
+          dispatch(setUser(user))
+        }
         
         // 元のページへリダイレクト
         navigate(returnUrl)
       } catch (error) {
         console.error('Authentication failed:', error)
-        navigate('/login')
+        setError('認証に失敗しました')
+        setTimeout(() => navigate('/login'), 2000)
       }
     }
 
@@ -46,8 +87,18 @@ const AuthCallback = () => {
       height: '100vh' 
     }}>
       <div>
-        <h2>ログイン処理中...</h2>
-        <p>しばらくお待ちください。</p>
+        {error ? (
+          <>
+            <h2 style={{ color: 'red' }}>エラー</h2>
+            <p>{error}</p>
+            <p>ログインページにリダイレクトしています...</p>
+          </>
+        ) : (
+          <>
+            <h2>ログイン処理中...</h2>
+            <p>しばらくお待ちください。</p>
+          </>
+        )}
       </div>
     </div>
   )
