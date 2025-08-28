@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -80,7 +81,7 @@ public class AuthController : ControllerBase
 
             // returnUrlを検証し、安全でない場合はデフォルトにフォールバック
             var safeReturnUrl = IsValidReturnUrl(returnUrl) ? returnUrl : "/";
-            
+
             // フロントエンドへリダイレクト（トークンではなくコードを使用）
             var redirectUrl = $"{_configuration["DomainSettings:NewDomain"]}/auth/callback" +
                             $"?code={authCode}" +
@@ -155,8 +156,8 @@ public class AuthController : ControllerBase
         // returnUrlを検証し、安全でない場合はデフォルトにフォールバック
         var safeReturnUrl = IsValidReturnUrl(returnUrl) ? returnUrl : "/";
         
-        var redirectUrl = Url.Action(nameof(GoogleCallback), "Auth");
-        var properties = new AuthenticationProperties 
+        var redirectUrl = Url.Action(nameof(ProcessGoogleAuth), "Auth");
+        var properties = new AuthenticationProperties
         { 
             RedirectUri = redirectUrl,
             Items = { { "returnUrl", safeReturnUrl } }
@@ -166,13 +167,14 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Google OAuth コールバック
+    /// Google認証ミドルウェアがCookie認証を設定した後の処理
+    /// /api/signin-googleでGoogle認証が完了した後にリダイレクトされる
     /// </summary>
-    [HttpGet("google/callback")]
-    public async Task<IActionResult> GoogleCallback()
+    [HttpGet("google/process")]
+    public async Task<IActionResult> ProcessGoogleAuth()
     {
-        // Google認証の処理
-        var authenticateResult = await HttpContext.AuthenticateAsync("Google");
+        // Cookie認証から認証情報を取得（Google認証ミドルウェアが設定済み）
+        var authenticateResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         if (!authenticateResult.Succeeded)
         {
             _logger.LogError("Google authentication failed");
