@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { store } from './store'
 import './index.css'
+import './api/apiConfig' // OpenAPI設定を初期化
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
