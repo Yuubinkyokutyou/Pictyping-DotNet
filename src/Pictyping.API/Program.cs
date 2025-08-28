@@ -89,7 +89,7 @@ builder.Services.AddAuthentication(options =>
     {
         options.Cookie.SameSite = SameSiteMode.Lax; // 同一サイト内でのみ使用
         options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // TODO:開発環境でのみHTTP許可
-        options.LoginPath = "/api/auth/google/login";
+        options.LoginPath = "/login"; // 未認証時のリダイレクト先
         options.ExpireTimeSpan = TimeSpan.FromMinutes(5); // 一時的な認証のため短い有効期限
     })
     .AddJwtBearer(options =>
@@ -126,6 +126,7 @@ builder.Services.AddAuthentication(options =>
         googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"] ?? "";
         googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"] ?? "";
         googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        googleOptions.CallbackPath = "/api/signin-google";
     });
 
 builder.Services.AddAuthorization();
