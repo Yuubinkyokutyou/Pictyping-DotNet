@@ -6,7 +6,7 @@ OpenAPI.BASE = import.meta.env.VITE_API_URL || ''
 OpenAPI.WITH_CREDENTIALS = true
 OpenAPI.TOKEN = async () => {
   const token = localStorage.getItem('token')
-  return token ? `Bearer ${token}` : ''
+  return token || ''
 }
 
 // 生成されたAPIサービスはすべて静的メソッドなので、
