@@ -1,40 +1,21 @@
-import axios from 'axios'
+import { AuthService } from '../api/generated'
+import type { LoginRequest } from '../api/generated'
 
-const API_URL = '/api/auth'
+// OpenAPI設定はapiConfig.tsで行われるため、ここでは行わない
+// apiConfig.tsがmain.tsxでインポートされることで初期化される
 
-// Axiosインスタンスの作成
-const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
-
-// リクエストインターセプター
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
-
-// レスポンスインターセプター
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    if (error.response?.status === 401) {
+// 401エラーハンドリング用のラッパー関数
+const handleAuthError = async <T>(apiCall: () => Promise<T>): Promise<T> => {
+  try {
+    return await apiCall()
+  } catch (error: any) {
+    if (error?.status === 401 || error?.statusCode === 401) {
       // トークンが無効な場合
       localStorage.removeItem('token')
       
       // 開発環境では何もしない（リダイレクトしない）
       if (import.meta.env.DEV) {
-        return Promise.reject(error)
+        throw error
       }
       
       // 本番環境でのみドメイン間処理
@@ -46,40 +27,56 @@ axiosInstance.interceptors.response.use(
         window.location.href = `https://new.pictyping.com/auth/cross-domain?returnUrl=${encodeURIComponent(window.location.pathname)}`
       }
     }
-    return Promise.reject(error)
+    throw error
   }
-)
+}
 
 const authService = {
   login: async (email: string, password: string) => {
-    const response = await axiosInstance.post(`${API_URL}/login`, { email, password })
+    const loginRequest: LoginRequest = { email, password }
+    const response = await handleAuthError(() => 
+      AuthService.postApiAuthLogin({ body: loginRequest })
+    )
+    
+    // トークンを保存
+    if (response?.token) {
+      localStorage.setItem('token', response.token)
+    }
+    
     return response
   },
 
   logout: async () => {
     localStorage.removeItem('token')
-    // 両ドメインのセッションをクリア
-    await axiosInstance.post(`${API_URL}/logout`)
+    // Note: logout endpoint is not available in the API yet
+    // TODO: Add logout endpoint to the API and use it here
   },
 
   getCurrentUser: async () => {
-    return await axiosInstance.get(`${API_URL}/me`)
+    return await handleAuthError(() => AuthService.getApiAuthMe())
   },
 
   // ドメイン間認証用
   handleCrossDomainAuth: async (token: string) => {
     localStorage.setItem('token', token)
-    return await axiosInstance.get(`${API_URL}/me`)
+    return await handleAuthError(() => 
+      AuthService.getApiAuthCrossDomainLogin({ token })
+    )
   },
 
   // 旧システムへのリダイレクト用トークン取得
   getRedirectToken: async (targetPath: string) => {
-    const response = await axiosInstance.get(`${API_URL}/redirect-to-legacy`, {
-      params: { targetPath }
-    })
-    return response.data
+    return await handleAuthError(() => 
+      AuthService.getApiAuthRedirectToLegacy({ targetPath })
+    )
+  },
+
+  // 認証コードをトークンと交換
+  exchangeCode: async (code: string) => {
+    return await handleAuthError(() => 
+      AuthService.postApiAuthExchangeCode({ body: { code } })
+    )
   },
 }
 
 export default authService
-export { axiosInstance }

@@ -48,20 +48,13 @@ const AuthCallback = () => {
 
       try {
         // 認証コードをトークンと交換
-        const response = await fetch('/api/auth/exchange-code', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ code }),
+        const data = await AuthService.postApiAuthExchangeCode({
+          body: { code }
         })
-
-        if (!response.ok) {
-          const errorData = await response.text()
-          throw new Error(errorData || 'Code exchange failed')
+        
+        if (!data || !data.token) {
+          throw new Error('Code exchange failed - no token received')
         }
-
-        const data = await response.json()
         
         // トークンを保存
         localStorage.setItem('token', data.token)

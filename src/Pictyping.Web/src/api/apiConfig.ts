@@ -1,7 +1,6 @@
 import { OpenAPI } from './generated/core/OpenAPI'
-import { axiosInstance } from '../services/authService'
 
-// OpenAPI設定を更新
+// OpenAPIクライアントの設定
 OpenAPI.BASE = import.meta.env.VITE_API_URL || ''
 OpenAPI.WITH_CREDENTIALS = true
 OpenAPI.TOKEN = async () => {
@@ -14,6 +13,3 @@ OpenAPI.TOKEN = async () => {
 export * from './generated/services/AuthService'
 export * from './generated/services/RankingService'
 export * from './generated/services/PictypingApiService'
-
-// 既存のaxiosインスタンスも引き続き使用可能
-export { axiosInstance }
