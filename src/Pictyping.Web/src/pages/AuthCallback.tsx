@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAppDispatch } from '../store/hooks'
 import { setUser } from '../store/authSlice'
@@ -9,9 +9,17 @@ const AuthCallback = () => {
   const dispatch = useAppDispatch()
   const [searchParams] = useSearchParams()
   const [error, setError] = useState<string | null>(null)
+  const hasExecutedRef = useRef(false)
 
   useEffect(() => {
+    // React.StrictModeによる重複実行を防止
+    if (hasExecutedRef.current) {
+      return
+    }
+
     const handleCallback = async () => {
+      // 実行フラグを立てる
+      hasExecutedRef.current = true
       const code = searchParams.get('code')
       const returnUrl = searchParams.get('returnUrl') || '/'
 
@@ -34,7 +42,7 @@ const AuthCallback = () => {
         }
         
         setError('認証コードが見つかりません')
-        setTimeout(() => navigate('/login'), 2000)
+        setTimeout(() => navigate('/login'), 1000)
         return
       }
 
@@ -72,7 +80,7 @@ const AuthCallback = () => {
       } catch (error) {
         console.error('Authentication failed:', error)
         setError('認証に失敗しました')
-        setTimeout(() => navigate('/login'), 2000)
+        setTimeout(() => navigate('/login'), 1000)
       }
     }
 
