@@ -6,9 +6,12 @@ public interface IAuthenticationService
 {
     Task<User?> ValidateUserAsync(string email, string password);
     Task<User> FindOrCreateUserByEmailAsync(string email);
+    Task<User> FindOrCreateUserByOAuthAsync(string provider, string providerUserId, string email, string? displayName = null);
     Task<User?> GetUserByIdAsync(int userId);
     Task SaveSessionAsync(string userId, string token);
     Task<string> GenerateTemporaryTokenAsync(string userId);
+    Task<string> GenerateAuthorizationCodeAsync(string userId);
+    Task<string?> ExchangeCodeForTokenAsync(string code);
 }
 
 public interface IUserService

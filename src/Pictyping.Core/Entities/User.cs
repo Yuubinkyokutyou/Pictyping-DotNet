@@ -10,7 +10,7 @@ public class User : BaseEntity
     public bool Guest { get; set; } = false;
     public string? PlayfabId { get; set; }  // Rails schema uses "playfabId" 
     public string Name { get; set; } = "noname";  // Rails schema has "name"
-    public int Rating { get; set; } = 1200;
+    public int Rating { get; set; } = 0;
     public DateTime? OnlineGameBanDate { get; set; }  // Rails schema has "online_game_ban_date"
     public bool Admin { get; set; } = false;
 

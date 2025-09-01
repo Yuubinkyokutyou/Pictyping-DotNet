@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -67,11 +68,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigins",
         policy =>
         {
-            policy.WithOrigins(
-                    "https://pictyping.com",
-                    "https://new.pictyping.com",
-                    "http://localhost:3000",
-                    "http://localhost:5173")
+            var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() 
+                ?? new[] { "https://pictyping.com", "https://new.pictyping.com" };
+            
+            policy.WithOrigins(corsOrigins)
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
@@ -83,6 +83,14 @@ builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    })
+    .AddCookie(options =>
+    {
+        options.Cookie.SameSite = SameSiteMode.Lax; // 同一サイト内でのみ使用
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // TODO:開発環境でのみHTTP許可
+        options.LoginPath = "/login"; // 未認証時のリダイレクト先
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(5); // 一時的な認証のため短い有効期限
     })
     .AddJwtBearer(options =>
     {
@@ -117,6 +125,8 @@ builder.Services.AddAuthentication(options =>
     {
         googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"] ?? "";
         googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"] ?? "";
+        googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        googleOptions.CallbackPath = "/api/signin-google";
     });
 
 builder.Services.AddAuthorization();
@@ -145,33 +155,34 @@ async Task InitializeDatabaseAsync(WebApplication app)
         await context.Database.CanConnectAsync();
         logger.LogInformation("Database connection successful");
         
-        // Check existing data count (useful for monitoring in all environments)
-        var userCount = await context.Users.CountAsync();
-        logger.LogInformation($"Found {userCount} users in database");
-        
         // Development-only operations
         if (app.Environment.IsDevelopment())
         {
-            // Apply any pending migrations automatically
+            // Apply any pending migrations automatically BEFORE checking data
             logger.LogInformation("Development environment: Checking for pending migrations...");
             await context.Database.MigrateAsync();
             logger.LogInformation("Database migrations applied successfully");
+        }
+        
+        // Check existing data count AFTER migrations (useful for monitoring in all environments)
+        var userCount = await context.Users.CountAsync();
+        logger.LogInformation($"Found {userCount} users in database");
+        
+        // Seed development data if configured and no data exists
+        if (app.Environment.IsDevelopment() && userCount == 0)
+        {
+            var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+            var seedData = configuration.GetValue<bool>("DataSeeding:SeedDataOnStartup", false);
             
-            // Seed development data if configured and no data exists
-            if (userCount == 0)
+            if (seedData)
             {
-                var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-                var seedData = configuration.GetValue<bool>("DataSeeding:SeedDataOnStartup", false);
-                
-                if (seedData)
-                {
-                    logger.LogInformation("Starting development data seeding...");
-                    var dataSeedingService = scope.ServiceProvider.GetRequiredService<IDataSeedingService>();
-                    await dataSeedingService.SeedDevelopmentDataAsync();
-                }
+                logger.LogInformation("Starting development data seeding...");
+                var dataSeedingService = scope.ServiceProvider.GetRequiredService<IDataSeedingService>();
+                await dataSeedingService.SeedDevelopmentDataAsync();
             }
         }
-        else
+        
+        if (!app.Environment.IsDevelopment())
         {
             logger.LogInformation("Production environment: Skipping automatic migrations and seeding");
         }

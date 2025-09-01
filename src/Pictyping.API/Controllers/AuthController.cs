@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -28,6 +29,31 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
+    /// URLが安全なリダイレクト先かを検証
+    /// </summary>
+    /// <param name="url">検証するURL</param>
+    /// <returns>安全な場合はtrue</returns>
+    private bool IsValidReturnUrl(string? url)
+    {
+        if (string.IsNullOrEmpty(url))
+            return false;
+        
+        // 相対URLのみ許可（/で始まる）
+        if (!url.StartsWith("/"))
+            return false;
+        
+        // プロトコルやドメインが含まれていないことを確認
+        if (url.Contains("://") || url.Contains("//"))
+            return false;
+        
+        // 危険な文字列パターンをチェック
+        if (url.Contains("..") || url.Contains("\\0"))
+            return false;
+        
+        return true;
+    }
+
+    /// <summary>
     /// ドメイン間認証のためのエンドポイント
     /// 旧システムから新システムへリダイレクトされた際に使用
     /// </summary>
@@ -50,16 +76,16 @@ public class AuthController : ControllerBase
                 return BadRequest("User ID not found in token");
             }
 
-            // 新システム用のトークンを生成
-            var newToken = await GenerateJwtToken(userId);
+            // セキュアな一時認証コードを生成
+            var authCode = await _authService.GenerateAuthorizationCodeAsync(userId);
 
-            // Redisにセッション情報を保存（両システムで共有）
-            await _authService.SaveSessionAsync(userId, newToken);
+            // returnUrlを検証し、安全でない場合はデフォルトにフォールバック
+            var safeReturnUrl = IsValidReturnUrl(returnUrl) ? returnUrl : "/";
 
-            // フロントエンドへリダイレクト（トークンを含む）
+            // フロントエンドへリダイレクト（トークンではなくコードを使用）
             var redirectUrl = $"{_configuration["DomainSettings:NewDomain"]}/auth/callback" +
-                            $"?token={newToken}" +
-                            $"&returnUrl={Uri.EscapeDataString(returnUrl ?? "/")}";
+                            $"?code={authCode}" +
+                            $"&returnUrl={Uri.EscapeDataString(safeReturnUrl)}";
 
             return Redirect(redirectUrl);
         }
@@ -122,30 +148,134 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Google OAuth コールバック
+    /// Google OAuth ログイン開始
     /// </summary>
-    [HttpGet("google/callback")]
-    public async Task<IActionResult> GoogleCallback()
+    [HttpGet("google/login")]
+    public IActionResult GoogleLogin([FromQuery] string? returnUrl)
     {
-        // Google認証の処理
-        var authenticateResult = await HttpContext.AuthenticateAsync("Google");
+        // returnUrlを検証し、安全でない場合はデフォルトにフォールバック
+        var safeReturnUrl = IsValidReturnUrl(returnUrl) ? returnUrl : "/";
+        
+        var redirectUrl = Url.Action(nameof(ProcessGoogleAuth), "Auth");
+        var properties = new AuthenticationProperties
+        { 
+            RedirectUri = redirectUrl,
+            Items = { { "returnUrl", safeReturnUrl } }
+        };
+        
+        return Challenge(properties, "Google");
+    }
+
+    /// <summary>
+    /// Google認証ミドルウェアがCookie認証を設定した後の処理
+    /// /api/signin-googleでGoogle認証が完了した後にリダイレクトされる
+    /// </summary>
+    [HttpGet("google/process")]
+    public async Task<IActionResult> ProcessGoogleAuth()
+    {
+        // Cookie認証から認証情報を取得（Google認証ミドルウェアが設定済み）
+        var authenticateResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         if (!authenticateResult.Succeeded)
         {
-            return BadRequest("Google authentication failed");
+            _logger.LogError("Google authentication failed");
+            var errorUrl = $"{_configuration["DomainSettings:NewDomain"]}/login?error=google_auth_failed";
+            return Redirect(errorUrl);
         }
 
         var email = authenticateResult.Principal?.FindFirst(ClaimTypes.Email)?.Value;
-        if (string.IsNullOrEmpty(email))
+        var googleId = authenticateResult.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var displayName = authenticateResult.Principal?.FindFirst(ClaimTypes.Name)?.Value;
+
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(googleId))
         {
-            return BadRequest("Email not found");
+            _logger.LogError("Required Google user information not found. Email: {Email}, GoogleId: {GoogleId}", email, googleId);
+            var errorUrl = $"{_configuration["DomainSettings:NewDomain"]}/login?error=missing_user_info";
+            return Redirect(errorUrl);
         }
 
-        // ユーザーを作成または取得
-        var user = await _authService.FindOrCreateUserByEmailAsync(email);
-        var token = await GenerateJwtToken(user.Id.ToString());
+        try
+        {
+            // OAuthアイデンティティでユーザーを作成または取得
+            var user = await _authService.FindOrCreateUserByOAuthAsync("google", googleId, email, displayName);
+            
+            // セキュアな一時認証コードを生成
+            var authCode = await _authService.GenerateAuthorizationCodeAsync(user.Id.ToString());
+            
+            // returnUrlを取得して検証
+            var returnUrl = authenticateResult.Properties?.Items["returnUrl"];
+            var safeReturnUrl = IsValidReturnUrl(returnUrl) ? returnUrl : "/";
 
-        // フロントエンドへリダイレクト
-        return Redirect($"{_configuration["DomainSettings:NewDomain"]}/auth/success?token={token}");
+            // フロントエンドへリダイレクト（トークンではなくコードを使用）
+            var redirectUrl = $"{_configuration["DomainSettings:NewDomain"]}/auth/callback" +
+                             $"?code={authCode}" +
+                             $"&returnUrl={Uri.EscapeDataString(safeReturnUrl)}";
+            
+            return Redirect(redirectUrl);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Google OAuth callback processing failed for email: {Email}", email);
+            var errorUrl = $"{_configuration["DomainSettings:NewDomain"]}/login?error=oauth_processing_failed";
+            return Redirect(errorUrl);
+        }
+    }
+
+    /// <summary>
+    /// 認証コードをJWTトークンと交換
+    /// </summary>
+    [HttpPost("exchange-code")]
+    public async Task<IActionResult> ExchangeCode([FromBody] ExchangeCodeRequest request)
+    {
+        if (string.IsNullOrEmpty(request.Code))
+        {
+            return BadRequest("Authorization code is required");
+        }
+
+        try
+        {
+            // コードをトークンと交換
+            var token = await _authService.ExchangeCodeForTokenAsync(request.Code);
+            
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized("Invalid or expired authorization code");
+            }
+
+            // トークンからユーザーIDを取得
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwt = tokenHandler.ReadJwtToken(token);
+            var userId = jwt.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            
+            if (!string.IsNullOrEmpty(userId))
+            {
+                // セッション情報を保存
+                await _authService.SaveSessionAsync(userId, token);
+                
+                // ユーザー情報を取得
+                var user = await _authService.GetUserByIdAsync(int.Parse(userId));
+                if (user != null)
+                {
+                    return Ok(new
+                    {
+                        token,
+                        user = new
+                        {
+                            id = user.Id,
+                            email = user.Email,
+                            displayName = user.Name,
+                            rating = user.Rating
+                        }
+                    });
+                }
+            }
+
+            return Ok(new { token });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Code exchange failed");
+            return StatusCode(500, "An error occurred while exchanging the authorization code");
+        }
     }
 
     /// <summary>
@@ -230,4 +360,9 @@ public class LoginRequest
 {
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
+}
+
+public class ExchangeCodeRequest
+{
+    public string Code { get; set; } = string.Empty;
 }
