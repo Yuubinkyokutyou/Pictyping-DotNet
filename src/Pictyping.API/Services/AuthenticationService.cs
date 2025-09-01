@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Pictyping.Core.Entities;
 using Pictyping.Infrastructure.Data;
@@ -15,15 +16,18 @@ public class AuthenticationService : IAuthenticationService
     private readonly PictypingDbContext _context;
     private readonly IConnectionMultiplexer _redis;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<AuthenticationService> _logger;
 
     public AuthenticationService(
         PictypingDbContext context,
         IConnectionMultiplexer redis,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        ILogger<AuthenticationService> logger)
     {
         _context = context;
         _redis = redis;
         _configuration = configuration;
+        _logger = logger;
     }
 
     public async Task<User?> ValidateUserAsync(string email, string password)
@@ -62,6 +66,8 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<User> FindOrCreateUserByOAuthAsync(string provider, string providerUserId, string email, string? displayName = null)
     {
+        _logger.LogInformation("OAuth login attempt for provider: {Provider}, email: {Email}", provider, email);
+        
         // まずOAuthアイデンティティで既存ユーザーを検索
         var identity = await _context.OmniAuthIdentities
             .Include(i => i.User)
@@ -69,33 +75,53 @@ public class AuthenticationService : IAuthenticationService
 
         if (identity?.User != null)
         {
+            _logger.LogInformation("Existing user found via OAuth identity. UserId: {UserId}, Email: {Email}", 
+                identity.User.Id, identity.User.Email);
             return identity.User;
         }
 
-        // 次にメールアドレスで既存ユーザーを検索
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        // トランザクションを開始して、User作成とOmniAuthIdentity作成を原子的に行う
+        // Serializableレベルで競合を完全に防ぐ
+        using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
         
-        if (user == null)
+        try
         {
-            // 新しいユーザーを作成
-            user = new User
+            // トランザクション内で再度OAuthアイデンティティを確認（競合状態を早期に検出）
+            var existingIdentity = await _context.OmniAuthIdentities
+                .Include(i => i.User)
+                .FirstOrDefaultAsync(i => i.Provider == provider && i.Uid == providerUserId);
+            
+            if (existingIdentity?.User != null)
             {
-                Email = email,
-                Name = displayName ?? email.Split('@')[0], // 表示名がない場合はメールのローカル部分を使用
-                EncryptedPassword = "", // OAuthユーザーはパスワードなし
-                Guest = false,
-                Rating = 1200,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            };
+                _logger.LogError("OAuth identity found in transaction (race condition avoided). UserId: {UserId}",
+                    existingIdentity.User.Id);
+                await transaction.CommitAsync();
+                return existingIdentity.User;
+            }
+            
+            // メールアドレスで既存ユーザーを検索
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            
+            if (user == null)
+            {
+                // 新しいユーザーを作成
+                user = new User
+                {
+                    Email = email,
+                    Name = displayName ?? email.Split('@')[0], // 表示名がない場合はメールのローカル部分を使用
+                    EncryptedPassword = "", // OAuthユーザーはパスワードなし
+                    Guest = false,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-        }
-
-        // OAuthアイデンティティが存在しない場合は作成
-        if (identity == null)
-        {
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                
+                _logger.LogInformation("New user created. UserId: {UserId}, Email: {Email}, DisplayName: {DisplayName}", 
+                    user.Id, user.Email, user.Name);
+            }
+            // OAuthアイデンティティを作成
             identity = new OmniAuthIdentity
             {
                 Provider = provider,
@@ -107,9 +133,21 @@ public class AuthenticationService : IAuthenticationService
 
             _context.OmniAuthIdentities.Add(identity);
             await _context.SaveChangesAsync();
-        }
 
-        return user;
+            // トランザクションをコミット
+            await transaction.CommitAsync();
+
+            return user;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during OAuth user creation/retrieval. Provider: {Provider}, Email: {Email}", 
+                provider, email);
+            
+            // エラーが発生した場合はロールバック
+            await transaction.RollbackAsync();
+            throw;
+        }
     }
 
     public async Task<User?> GetUserByIdAsync(int userId)
