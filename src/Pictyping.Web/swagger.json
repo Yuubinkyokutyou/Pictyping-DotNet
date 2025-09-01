@@ -75,10 +75,55 @@
         }
       }
     },
-    "/api/Auth/google/callback": {
+    "/api/Auth/google/login": {
       "get": {
         "tags": [
           "Auth"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "returnUrl",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Auth/google/process": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Auth/exchange-code": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/ExchangeCodeRequest"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -186,6 +231,14 @@
     }
   },
   "definitions": {
+    "ExchangeCodeRequest": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        }
+      }
+    },
     "LoginRequest": {
       "type": "object",
       "properties": {

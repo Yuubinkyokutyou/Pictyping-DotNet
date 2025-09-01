@@ -13,7 +13,7 @@ public class UserTests
         Assert.Equal(string.Empty, user.Email);
         Assert.Equal(string.Empty, user.EncryptedPassword);
         Assert.False(user.Guest);
-        Assert.Equal(1200, user.Rating);
+        Assert.Equal(0, user.Rating);
         Assert.False(user.Admin);
         Assert.NotNull(user.TypingMatchesAsEnemy);
         Assert.NotNull(user.OmniAuthIdentities);

@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ExchangeCodeRequest } from '../models/ExchangeCodeRequest';
 import type { LoginRequest } from '../models/LoginRequest';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -63,10 +64,42 @@ export class AuthService {
      * @returns any Success
      * @throws ApiError
      */
-    public static getApiAuthGoogleCallback(): CancelablePromise<any> {
+    public static getApiAuthGoogleLogin({
+        returnUrl,
+    }: {
+        returnUrl?: string,
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Auth/google/callback',
+            url: '/api/Auth/google/login',
+            query: {
+                'returnUrl': returnUrl,
+            },
+        });
+    }
+    /**
+     * @returns any Success
+     * @throws ApiError
+     */
+    public static getApiAuthGoogleProcess(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/Auth/google/process',
+        });
+    }
+    /**
+     * @returns any Success
+     * @throws ApiError
+     */
+    public static postApiAuthExchangeCode({
+        body,
+    }: {
+        body?: ExchangeCodeRequest,
+    }): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/Auth/exchange-code',
+            body: body,
         });
     }
     /**

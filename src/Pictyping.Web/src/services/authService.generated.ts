@@ -51,10 +51,17 @@ export const authServiceGenerated = {
   },
 
   /**
-   * Google OAuth コールバック処理
+   * Google OAuth 処理（サーバー側で自動的に処理される）
    */
-  handleGoogleCallback: async () => {
-    return await AuthService.getApiAuthGoogleCallback()
+  handleGoogleProcess: async () => {
+    return await AuthService.getApiAuthGoogleProcess()
+  },
+  
+  /**
+   * 認証コードをトークンと交換
+   */
+  exchangeCode: async (code: string) => {
+    return await AuthService.postApiAuthExchangeCode({ body: { code } })
   },
 }
 
