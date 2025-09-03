@@ -59,7 +59,20 @@ paths:
       tags:
       - Auth
       x-codegen-request-body-name: body
-  /api/Auth/google/callback:
+  /api/Auth/google/login:
+    get:
+      parameters:
+      - in: query
+        name: returnUrl
+        schema:
+          type: string
+      responses:
+        "200":
+          content: {}
+          description: Success
+      tags:
+      - Auth
+  /api/Auth/google/process:
     get:
       responses:
         "200":
@@ -67,6 +80,27 @@ paths:
           description: Success
       tags:
       - Auth
+  /api/Auth/exchange-code:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExchangeCodeRequest"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/ExchangeCodeRequest"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/ExchangeCodeRequest"
+        required: false
+      responses:
+        "200":
+          content: {}
+          description: Success
+      tags:
+      - Auth
+      x-codegen-request-body-name: body
   /api/Auth/me:
     get:
       responses:
@@ -142,6 +176,13 @@ paths:
       x-codegen-request-body-name: body
 components:
   schemas:
+    ExchangeCodeRequest:
+      example:
+        code: code
+      properties:
+        code:
+          type: string
+      type: object
     LoginRequest:
       example:
         password: password

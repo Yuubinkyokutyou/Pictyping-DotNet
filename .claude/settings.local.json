@@ -57,7 +57,11 @@
       "Bash(dir:*)",
       "mcp__serena__find_file",
       "Bash(cat:*)",
-      "mcp__serena__write_memory"
+      "mcp__serena__write_memory",
+      "Bash(generate.bat)",
+      "Bash(cmd:*)",
+      "Bash(./generate.sh:*)",
+      "Bash(powershell:*)"
     ],
     "deny": [],
     "ask": []

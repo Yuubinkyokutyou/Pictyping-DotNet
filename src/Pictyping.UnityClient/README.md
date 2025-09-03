@@ -6,17 +6,32 @@ Unity WebRequest用のC# APIクライアントです。openapi-generator-cliを�
 
 ### 前提条件
 - Dockerがインストールされていること
-- OpenAPI仕様ファイル（swagger.json）が存在すること
+- APIサーバーが localhost:5000 で動作していること（swagger.json自動取得のため）
 
 ### コマンド
 
-#### Windows環境での生成
+#### 推奨方法（自動swagger.json更新付き）
+スクリプトを実行すると、APIサーバーから最新のswagger.jsonを自動ダウンロードしてからクライアントを生成します。
+
+**Windows環境**
+```bash
+cd src/Pictyping.UnityClient
+generate.bat
+```
+
+**Linux/Mac環境**
+```bash
+cd src/Pictyping.UnityClient
+./generate.sh
+```
+
+#### npm経由での生成
 ```bash
 cd src/Pictyping.Web
 npm run generate-api:csharp:unity
 ```
 
-#### 直接Dockerコマンドで生成
+#### 直接Dockerコマンドで生成（手動swagger.json更新）
 ```bash
 cd src/Pictyping.UnityClient
 docker run --rm -v %cd%:/local openapitools/openapi-generator-cli:latest generate \
@@ -25,6 +40,16 @@ docker run --rm -v %cd%:/local openapitools/openapi-generator-cli:latest generat
   -o /local/generated \
   --additional-properties=library=unityWebRequest,packageName=Pictyping.UnityClient,packageVersion=1.0.0,targetFramework=netstandard2.1,packageCompany=Pictyping,sourceFolder=src
 ```
+
+### swagger.json自動更新について
+
+generate.sh と generate.bat は実行時に自動的に以下を行います：
+
+1. **APIサーバーから最新のswagger.jsonをダウンロード** (`http://localhost:5000/swagger/v1/swagger.json`)
+2. **エラーハンドリング**: APIサーバーが停止している場合はエラーメッセージを表示して終了
+3. **Unity APIクライアントの生成**: ダウンロード成功後にコード生成を実行
+
+これにより、常に最新のAPI仕様に基づいたUnity Clientが生成されます。
 
 ## Unity向けの注意事項
 

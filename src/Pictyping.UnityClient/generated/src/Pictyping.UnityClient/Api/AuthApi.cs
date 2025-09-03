@@ -50,8 +50,44 @@ namespace Pictyping.UnityClient.Api
         /// 
         /// </summary>
         /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="body"> (optional)</param>
         /// <returns></returns>
-        void ApiAuthGoogleCallbackGet();
+        void ApiAuthExchangeCodePost(ExchangeCodeRequest body = default);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="body"> (optional)</param>
+        /// <returns>ApiResponse of Object(void)</returns>
+        ApiResponse<Object> ApiAuthExchangeCodePostWithHttpInfo(ExchangeCodeRequest body = default);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="returnUrl"> (optional)</param>
+        /// <returns></returns>
+        void ApiAuthGoogleLoginGet(string returnUrl = default);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="returnUrl"> (optional)</param>
+        /// <returns>ApiResponse of Object(void)</returns>
+        ApiResponse<Object> ApiAuthGoogleLoginGetWithHttpInfo(string returnUrl = default);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <returns></returns>
+        void ApiAuthGoogleProcessGet();
 
         /// <summary>
         /// 
@@ -61,7 +97,7 @@ namespace Pictyping.UnityClient.Api
         /// </remarks>
         /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>ApiResponse of Object(void)</returns>
-        ApiResponse<Object> ApiAuthGoogleCallbackGetWithHttpInfo();
+        ApiResponse<Object> ApiAuthGoogleProcessGetWithHttpInfo();
         /// <summary>
         /// 
         /// </summary>
@@ -155,9 +191,55 @@ namespace Pictyping.UnityClient.Api
         /// 
         /// </remarks>
         /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="body"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of void</returns>
-        System.Threading.Tasks.Task ApiAuthGoogleCallbackGetAsync(System.Threading.CancellationToken cancellationToken = default);
+        System.Threading.Tasks.Task ApiAuthExchangeCodePostAsync(ExchangeCodeRequest body = default, System.Threading.CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="body"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse</returns>
+        System.Threading.Tasks.Task<ApiResponse<Object>> ApiAuthExchangeCodePostWithHttpInfoAsync(ExchangeCodeRequest body = default, System.Threading.CancellationToken cancellationToken = default);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="returnUrl"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of void</returns>
+        System.Threading.Tasks.Task ApiAuthGoogleLoginGetAsync(string returnUrl = default, System.Threading.CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="returnUrl"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse</returns>
+        System.Threading.Tasks.Task<ApiResponse<Object>> ApiAuthGoogleLoginGetWithHttpInfoAsync(string returnUrl = default, System.Threading.CancellationToken cancellationToken = default);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of void</returns>
+        System.Threading.Tasks.Task ApiAuthGoogleProcessGetAsync(System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 
@@ -168,7 +250,7 @@ namespace Pictyping.UnityClient.Api
         /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> ApiAuthGoogleCallbackGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default);
+        System.Threading.Tasks.Task<ApiResponse<Object>> ApiAuthGoogleProcessGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default);
         /// <summary>
         /// 
         /// </summary>
@@ -526,10 +608,270 @@ namespace Pictyping.UnityClient.Api
         ///  
         /// </summary>
         /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="body"> (optional)</param>
         /// <returns></returns>
-        public void ApiAuthGoogleCallbackGet()
+        public void ApiAuthExchangeCodePost(ExchangeCodeRequest body = default)
         {
-            ApiAuthGoogleCallbackGetWithHttpInfo();
+            ApiAuthExchangeCodePostWithHttpInfo(body);
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="body"> (optional)</param>
+        /// <returns>ApiResponse of Object(void)</returns>
+        public Pictyping.UnityClient.Client.ApiResponse<Object> ApiAuthExchangeCodePostWithHttpInfo(ExchangeCodeRequest body = default)
+        {
+            Pictyping.UnityClient.Client.RequestOptions localVarRequestOptions = new Pictyping.UnityClient.Client.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json",
+                "text/json",
+                "application/*+json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+            };
+
+            var localVarContentType = Pictyping.UnityClient.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = Pictyping.UnityClient.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = body;
+
+            // authentication (Bearer) required
+            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("Authorization")))
+            {
+                localVarRequestOptions.HeaderParameters.Add("Authorization", this.Configuration.GetApiKeyWithPrefix("Authorization"));
+            }
+
+            // make the HTTP request
+            var localVarResponse = this.Client.Post<Object>("/api/Auth/exchange-code", localVarRequestOptions, this.Configuration);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("ApiAuthExchangeCodePost", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="body"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of void</returns>
+        public async System.Threading.Tasks.Task ApiAuthExchangeCodePostAsync(ExchangeCodeRequest body = default, System.Threading.CancellationToken cancellationToken = default)
+        {
+            var task = ApiAuthExchangeCodePostWithHttpInfoAsync(body, cancellationToken);
+#if UNITY_EDITOR || !UNITY_WEBGL
+            await task.ConfigureAwait(false);
+#else
+            await task;
+#endif
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="body"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse</returns>
+        public async System.Threading.Tasks.Task<Pictyping.UnityClient.Client.ApiResponse<Object>> ApiAuthExchangeCodePostWithHttpInfoAsync(ExchangeCodeRequest body = default, System.Threading.CancellationToken cancellationToken = default)
+        {
+
+            Pictyping.UnityClient.Client.RequestOptions localVarRequestOptions = new Pictyping.UnityClient.Client.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json", 
+                "text/json", 
+                "application/*+json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+            };
+
+
+            var localVarContentType = Pictyping.UnityClient.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = Pictyping.UnityClient.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = body;
+
+            // authentication (Bearer) required
+            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("Authorization")))
+            {
+                localVarRequestOptions.HeaderParameters.Add("Authorization", this.Configuration.GetApiKeyWithPrefix("Authorization"));
+            }
+
+            // make the HTTP request
+
+            var task = this.AsynchronousClient.PostAsync<Object>("/api/Auth/exchange-code", localVarRequestOptions, this.Configuration, cancellationToken);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("ApiAuthExchangeCodePost", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="returnUrl"> (optional)</param>
+        /// <returns></returns>
+        public void ApiAuthGoogleLoginGet(string returnUrl = default)
+        {
+            ApiAuthGoogleLoginGetWithHttpInfo(returnUrl);
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="returnUrl"> (optional)</param>
+        /// <returns>ApiResponse of Object(void)</returns>
+        public Pictyping.UnityClient.Client.ApiResponse<Object> ApiAuthGoogleLoginGetWithHttpInfo(string returnUrl = default)
+        {
+            Pictyping.UnityClient.Client.RequestOptions localVarRequestOptions = new Pictyping.UnityClient.Client.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+            };
+
+            var localVarContentType = Pictyping.UnityClient.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = Pictyping.UnityClient.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            if (returnUrl != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(Pictyping.UnityClient.Client.ClientUtils.ParameterToMultiMap("", "returnUrl", returnUrl));
+            }
+
+            // authentication (Bearer) required
+            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("Authorization")))
+            {
+                localVarRequestOptions.HeaderParameters.Add("Authorization", this.Configuration.GetApiKeyWithPrefix("Authorization"));
+            }
+
+            // make the HTTP request
+            var localVarResponse = this.Client.Get<Object>("/api/Auth/google/login", localVarRequestOptions, this.Configuration);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("ApiAuthGoogleLoginGet", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="returnUrl"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of void</returns>
+        public async System.Threading.Tasks.Task ApiAuthGoogleLoginGetAsync(string returnUrl = default, System.Threading.CancellationToken cancellationToken = default)
+        {
+            var task = ApiAuthGoogleLoginGetWithHttpInfoAsync(returnUrl, cancellationToken);
+#if UNITY_EDITOR || !UNITY_WEBGL
+            await task.ConfigureAwait(false);
+#else
+            await task;
+#endif
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="returnUrl"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse</returns>
+        public async System.Threading.Tasks.Task<Pictyping.UnityClient.Client.ApiResponse<Object>> ApiAuthGoogleLoginGetWithHttpInfoAsync(string returnUrl = default, System.Threading.CancellationToken cancellationToken = default)
+        {
+
+            Pictyping.UnityClient.Client.RequestOptions localVarRequestOptions = new Pictyping.UnityClient.Client.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+            };
+
+
+            var localVarContentType = Pictyping.UnityClient.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = Pictyping.UnityClient.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            if (returnUrl != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(Pictyping.UnityClient.Client.ClientUtils.ParameterToMultiMap("", "returnUrl", returnUrl));
+            }
+
+            // authentication (Bearer) required
+            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("Authorization")))
+            {
+                localVarRequestOptions.HeaderParameters.Add("Authorization", this.Configuration.GetApiKeyWithPrefix("Authorization"));
+            }
+
+            // make the HTTP request
+
+            var task = this.AsynchronousClient.GetAsync<Object>("/api/Auth/google/login", localVarRequestOptions, this.Configuration, cancellationToken);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("ApiAuthGoogleLoginGet", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <returns></returns>
+        public void ApiAuthGoogleProcessGet()
+        {
+            ApiAuthGoogleProcessGetWithHttpInfo();
         }
 
         /// <summary>
@@ -537,7 +879,7 @@ namespace Pictyping.UnityClient.Api
         /// </summary>
         /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>ApiResponse of Object(void)</returns>
-        public Pictyping.UnityClient.Client.ApiResponse<Object> ApiAuthGoogleCallbackGetWithHttpInfo()
+        public Pictyping.UnityClient.Client.ApiResponse<Object> ApiAuthGoogleProcessGetWithHttpInfo()
         {
             Pictyping.UnityClient.Client.RequestOptions localVarRequestOptions = new Pictyping.UnityClient.Client.RequestOptions();
 
@@ -562,11 +904,11 @@ namespace Pictyping.UnityClient.Api
             }
 
             // make the HTTP request
-            var localVarResponse = this.Client.Get<Object>("/api/Auth/google/callback", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Get<Object>("/api/Auth/google/process", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("ApiAuthGoogleCallbackGet", localVarResponse);
+                Exception _exception = this.ExceptionFactory("ApiAuthGoogleProcessGet", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -579,9 +921,9 @@ namespace Pictyping.UnityClient.Api
         /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of void</returns>
-        public async System.Threading.Tasks.Task ApiAuthGoogleCallbackGetAsync(System.Threading.CancellationToken cancellationToken = default)
+        public async System.Threading.Tasks.Task ApiAuthGoogleProcessGetAsync(System.Threading.CancellationToken cancellationToken = default)
         {
-            var task = ApiAuthGoogleCallbackGetWithHttpInfoAsync(cancellationToken);
+            var task = ApiAuthGoogleProcessGetWithHttpInfoAsync(cancellationToken);
 #if UNITY_EDITOR || !UNITY_WEBGL
             await task.ConfigureAwait(false);
 #else
@@ -595,7 +937,7 @@ namespace Pictyping.UnityClient.Api
         /// <exception cref="Pictyping.UnityClient.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse</returns>
-        public async System.Threading.Tasks.Task<Pictyping.UnityClient.Client.ApiResponse<Object>> ApiAuthGoogleCallbackGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default)
+        public async System.Threading.Tasks.Task<Pictyping.UnityClient.Client.ApiResponse<Object>> ApiAuthGoogleProcessGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default)
         {
 
             Pictyping.UnityClient.Client.RequestOptions localVarRequestOptions = new Pictyping.UnityClient.Client.RequestOptions();
@@ -623,7 +965,7 @@ namespace Pictyping.UnityClient.Api
 
             // make the HTTP request
 
-            var task = this.AsynchronousClient.GetAsync<Object>("/api/Auth/google/callback", localVarRequestOptions, this.Configuration, cancellationToken);
+            var task = this.AsynchronousClient.GetAsync<Object>("/api/Auth/google/process", localVarRequestOptions, this.Configuration, cancellationToken);
 
 #if UNITY_EDITOR || !UNITY_WEBGL
             var localVarResponse = await task.ConfigureAwait(false);
@@ -633,7 +975,7 @@ namespace Pictyping.UnityClient.Api
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("ApiAuthGoogleCallbackGet", localVarResponse);
+                Exception _exception = this.ExceptionFactory("ApiAuthGoogleProcessGet", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 

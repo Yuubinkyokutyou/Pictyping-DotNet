@@ -95,7 +95,9 @@ All URIs are relative to *http://localhost*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *AuthApi* | [**ApiAuthCrossDomainLoginGet**](AuthApi.md#apiauthcrossdomainloginget) | **GET** /api/Auth/cross-domain-login | 
-*AuthApi* | [**ApiAuthGoogleCallbackGet**](AuthApi.md#apiauthgooglecallbackget) | **GET** /api/Auth/google/callback | 
+*AuthApi* | [**ApiAuthExchangeCodePost**](AuthApi.md#apiauthexchangecodepost) | **POST** /api/Auth/exchange-code | 
+*AuthApi* | [**ApiAuthGoogleLoginGet**](AuthApi.md#apiauthgoogleloginget) | **GET** /api/Auth/google/login | 
+*AuthApi* | [**ApiAuthGoogleProcessGet**](AuthApi.md#apiauthgoogleprocessget) | **GET** /api/Auth/google/process | 
 *AuthApi* | [**ApiAuthLoginPost**](AuthApi.md#apiauthloginpost) | **POST** /api/Auth/login | 
 *AuthApi* | [**ApiAuthMeGet**](AuthApi.md#apiauthmeget) | **GET** /api/Auth/me | 
 *AuthApi* | [**ApiAuthRedirectToLegacyGet**](AuthApi.md#apiauthredirecttolegacyget) | **GET** /api/Auth/redirect-to-legacy | 
@@ -108,6 +110,7 @@ Class | Method | HTTP request | Description
 <a id="documentation-for-models"></a>
 ## Documentation for Models
 
+ - [Model.ExchangeCodeRequest](ExchangeCodeRequest.md)
  - [Model.LoginRequest](LoginRequest.md)
  - [Model.UpdateRatingRequest](UpdateRatingRequest.md)
 
