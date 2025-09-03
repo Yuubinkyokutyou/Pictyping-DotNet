@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>Pictyping.UnityClient</AssemblyName>
+    <RootNamespace>Pictyping.UnityClient</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Version>1.0.0</Version>
+    <PackageId>Pictyping.UnityClient</PackageId>
+    <Authors>Pictyping</Authors>
+    <Company>Pictyping</Company>
+    <Product>Pictyping Unity API Client</Product>
+    <Description>Unity WebRequest-based API client for Pictyping</Description>
+    <Copyright>Copyright © Pictyping 2025</Copyright>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="generated\src\Pictyping.UnityClient\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="generated\src\Pictyping.UnityClient\*.asmdef" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

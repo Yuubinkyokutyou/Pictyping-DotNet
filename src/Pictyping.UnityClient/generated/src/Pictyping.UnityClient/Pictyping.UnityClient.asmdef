@@ -1,0 +1,7 @@
+{
+    "name": "Pictyping.UnityClient",
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll"
+    ]
+}
