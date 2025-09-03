@@ -24,16 +24,21 @@ Pictyping.UnityClient は、Pictyping API サーバーとUnityアプリケーシ
 2. `+` ボタンをクリックし、`Add package from git URL...` を選択
 3. 以下のURLを入力：
    ```
-   https://github.com/[your-repo]/TypingBomOnline.git?path=src/Pictyping.UnityClient
+   https://github.com/Yuubinkyokutyou/Pictyping-DotNet.git?path=src/Pictyping.UnityClient
    ```
+
+**注意**: もしエラーが発生する場合は、以下の手順を試してください：
+- Unity 2020.3 LTS以上を使用していることを確認
+- パッケージの削除と再インストール
+- Unity エディターの再起動
 
 ### 方法2: 手動コピー
 
-1. **生成されたクライアントコードをコピー**
+1. **Runtime フォルダーをコピー**
    ```
-   src/Pictyping.UnityClient/generated/src/Pictyping.UnityClient/
+   src/Pictyping.UnityClient/Runtime/
    ```
-   を Unity プロジェクトの `Assets/` フォルダー内にコピーします。
+   を Unity プロジェクトの `Assets/` フォルダー内に `Pictyping.UnityClient` としてコピーします。
 
 2. **Newtonsoft.Json for Unity をインストール**
    - Unity Package Manager で `com.unity.nuget.newtonsoft-json` を検索してインストール

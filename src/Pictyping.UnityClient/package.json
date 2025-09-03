@@ -21,6 +21,11 @@
       "displayName": "Basic Usage Example",
       "description": "Demonstrates basic API usage including authentication, rating updates, and ranking retrieval",
       "path": "Samples~/BasicUsage"
+    },
+    {
+      "displayName": "Advanced Usage Example",
+      "description": "Demonstrates advanced API usage with UI integration, error handling, and network management",
+      "path": "Samples~/AdvancedUsage"
     }
   ],
   "author": {

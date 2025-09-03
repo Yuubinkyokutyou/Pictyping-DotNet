@@ -15,7 +15,7 @@ if [ $# -eq 0 ]; then
 fi
 
 UNITY_PROJECT_PATH="$1"
-SOURCE_PATH="$(dirname "$0")/generated/src/Pictyping.UnityClient"
+SOURCE_PATH="$(dirname "$0")/Runtime"
 DEST_PATH="$UNITY_PROJECT_PATH/Assets/Pictyping.UnityClient"
 
 echo "Unity Project Path: $UNITY_PROJECT_PATH"
@@ -37,8 +37,8 @@ fi
 
 # Check if source files exist
 if [ ! -d "$SOURCE_PATH" ]; then
-    echo "Error: Generated client files not found at: $SOURCE_PATH"
-    echo "Please run ./generate.sh first to generate the Unity client."
+    echo "Error: Unity client files not found at: $SOURCE_PATH"
+    echo "Please run ./generate.sh first to generate the Unity client, or check the Runtime folder."
     exit 1
 fi
 

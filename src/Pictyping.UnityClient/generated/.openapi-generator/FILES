@@ -1,4 +1,5 @@
 .gitignore
+.openapi-generator-ignore
 README.md
 api/openapi.yaml
 docs/AuthApi.md
@@ -8,7 +9,12 @@ docs/PictypingAPIApi.md
 docs/RankingApi.md
 docs/UpdateRatingRequest.md
 git_push.sh
+src/Pictyping.UnityClient.Test/Api/AuthApiTests.cs
+src/Pictyping.UnityClient.Test/Api/PictypingAPIApiTests.cs
+src/Pictyping.UnityClient.Test/Api/RankingApiTests.cs
 src/Pictyping.UnityClient.Test/Model/ExchangeCodeRequestTests.cs
+src/Pictyping.UnityClient.Test/Model/LoginRequestTests.cs
+src/Pictyping.UnityClient.Test/Model/UpdateRatingRequestTests.cs
 src/Pictyping.UnityClient.Test/Pictyping.UnityClient.Test.asmdef
 src/Pictyping.UnityClient/Api/AuthApi.cs
 src/Pictyping.UnityClient/Api/PictypingAPIApi.cs

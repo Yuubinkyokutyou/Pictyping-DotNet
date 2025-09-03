@@ -66,13 +66,35 @@ namespace Pictyping.UnityClient.Test.Api
         }
 
         /// <summary>
-        /// Test ApiAuthGoogleCallbackGet
+        /// Test ApiAuthExchangeCodePost
         /// </summary>
         [Test]
-        public void ApiAuthGoogleCallbackGetTest()
+        public void ApiAuthExchangeCodePostTest()
         {
             // TODO uncomment below to test the method and replace null with proper value
-            //instance.ApiAuthGoogleCallbackGet();
+            //ExchangeCodeRequest body = null;
+            //instance.ApiAuthExchangeCodePost(body);
+        }
+
+        /// <summary>
+        /// Test ApiAuthGoogleLoginGet
+        /// </summary>
+        [Test]
+        public void ApiAuthGoogleLoginGetTest()
+        {
+            // TODO uncomment below to test the method and replace null with proper value
+            //string returnUrl = null;
+            //instance.ApiAuthGoogleLoginGet(returnUrl);
+        }
+
+        /// <summary>
+        /// Test ApiAuthGoogleProcessGet
+        /// </summary>
+        [Test]
+        public void ApiAuthGoogleProcessGetTest()
+        {
+            // TODO uncomment below to test the method and replace null with proper value
+            //instance.ApiAuthGoogleProcessGet();
         }
 
         /// <summary>

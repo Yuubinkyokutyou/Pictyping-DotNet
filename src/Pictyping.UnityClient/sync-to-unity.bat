@@ -17,7 +17,7 @@ if "%~1"=="" (
 )
 
 set UNITY_PROJECT_PATH=%~1
-set SOURCE_PATH=%~dp0generated\src\Pictyping.UnityClient
+set SOURCE_PATH=%~dp0Runtime
 set DEST_PATH=%UNITY_PROJECT_PATH%\Assets\Pictyping.UnityClient
 
 echo Unity Project Path: %UNITY_PROJECT_PATH%
@@ -41,8 +41,8 @@ if not exist "%UNITY_PROJECT_PATH%\Assets" (
 
 REM Check if source files exist
 if not exist "%SOURCE_PATH%" (
-    echo Error: Generated client files not found at: %SOURCE_PATH%
-    echo Please run generate.bat first to generate the Unity client.
+    echo Error: Unity client files not found at: %SOURCE_PATH%
+    echo Please run generate.bat first to generate the Unity client, or check the Runtime folder.
     pause
     exit /b 1
 )
