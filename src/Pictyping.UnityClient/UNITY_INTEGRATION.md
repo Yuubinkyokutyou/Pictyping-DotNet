@@ -18,21 +18,7 @@ Pictyping.UnityClient は、Pictyping API サーバーとUnityアプリケーシ
 
 ## インストール方法
 
-### 方法1: Unity Package Manager (UPM) 経由（推奨）
-
-1. Unity エディターで `Window` > `Package Manager` を開く
-2. `+` ボタンをクリックし、`Add package from git URL...` を選択
-3. 以下のURLを入力：
-   ```
-   https://github.com/Yuubinkyokutyou/Pictyping-DotNet.git?path=src/Pictyping.UnityClient
-   ```
-
-**注意**: もしエラーが発生する場合は、以下の手順を試してください：
-- Unity 2020.3 LTS以上を使用していることを確認
-- パッケージの削除と再インストール
-- Unity エディターの再起動
-
-### 方法2: 手動コピー
+### 手動配置方法（推奨）
 
 1. **Runtime フォルダーをコピー**
    ```
@@ -42,7 +28,6 @@ Pictyping.UnityClient は、Pictyping API サーバーとUnityアプリケーシ
 
 2. **Newtonsoft.Json for Unity をインストール**
    - Unity Package Manager で `com.unity.nuget.newtonsoft-json` を検索してインストール
-   - または Package Manager で `+` > `Add package by name...` で `com.unity.nuget.newtonsoft-json` を入力
 
 3. **Assembly Definition の確認**
    - コピーした `Pictyping.UnityClient.asmdef` ファイルが存在することを確認
