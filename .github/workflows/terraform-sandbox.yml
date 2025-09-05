@@ -1,0 +1,201 @@
+name: Deploy Sandbox Environment
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'develop'
+        type: string
+
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/terraform-sandbox.yml'
+
+env:
+  TERRAFORM_VERSION: '1.7.0'
+  WORKING_DIR: './terraform'
+
+jobs:
+  terraform:
+    name: 'Terraform Sandbox'
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIR }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+    - name: Configure Terraform Backend
+      run: |
+        # Use local backend for development/testing if no S3 backend is configured
+        if [ -z "${{ secrets.TF_STATE_BUCKET }}" ]; then
+          echo "Using local backend (no S3 configuration found)"
+          cat > backend.tf <<EOF
+        # Local backend for development
+        terraform {
+          backend "local" {
+            path = "./terraform.tfstate"
+          }
+        }
+        EOF
+        else
+          echo "Using S3 backend"
+          cat > backend.tf <<EOF
+        terraform {
+          backend "s3" {
+            bucket = "${{ secrets.TF_STATE_BUCKET }}"
+            key    = "pictyping/sandbox/terraform.tfstate"
+            region = "${{ secrets.AWS_REGION }}"
+            access_key = "${{ secrets.AWS_ACCESS_KEY_ID }}"
+            secret_key = "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+            encrypt = true
+          }
+        }
+        EOF
+        fi
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Format Check
+      run: terraform fmt -check -recursive
+
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Set Terraform Variables
+      run: |
+        cat > terraform.tfvars <<EOF
+        environment = "sandbox"
+        branch = "${{ github.event.inputs.branch || 'develop' }}"
+        repository_url = "https://github.com/${{ github.repository }}.git"
+        EOF
+
+    - name: Terraform Plan
+      if: github.event_name == 'pull_request' || github.event.inputs.action == 'plan'
+      run: |
+        # Create terraform plan with conditional variables
+        terraform plan \
+          -var="linode_token=${{ secrets.LINODE_TOKEN || 'dummy-token-for-validation' }}" \
+          -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY || 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAB dummy-key-for-validation' }}" \
+          -var="github_token=${{ secrets.GH_TOKEN || github.token }}" \
+          -var="jwt_key=${{ secrets.JWT_KEY || 'dummy-jwt-key-for-validation' }}" \
+          -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID || 'dummy-client-id' }}" \
+          -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET || 'dummy-client-secret' }}" \
+          -var="db_password=${{ secrets.DB_PASSWORD || 'dummy-db-password' }}" \
+          -var="redis_password=${{ secrets.REDIS_PASSWORD || 'dummy-redis-password' }}" \
+          -out=tfplan
+
+    - name: Upload Plan
+      if: github.event_name == 'pull_request'
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfplan
+        path: ${{ env.WORKING_DIR }}/tfplan
+
+    - name: Comment PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+          
+          *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+          
+          try {
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            });
+          } catch (error) {
+            console.log('Failed to create PR comment:', error.message);
+            console.log('This is expected for forks or insufficient permissions');
+          }
+
+    - name: Terraform Apply
+      if: github.event.inputs.action == 'apply'
+      run: |
+        terraform apply -auto-approve \
+          -var="linode_token=${{ secrets.LINODE_TOKEN }}" \
+          -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
+          -var="github_token=${{ secrets.GH_TOKEN || github.token }}" \
+          -var="jwt_key=${{ secrets.JWT_KEY }}" \
+          -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID }}" \
+          -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+          -var="db_password=${{ secrets.DB_PASSWORD }}" \
+          -var="redis_password=${{ secrets.REDIS_PASSWORD }}"
+
+    - name: Get Outputs
+      if: github.event.inputs.action == 'apply'
+      id: outputs
+      run: |
+        echo "instance_ip=$(terraform output -raw instance_ip)" >> $GITHUB_OUTPUT
+
+    - name: Update Environment URL
+      if: github.event.inputs.action == 'apply'
+      run: |
+        echo "Sandbox environment deployed successfully!"
+        echo "Access your sandbox at: http://${{ steps.outputs.outputs.instance_ip }}"
+
+    - name: Terraform Destroy
+      if: github.event.inputs.action == 'destroy'
+      run: |
+        terraform destroy -auto-approve \
+          -var="linode_token=${{ secrets.LINODE_TOKEN }}" \
+          -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
+          -var="github_token=${{ secrets.GH_TOKEN || github.token }}" \
+          -var="jwt_key=${{ secrets.JWT_KEY }}" \
+          -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID }}" \
+          -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+          -var="db_password=${{ secrets.DB_PASSWORD }}" \
+          -var="redis_password=${{ secrets.REDIS_PASSWORD }}"
+
+  notify:
+    name: Notify Deployment
+    needs: terraform
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+    - name: Notify Success
+      if: needs.terraform.result == 'success' && github.event.inputs.action == 'apply'
+      run: |
+        echo "✅ Sandbox environment deployed successfully!"
+        
+    - name: Notify Failure
+      if: needs.terraform.result == 'failure'
+      run: |
+        echo "❌ Deployment failed!"
