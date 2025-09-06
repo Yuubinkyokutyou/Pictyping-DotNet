@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Pictyping.API.Services;
+using Pictyping.API.Models;
 
 namespace Pictyping.API.Controllers;
 
@@ -283,7 +284,9 @@ public class AuthController : ControllerBase
     /// </summary>
     [HttpGet("me")]
     [Authorize]
-    public async Task<IActionResult> GetCurrentUser()
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(UserDto), 200)]
+    public async Task<ActionResult<UserDto>> GetCurrentUser()
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId))
@@ -297,14 +300,16 @@ public class AuthController : ControllerBase
             return NotFound();
         }
 
-        return Ok(new
+        var dto = new UserDto
         {
-            id = user.Id,
-            email = user.Email,
-            displayName = user.Name,
-            rating = user.Rating,
-            isAdmin = user.Admin
-        });
+            Id = user.Id,
+            Email = user.Email,
+            DisplayName = user.Name,
+            Rating = user.Rating,
+            IsAdmin = user.Admin
+        };
+
+        return Ok(dto);
     }
 
     private Task<string> GenerateJwtToken(string userId)
