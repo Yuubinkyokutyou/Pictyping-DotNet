@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Pictyping.Core.Interfaces;
+using Pictyping.API.Models;
 
 namespace Pictyping.API.Controllers;
 
@@ -20,18 +21,21 @@ public class RankingController : ControllerBase
     /// 上位ランキングを取得
     /// </summary>
     [HttpGet]
-    public async Task<IActionResult> GetTopRankings([FromQuery] int count = 100)
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(IEnumerable<RankingItemDto>), 200)]
+    public async Task<ActionResult<IEnumerable<RankingItemDto>>> GetTopRankings([FromQuery] int count = 100)
     {
         try
         {
             var rankings = await _rankingService.GetTopRankingsAsync(count);
-            return Ok(rankings.Select(user => new
+            var dto = rankings.Select(user => new RankingItemDto
             {
-                id = user.Id,
-                displayName = user.Name ?? "Anonymous",
-                rating = user.Rating,
-                email = user.Email
-            }));
+                Id = user.Id,
+                DisplayName = user.Name ?? "Anonymous",
+                Rating = user.Rating,
+                Email = user.Email
+            });
+            return Ok(dto);
         }
         catch (Exception ex)
         {
@@ -44,12 +48,14 @@ public class RankingController : ControllerBase
     /// ユーザーの順位を取得
     /// </summary>
     [HttpGet("user/{userId:int}")]
-    public async Task<IActionResult> GetUserRank(int userId)
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(UserRankDto), 200)]
+    public async Task<ActionResult<UserRankDto>> GetUserRank(int userId)
     {
         try
         {
             var rank = await _rankingService.GetUserRankAsync(userId);
-            return Ok(new { userId, rank });
+            return Ok(new UserRankDto { UserId = userId, Rank = rank });
         }
         catch (Exception ex)
         {
@@ -62,12 +68,14 @@ public class RankingController : ControllerBase
     /// ユーザーのレーティングを更新
     /// </summary>
     [HttpPut("user/{userId:int}")]
-    public async Task<IActionResult> UpdateUserRating(int userId, [FromBody] UpdateRatingRequest request)
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(UpdateRatingResultDto), 200)]
+    public async Task<ActionResult<UpdateRatingResultDto>> UpdateUserRating(int userId, [FromBody] UpdateRatingRequest request)
     {
         try
         {
             await _rankingService.UpdateUserRatingAsync(userId, request.NewRating);
-            return Ok(new { message = "Rating updated successfully" });
+            return Ok(new UpdateRatingResultDto { Message = "Rating updated successfully" });
         }
         catch (Exception ex)
         {

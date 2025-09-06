@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Pictyping.API.Controllers;
+using Pictyping.API.Models;
 using Pictyping.API.Services;
 using Pictyping.Core.Entities;
 using System.Security.Claims;
@@ -127,17 +128,10 @@ public class AuthControllerTests
 
         var result = await _controller.GetCurrentUser();
 
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.NotNull(okResult.Value);
-        
-        var response = okResult.Value;
-        var idProperty = response.GetType().GetProperty("id");
-        var emailProperty = response.GetType().GetProperty("email");
-        
-        Assert.NotNull(idProperty);
-        Assert.NotNull(emailProperty);
-        Assert.Equal(1, idProperty.GetValue(response));
-        Assert.Equal("test@example.com", emailProperty.GetValue(response));
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var dto = Assert.IsType<UserDto>(okResult.Value);
+        Assert.Equal(1, dto.Id);
+        Assert.Equal("test@example.com", dto.Email);
     }
 
     [Fact]
@@ -165,7 +159,7 @@ public class AuthControllerTests
 
         var result = await _controller.GetCurrentUser();
 
-        Assert.IsType<NotFoundResult>(result);
+        Assert.IsType<NotFoundResult>(result.Result);
     }
 
     [Fact]
@@ -185,7 +179,7 @@ public class AuthControllerTests
 
         var result = await _controller.GetCurrentUser();
 
-        Assert.IsType<UnauthorizedResult>(result);
+        Assert.IsType<UnauthorizedResult>(result.Result);
     }
 
     [Fact]

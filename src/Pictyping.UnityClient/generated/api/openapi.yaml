@@ -1,0 +1,212 @@
+openapi: 3.0.1
+info:
+  description: Pictyping game API for typing battles and rankings
+  title: Pictyping API
+  version: v1
+servers:
+- url: /
+security:
+- Bearer: []
+paths:
+  /api/Auth/cross-domain-login:
+    get:
+      parameters:
+      - in: query
+        name: token
+        schema:
+          type: string
+      - in: query
+        name: returnUrl
+        schema:
+          type: string
+      responses:
+        "200":
+          content: {}
+          description: Success
+      tags:
+      - Auth
+  /api/Auth/redirect-to-legacy:
+    get:
+      parameters:
+      - in: query
+        name: targetPath
+        schema:
+          type: string
+      responses:
+        "200":
+          content: {}
+          description: Success
+      tags:
+      - Auth
+  /api/Auth/login:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: false
+      responses:
+        "200":
+          content: {}
+          description: Success
+      tags:
+      - Auth
+      x-codegen-request-body-name: body
+  /api/Auth/google/login:
+    get:
+      parameters:
+      - in: query
+        name: returnUrl
+        schema:
+          type: string
+      responses:
+        "200":
+          content: {}
+          description: Success
+      tags:
+      - Auth
+  /api/Auth/google/process:
+    get:
+      responses:
+        "200":
+          content: {}
+          description: Success
+      tags:
+      - Auth
+  /api/Auth/exchange-code:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExchangeCodeRequest"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/ExchangeCodeRequest"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/ExchangeCodeRequest"
+        required: false
+      responses:
+        "200":
+          content: {}
+          description: Success
+      tags:
+      - Auth
+      x-codegen-request-body-name: body
+  /api/Auth/me:
+    get:
+      responses:
+        "200":
+          content: {}
+          description: Success
+      tags:
+      - Auth
+  /health:
+    get:
+      responses:
+        "200":
+          content: {}
+          description: Success
+      tags:
+      - Pictyping.API
+  /api/Ranking:
+    get:
+      parameters:
+      - in: query
+        name: count
+        schema:
+          default: 100
+          format: int32
+          type: integer
+      responses:
+        "200":
+          content: {}
+          description: Success
+      tags:
+      - Ranking
+  /api/Ranking/user/{userId}:
+    get:
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          content: {}
+          description: Success
+      tags:
+      - Ranking
+    put:
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          format: int32
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRatingRequest"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRatingRequest"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/UpdateRatingRequest"
+        required: false
+      responses:
+        "200":
+          content: {}
+          description: Success
+      tags:
+      - Ranking
+      x-codegen-request-body-name: body
+components:
+  schemas:
+    ExchangeCodeRequest:
+      example:
+        code: code
+      properties:
+        code:
+          type: string
+      type: object
+    LoginRequest:
+      example:
+        password: password
+        email: email
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      type: object
+    UpdateRatingRequest:
+      example:
+        newRating: 0
+      properties:
+        newRating:
+          format: int32
+          type: integer
+      type: object
+  securitySchemes:
+    Bearer:
+      description: "JWT Authorization header using the Bearer scheme. Example: \"\
+        Authorization: Bearer {token}\""
+      in: header
+      name: Authorization
+      type: apiKey
+x-original-swagger-version: "2.0"
+

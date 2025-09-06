@@ -71,10 +71,26 @@ builder.Services.AddCors(options =>
             var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() 
                 ?? new[] { "https://pictyping.com", "https://new.pictyping.com" };
             
-            policy.WithOrigins(corsOrigins)
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials();
+            if (builder.Environment.IsDevelopment())
+            {
+                // 開発環境では任意のlocalhostポートを許可
+                policy.SetIsOriginAllowed(origin =>
+                {
+                    if (Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+                    {
+                        return uri.Host == "localhost" || corsOrigins.Contains(origin);
+                    }
+                    return false;
+                });
+            }
+            else
+            {
+                policy.WithOrigins(corsOrigins);
+            }
+            
+            policy.AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
         });
 });
 

@@ -1,0 +1,15 @@
+{
+    "name": "Pictyping.UnityClient.Test",
+    "references": [
+        "Pictyping.UnityClient",
+        "UnityEngine.TestRunner"
+    ],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Newtonsoft.Json.dll"
+    ],
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ]
+}

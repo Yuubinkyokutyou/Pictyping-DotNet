@@ -9,7 +9,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "generate-api": "openapi --input ./swagger.json --output ./src/api/generated --client axios --useOptions",
-    "generate-api:watch": "nodemon --watch ../Pictyping.API --ext cs --exec npm run generate-api"
+    "generate-api:watch": "nodemon --watch ../Pictyping.API --ext cs --exec npm run generate-api",
+    "generate-api:csharp:unity": "docker run --rm -v %cd%/../Pictyping.UnityClient:/local openapitools/openapi-generator-cli:latest generate -i /local/swagger.json -g csharp -o /local/generated --additional-properties=library=unityWebRequest,packageName=Pictyping.UnityClient,packageVersion=1.0.0,targetFramework=netstandard2.1,packageCompany=Pictyping,sourceFolder=src"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.0.1",

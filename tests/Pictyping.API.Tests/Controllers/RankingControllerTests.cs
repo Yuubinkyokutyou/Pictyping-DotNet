@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Pictyping.API.Controllers;
+using Pictyping.API.Models;
 using Pictyping.Core.Entities;
 using Pictyping.Core.Interfaces;
 using Xunit;
@@ -36,13 +37,9 @@ public class RankingControllerTests
 
         var result = await _controller.GetTopRankings();
 
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.NotNull(okResult.Value);
-        
-        var rankings = okResult.Value as IEnumerable<object>;
-        Assert.NotNull(rankings);
-        var rankingList = rankings.ToList();
-        Assert.Equal(3, rankingList.Count);
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var rankings = Assert.IsAssignableFrom<IEnumerable<RankingItemDto>>(okResult.Value);
+        Assert.Equal(3, rankings.Count());
     }
 
     [Fact]
@@ -59,7 +56,7 @@ public class RankingControllerTests
 
         var result = await _controller.GetTopRankings(50);
 
-        var okResult = Assert.IsType<OkObjectResult>(result);
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
         Assert.NotNull(okResult.Value);
         
         _mockRankingService.Verify(s => s.GetTopRankingsAsync(50), Times.Once);
@@ -73,7 +70,7 @@ public class RankingControllerTests
 
         var result = await _controller.GetTopRankings();
 
-        var statusResult = Assert.IsType<ObjectResult>(result);
+        var statusResult = Assert.IsType<ObjectResult>(result.Result);
         Assert.Equal(500, statusResult.StatusCode);
         Assert.Equal("Internal server error", statusResult.Value);
     }
@@ -89,17 +86,10 @@ public class RankingControllerTests
 
         var result = await _controller.GetUserRank(userId);
 
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.NotNull(okResult.Value);
-        
-        var response = okResult.Value;
-        var userIdProperty = response.GetType().GetProperty("userId");
-        var rankProperty = response.GetType().GetProperty("rank");
-        
-        Assert.NotNull(userIdProperty);
-        Assert.NotNull(rankProperty);
-        Assert.Equal(userId, userIdProperty.GetValue(response));
-        Assert.Equal(rank, rankProperty.GetValue(response));
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var dto = Assert.IsType<UserRankDto>(okResult.Value);
+        Assert.Equal(userId, dto.UserId);
+        Assert.Equal(rank, dto.Rank);
     }
 
     [Fact]
@@ -112,7 +102,7 @@ public class RankingControllerTests
 
         var result = await _controller.GetUserRank(userId);
 
-        var statusResult = Assert.IsType<ObjectResult>(result);
+        var statusResult = Assert.IsType<ObjectResult>(result.Result);
         Assert.Equal(500, statusResult.StatusCode);
         Assert.Equal("Internal server error", statusResult.Value);
     }
@@ -128,14 +118,9 @@ public class RankingControllerTests
 
         var result = await _controller.UpdateUserRating(userId, request);
 
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.NotNull(okResult.Value);
-        
-        var response = okResult.Value;
-        var messageProperty = response.GetType().GetProperty("message");
-        
-        Assert.NotNull(messageProperty);
-        Assert.Equal("Rating updated successfully", messageProperty.GetValue(response));
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var dto = Assert.IsType<UpdateRatingResultDto>(okResult.Value);
+        Assert.Equal("Rating updated successfully", dto.Message);
         
         _mockRankingService.Verify(s => s.UpdateUserRatingAsync(userId, request.NewRating), Times.Once);
     }
@@ -151,7 +136,7 @@ public class RankingControllerTests
 
         var result = await _controller.UpdateUserRating(userId, request);
 
-        var statusResult = Assert.IsType<ObjectResult>(result);
+        var statusResult = Assert.IsType<ObjectResult>(result.Result);
         Assert.Equal(500, statusResult.StatusCode);
         Assert.Equal("Internal server error", statusResult.Value);
     }
